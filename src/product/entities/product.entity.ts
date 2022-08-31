@@ -1,16 +1,15 @@
 import { User } from '../../user/entities/user.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  OneToOne,
 } from 'typeorm';
 import { Category } from './categories.entity';
 import { Base } from '../../common/base.entity';
+import { Metadata } from './metadata.entity';
 
 //book
 @Entity()
@@ -29,6 +28,9 @@ export class Product extends Base {
 
   @Column({ length: 60 })
   author: string;
+
+  @OneToOne(() => Metadata, (metadata) => metadata.product)
+  metadata: Metadata;
 
   @ManyToOne(() => User, (user) => user.products)
   user: User;

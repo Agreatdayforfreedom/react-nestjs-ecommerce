@@ -35,7 +35,7 @@ export class ProductController {
     return this.productService.findAllFilter(query);
   }
 
-  @Roles(Role.SELLER)
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.productService.findOne(id);

@@ -51,7 +51,7 @@ export class ProductService {
 
   async findOne(id: number): Promise<Product> {
     const [product] = await this.productRepo.find({
-      relations: { user: true },
+      relations: ['metadata'],
       where: { id: id },
     });
 
