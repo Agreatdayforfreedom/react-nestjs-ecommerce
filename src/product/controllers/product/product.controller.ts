@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -23,9 +24,15 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Public()
-  @Get()
+  @Get('books')
   findAll() {
-    return this.productService.getAll();
+    return this.productService.findAll();
+  }
+
+  @Public()
+  @Get()
+  findAllFilter(@Query() query?: any) {
+    return this.productService.findAllFilter(query);
   }
 
   @Roles(Role.SELLER)
@@ -36,8 +43,8 @@ export class ProductController {
 
   @Roles(Role.SELLER)
   @Post()
-  create(@Body() payload: CreateProductDto, @Request() req: any) {
-    return this.productService.create(payload, req.user);
+  create(@Body() payload: CreateProductDto) {
+    return this.productService.create(payload);
   }
 
   @Roles(Role.SELLER)

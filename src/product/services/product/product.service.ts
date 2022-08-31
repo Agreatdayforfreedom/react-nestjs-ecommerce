@@ -2,19 +2,51 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto, UpdateProductDto } from '../../dtos/product.dto';
 import { Product } from '../../entities/product.entity';
-import { Repository } from 'typeorm';
-import { UserService } from '../../../user/services/user/user.service';
-import { Request } from 'express';
+import { In, Repository } from 'typeorm';
+import { Category } from '../../entities/categories.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product) private productRepo: Repository<Product>,
-    private userService: UserService,
+    @InjectRepository(Category) private categoryRepo: Repository<Category>,
   ) {}
 
-  async getAll(): Promise<Product[]> {
-    return await this.productRepo.find();
+  async findAll(): Promise<Product[]> {
+    return await this.productRepo.find({
+      relations: ['categories'],
+    });
+  }
+  async findAllFilter(query: any): Promise<Product[]> {
+    if (query.minPrice && query.maxPrice) {
+      return await this.productRepo
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.categories', 'categories')
+        .where('product.name like :name', {
+          name: `%${query.search}%`,
+        })
+        .orWhere('product.author like :author', {
+          author: `%${query.search}%`,
+        })
+        .andWhere('product.price > :minPrice', {
+          minPrice: query.minPrice,
+        })
+        .andWhere('product.price < :maxPrice', {
+          maxPrice: query.maxPrice,
+        })
+        .getMany();
+    }
+
+    return await this.productRepo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.categories', 'categories')
+      .where('product.name like :name', {
+        name: `%${query.search}%`,
+      })
+      .orWhere('product.author like :author', {
+        author: `%${query.search}%`,
+      })
+      .getMany();
   }
 
   async findOne(id: number): Promise<Product> {
@@ -26,14 +58,14 @@ export class ProductService {
     return product;
   }
 
-  async create(payload: CreateProductDto, userObject: any): Promise<Product> {
+  async create(payload: CreateProductDto): Promise<Product> {
     const product = this.productRepo.create(payload);
-
-    const [user] = await this.userService.findOneU(userObject.id);
-    //if it doesn't found a user, it is becouse doesn't exist in the request
-    if (!user) throw new HttpException('You have to be registered', 401);
-    product.user = user;
-
+    if (payload.categories) {
+      const categories = await this.categoryRepo.find({
+        where: { id: In([...payload.categories]) },
+      });
+      product.categories = categories;
+    }
     return await this.productRepo.save(product);
   }
 
