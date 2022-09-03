@@ -12,13 +12,28 @@ import { Category } from './entities/categories.entity';
 import { MetadataController } from './controllers/metadata/metadata.controller';
 import { MetadataService } from './services/metadata/metadata.service';
 import { Metadata } from './entities/metadata.entity';
+import { Message } from './entities/message.entity';
+import { MessagesController } from './controllers/messages/messages.controller';
+import { MessagesService } from './services/messages/messages.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Category, Metadata]),
+    TypeOrmModule.forFeature([Product, Category, Metadata, Message]),
     UserModule,
   ],
-  controllers: [ProductController, CategoriesController, MetadataController],
-  providers: [ProductService, JwtStrategy, CategoriesService, MetadataService],
+  controllers: [
+    ProductController,
+    CategoriesController,
+    MetadataController,
+    MessagesController,
+  ],
+  providers: [
+    ProductService,
+    JwtStrategy,
+    CategoriesService,
+    MetadataService,
+    MessagesService,
+  ],
+  exports: [MessagesService],
 })
 export class ProductModule {}

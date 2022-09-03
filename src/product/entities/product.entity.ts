@@ -5,11 +5,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from 'typeorm';
 import { Category } from './categories.entity';
 import { Base } from '../../common/base.entity';
 import { Metadata } from './metadata.entity';
+import { Message } from './message.entity';
 
 //book
 @Entity()
@@ -34,6 +36,9 @@ export class Product extends Base {
 
   @ManyToOne(() => User, (user) => user.products)
   user: User;
+
+  @OneToMany(() => Message, (message) => message.product)
+  messages: Message[];
 
   @ManyToMany(() => Category, (category) => category.products)
   @JoinTable({
