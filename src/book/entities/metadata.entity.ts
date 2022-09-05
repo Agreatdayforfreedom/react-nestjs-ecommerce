@@ -5,7 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Product } from './product.entity';
+import { Book } from './book.entity';
 
 @Entity()
 export class Metadata {
@@ -21,7 +21,7 @@ export class Metadata {
   @Column()
   language: string;
 
-  @OneToOne(() => Product, (product) => product.metadata)
+  @OneToOne(() => Book, (book) => book.metadata)
   @JoinColumn()
-  product: Product;
+  book: Book;
 }

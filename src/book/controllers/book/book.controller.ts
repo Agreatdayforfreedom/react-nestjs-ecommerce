@@ -13,38 +13,38 @@ import {
 } from '@nestjs/common';
 import { RolesGuard } from '../../../auth/guards/roles.guard';
 import { Public } from '../../../auth/decorators/public.decorator';
-import { CreateProductDto, UpdateProductDto } from '../../dtos/product.dto';
-import { ProductService } from '../../services/product/product.service';
+import { CreateBookDto, UpdateBookDto } from '../../dtos/book.dto';
+import { BookService } from '../../services/book/book.service';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { Role } from '../../../auth/models/role.model';
 
 @UseGuards(RolesGuard)
-@Controller('product')
-export class ProductController {
-  constructor(private productService: ProductService) {}
+@Controller('book')
+export class BookController {
+  constructor(private bookService: BookService) {}
 
   @Public()
   @Get('books')
   findAll() {
-    return this.productService.findAll();
+    return this.bookService.findAll();
   }
 
   @Public()
   @Get()
   findAllFilter(@Query() query?: any) {
-    return this.productService.findAllFilter(query);
+    return this.bookService.findAllFilter(query);
   }
 
   @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productService.findOne(id);
+    return this.bookService.findOne(id);
   }
 
   @Roles(Role.SELLER)
   @Post()
-  create(@Body() payload: CreateProductDto) {
-    return this.productService.create(payload);
+  create(@Body() payload: CreateBookDto, @Request() req: any) {
+    return this.bookService.create(payload, req);
   }
 
   @Roles(Role.SELLER)
@@ -52,14 +52,14 @@ export class ProductController {
   update(
     @Request() req: any,
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateProductDto,
+    @Body() payload: UpdateBookDto,
   ) {
-    return this.productService.update(id, payload, req);
+    return this.bookService.update(id, payload, req);
   }
 
   @Roles(Role.SELLER)
   @Delete(':id')
   delete(@Request() req: any, @Param('id', ParseIntPipe) id: number) {
-    return this.productService.delete(id, req);
+    return this.bookService.delete(id, req);
   }
 }

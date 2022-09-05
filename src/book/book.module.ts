@@ -3,9 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from '../auth/jwt.strategy';
-import { ProductController } from './controllers/product/product.controller';
-import { Product } from './entities/product.entity';
-import { ProductService } from './services/product/product.service';
+import { BookController } from './controllers/book/book.controller';
+import { Book } from './entities/book.entity';
+import { BookService } from './services/book/book.service';
 import { CategoriesController } from './controllers/categories/categories.controller';
 import { CategoriesService } from './services/categories/categories.service';
 import { Category } from './entities/categories.entity';
@@ -18,17 +18,17 @@ import { MessagesService } from './services/messages/messages.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Category, Metadata, Message]),
+    TypeOrmModule.forFeature([Book, Category, Metadata, Message]),
     UserModule,
   ],
   controllers: [
-    ProductController,
+    BookController,
     CategoriesController,
     MetadataController,
     MessagesController,
   ],
   providers: [
-    ProductService,
+    BookService,
     JwtStrategy,
     CategoriesService,
     MetadataService,
@@ -36,4 +36,4 @@ import { MessagesService } from './services/messages/messages.service';
   ],
   exports: [MessagesService],
 })
-export class ProductModule {}
+export class BookModule {}

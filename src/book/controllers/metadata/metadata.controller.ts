@@ -12,10 +12,7 @@ import {
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { RolesGuard } from '../../../auth/guards/roles.guard';
 import { Role } from '../../../auth/models/role.model';
-import {
-  CreateMetadataDto,
-  UpdateMetadataDto,
-} from '../../../product/dtos/metadata.dto';
+import { CreateMetadataDto, UpdateMetadataDto } from '../../dtos/metadata.dto';
 import { MetadataService } from '../../services/metadata/metadata.service';
 
 @UseGuards(RolesGuard)

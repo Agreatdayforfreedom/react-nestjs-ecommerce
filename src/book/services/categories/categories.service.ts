@@ -20,7 +20,7 @@ export class CategoriesService {
 
   async findOne(id: number) {
     const category = this.categoryRepo.find({
-      relations: ['products'],
+      relations: ['books'],
       where: { id: id },
     });
     if (!category) {

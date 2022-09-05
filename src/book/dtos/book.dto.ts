@@ -7,7 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateProductDto {
+export class CreateBookDto {
   @IsString()
   @IsNotEmpty()
   readonly name: string;
@@ -29,6 +29,10 @@ export class CreateProductDto {
   @IsArray()
   @IsNotEmpty()
   readonly categories: any[];
+
+  @IsNumber()
+  @IsNotEmpty()
+  readonly user: any;
 }
 
-export class UpdateProductDto extends PartialType(CreateProductDto) {}
+export class UpdateBookDto extends PartialType(CreateBookDto) {}

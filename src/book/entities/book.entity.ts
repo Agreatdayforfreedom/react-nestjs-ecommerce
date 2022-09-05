@@ -15,7 +15,7 @@ import { Message } from './message.entity';
 
 //book
 @Entity()
-export class Product extends Base {
+export class Book extends Base {
   @Column({ length: 100 })
   name: string;
 
@@ -31,20 +31,20 @@ export class Product extends Base {
   @Column({ length: 60 })
   author: string;
 
-  @OneToOne(() => Metadata, (metadata) => metadata.product)
+  @OneToOne(() => Metadata, (metadata) => metadata.book)
   metadata: Metadata;
 
-  @ManyToOne(() => User, (user) => user.products)
+  @ManyToOne(() => User, (user) => user.books)
   user: User;
 
-  @OneToMany(() => Message, (message) => message.product)
+  @OneToMany(() => Message, (message) => message.book)
   messages: Message[];
 
-  @ManyToMany(() => Category, (category) => category.products)
+  @ManyToMany(() => Category, (category) => category.books)
   @JoinTable({
-    name: 'products_categories',
+    name: 'books_categories',
     joinColumn: {
-      name: 'product_id',
+      name: 'book_id',
     },
     inverseJoinColumn: {
       name: 'category_id',

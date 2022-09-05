@@ -2,8 +2,8 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from '../../entities/message.entity';
 import { Repository } from 'typeorm';
-import { CreateMessageDto } from '../../../product/dtos/message.dto';
-import { Product } from '../../../product/entities/product.entity';
+import { CreateMessageDto } from '../../dtos/message.dto';
+import { Book } from '../../entities/book.entity';
 import { User } from '../../../user/entities/user.entity';
 
 export interface ArrMessageAndLength<T, K> {
@@ -15,7 +15,7 @@ export interface ArrMessageAndLength<T, K> {
 export class MessagesService {
   constructor(
     @InjectRepository(Message) private messageRepo: Repository<Message>,
-    @InjectRepository(Product) private productRepo: Repository<Product>,
+    @InjectRepository(Book) private bookRepo: Repository<Book>,
     @InjectRepository(User) private userRepo: Repository<User>,
   ) {}
 
@@ -23,16 +23,10 @@ export class MessagesService {
     id: number,
     query: any,
   ): Promise<ArrMessageAndLength<number, Message>> {
-    // return await this.messageRepo.find({
-    //   relations: ['product'],
-    //   where: { product: { id: id } },
-    //   take: query.limit,
-    // });
-
     const messages = await this.messageRepo
       .createQueryBuilder('message')
-      .leftJoinAndSelect('message.product', 'product')
-      .where('message.product = :productId', { productId: id })
+      .leftJoinAndSelect('message.book', 'book')
+      .where('message.book = :bookId', { bookId: id })
       .limit(query.limit)
       .getMany();
     return { length: messages.length, messages };
@@ -40,7 +34,7 @@ export class MessagesService {
 
   async create(
     payload: CreateMessageDto,
-    productId: number,
+    bookId: number,
     req: any,
   ): Promise<Message> {
     const message = this.messageRepo.create(payload);
@@ -48,15 +42,15 @@ export class MessagesService {
     const [findUser] = await this.userRepo.find({
       where: { id: req.user.id },
     });
-    const [findProduct] = await this.productRepo.find({
-      where: { id: productId },
+    const [findBook] = await this.bookRepo.find({
+      where: { id: bookId },
     });
 
-    if (!findUser || !findProduct)
+    if (!findUser || !findBook)
       throw new HttpException('There was an error', 400);
 
     message.user = findUser;
-    message.product = findProduct;
+    message.book = findBook;
     return await this.messageRepo.save(message);
   }
 

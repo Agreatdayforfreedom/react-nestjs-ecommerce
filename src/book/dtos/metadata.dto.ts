@@ -15,7 +15,7 @@ export class CreateMetadataDto {
   @IsNotEmpty()
   language: string;
 
-  product: any;
+  book: any;
 }
 
 export class UpdateMetadataDto extends PartialType(CreateMetadataDto) {}
