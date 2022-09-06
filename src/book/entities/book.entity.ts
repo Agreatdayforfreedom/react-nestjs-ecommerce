@@ -12,6 +12,7 @@ import { Category } from './categories.entity';
 import { Base } from '../../common/base.entity';
 import { Metadata } from './metadata.entity';
 import { Message } from './message.entity';
+import { Cart_item } from '../../user/entities/cart_item.entity';
 
 //book
 @Entity()
@@ -39,6 +40,9 @@ export class Book extends Base {
 
   @OneToMany(() => Message, (message) => message.book)
   messages: Message[];
+
+  @OneToMany(() => Cart_item, (cItem) => cItem.book)
+  cItem: Cart_item[];
 
   @ManyToMany(() => Category, (category) => category.books)
   @JoinTable({

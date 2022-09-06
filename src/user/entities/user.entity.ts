@@ -1,7 +1,9 @@
 import { Book } from '../../book/entities/book.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { Base } from '../../common/base.entity';
 import { Message } from '../../book/entities/message.entity';
+import { Customers } from './customers.entity';
+import { Cart } from './cart.entity';
 
 enum Role_Enum {
   SELLER = 'seller',
@@ -21,6 +23,13 @@ export class User extends Base {
 
   @Column({ default: Role_Enum.USER, enum: Role_Enum })
   role?: string;
+
+  @OneToOne(() => Customers, (customer) => customer.user)
+  @JoinColumn()
+  customer: Customers;
+
+  @OneToOne(() => Cart, (cart) => cart.user)
+  cart: Cart;
 
   @OneToMany(() => Message, (message) => message.user)
   messages: Message[];

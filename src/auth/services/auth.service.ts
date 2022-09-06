@@ -19,11 +19,12 @@ export class AuthService {
     const userCreated = await this.userService.create(body);
 
     return {
-      user: userCreated,
+      user: userCreated.user,
+      cart: userCreated.cart,
       access_token: this.jwtService.sign({
-        id: userCreated.id,
-        username: userCreated.username,
-        role: userCreated.role,
+        id: userCreated.user.id,
+        username: userCreated.user.username,
+        role: userCreated.user.role,
       }),
     };
   }
