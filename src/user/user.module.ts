@@ -12,8 +12,6 @@ import { OrderDetailsService } from './services/order_details/order_details.serv
 import { OrderService } from './services/order/order.service';
 import { OrderController } from './controller/order/order.controller';
 import { CartController } from './controller/cart/cart.controller';
-import { CartItemController } from './controller/cart_item/cart_item.controller';
-import { CartItemService } from './services/cart_item/cart_item.service';
 import { CartService } from './services/cart/cart.service';
 import { Cart } from './entities/cart.entity';
 import { Cart_item } from './entities/cart_item.entity';
@@ -36,7 +34,6 @@ import { BookModule } from '../book/book.module';
     CustomersService,
     OrderDetailsService,
     OrderService,
-    CartItemService,
     CartService,
   ],
   exports: [UserService, TypeOrmModule],
@@ -45,7 +42,6 @@ import { BookModule } from '../book/book.module';
     OrderDetailsController,
     OrderController,
     CartController,
-    CartItemController,
   ],
 })
 export class UserModule {}

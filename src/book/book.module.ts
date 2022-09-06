@@ -20,7 +20,6 @@ import { MessagesService } from './services/messages/messages.service';
   imports: [
     TypeOrmModule.forFeature([Book, Category, Metadata, Message]),
     forwardRef(() => UserModule),
-    ,
   ],
   controllers: [
     BookController,
