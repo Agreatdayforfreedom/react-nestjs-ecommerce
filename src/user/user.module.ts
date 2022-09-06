@@ -7,8 +7,6 @@ import { User } from './entities/user.entity';
 import { UserService } from './services/user/user.service';
 import { CustomersController } from './controller/customers/customers.controller';
 import { CustomersService } from './services/customers/customers.service';
-import { OrderDetailsController } from './controller/order_details/order_details.controller';
-import { OrderDetailsService } from './services/order_details/order_details.service';
 import { OrderService } from './services/order/order.service';
 import { OrderController } from './controller/order/order.controller';
 import { CartController } from './controller/cart/cart.controller';
@@ -29,19 +27,8 @@ import { BookModule } from '../book/book.module';
     ]),
     forwardRef(() => BookModule),
   ],
-  providers: [
-    UserService,
-    CustomersService,
-    OrderDetailsService,
-    OrderService,
-    CartService,
-  ],
+  providers: [UserService, CustomersService, OrderService, CartService],
   exports: [UserService, TypeOrmModule],
-  controllers: [
-    CustomersController,
-    OrderDetailsController,
-    OrderController,
-    CartController,
-  ],
+  controllers: [CustomersController, OrderController, CartController],
 })
 export class UserModule {}

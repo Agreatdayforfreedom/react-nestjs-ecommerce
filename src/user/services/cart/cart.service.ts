@@ -14,12 +14,11 @@ export class CartService {
     @InjectRepository(Book) private bookRepo: Repository<Book>,
   ) {}
 
-  async getCart(req: any): Promise<Cart[]> {
-    console.log(req.user);
+  async getCart(req: any): Promise<Cart> {
     return await this.cartRepo.find({
       relations: ['user', 'cItem'],
       where: { user: { id: req.user.id } },
-    });
+    })[0];
   }
 
   async addToCart(payload: any, req: any): Promise<Cart_item | void> {
@@ -37,7 +36,6 @@ export class CartService {
       where: { book: { id: payload.bookId } },
     });
 
-    console.log(cart_item);
     if (cart_item === undefined) {
       const newItem = new Cart_item();
       newItem.book = item;

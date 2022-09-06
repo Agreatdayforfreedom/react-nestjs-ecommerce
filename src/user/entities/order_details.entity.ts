@@ -1,11 +1,5 @@
 import { Book } from '../../book/entities/book.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Orders } from './orders.entity';
 
 @Entity()
@@ -14,7 +8,7 @@ export class Order_details {
   id: number;
 
   @Column()
-  quantity: string;
+  quantity: number;
 
   @ManyToOne(() => Orders, (order) => order.order_details)
   orders: Orders;
