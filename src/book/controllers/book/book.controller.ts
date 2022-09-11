@@ -9,8 +9,12 @@ import {
   Put,
   Query,
   Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+
 import { RolesGuard } from '../../../auth/guards/roles.guard';
 import { Public } from '../../../auth/decorators/public.decorator';
 import { CreateBookDto, UpdateBookDto } from '../../dtos/book.dto';
@@ -39,6 +43,15 @@ export class BookController {
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.bookService.findOne(id);
+  }
+
+  @Roles(Role.SELLER)
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  upload(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    // cosnt asd=
+    // return this.bookService.upload(asd="gello");
   }
 
   @Roles(Role.SELLER)

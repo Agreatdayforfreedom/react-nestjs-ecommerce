@@ -87,6 +87,10 @@ export class BookService {
     return await this.bookRepo.save(book);
   }
 
+  async upload(file: Express.Multer.File) {
+    console.log(file);
+  }
+
   async update(id: number, payload: UpdateBookDto, req: any) {
     const userReq = req.user as UserReq;
 

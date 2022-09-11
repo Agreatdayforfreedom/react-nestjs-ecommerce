@@ -28,10 +28,6 @@ export class CreateBookDto {
   @IsPositive()
   readonly stock: number;
 
-  @IsString()
-  @IsOptional()
-  readonly image: string;
-
   @IsArray()
   @IsNotEmpty()
   readonly categories: any[];

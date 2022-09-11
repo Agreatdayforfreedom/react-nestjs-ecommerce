@@ -32,8 +32,8 @@ export class Book extends Base {
   @Column({ length: 60 })
   author: string;
 
-  // @Column()
-  // image?: string;
+  @Column({ default: 'without image' })
+  image?: string;
 
   @OneToOne(() => Metadata, (metadata) => metadata.book)
   metadata: Metadata;
