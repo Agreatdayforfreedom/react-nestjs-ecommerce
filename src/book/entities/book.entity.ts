@@ -32,10 +32,16 @@ export class Book extends Base {
   @Column({ length: 60 })
   author: string;
 
+  // @Column()
+  // image?: string;
+
   @OneToOne(() => Metadata, (metadata) => metadata.book)
   metadata: Metadata;
 
-  @ManyToOne(() => User, (user) => user.books)
+  @ManyToOne(() => User, (user) => user.books, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   user: User;
 
   @OneToMany(() => Message, (message) => message.book)
@@ -44,7 +50,10 @@ export class Book extends Base {
   @OneToMany(() => Cart_item, (cItem) => cItem.book)
   cItem: Cart_item[];
 
-  @ManyToMany(() => Category, (category) => category.books)
+  @ManyToMany(() => Category, (category) => category.books, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinTable({
     name: 'books_categories',
     joinColumn: {

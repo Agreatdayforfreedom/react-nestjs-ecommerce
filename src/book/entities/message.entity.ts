@@ -9,10 +9,16 @@ export class Message extends Base {
   message: string;
 
   // product
-  @ManyToOne(() => Book, (book) => book.messages)
+  @ManyToOne(() => Book, (book) => book.messages, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   book: Book;
 
   // emitter
-  @ManyToOne(() => User, (user) => user.messages)
+  @ManyToOne(() => User, (user) => user.messages, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   user: User;
 }

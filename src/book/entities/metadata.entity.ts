@@ -21,7 +21,10 @@ export class Metadata {
   @Column()
   language: string;
 
-  @OneToOne(() => Book, (book) => book.metadata)
+  @OneToOne(() => Book, (book) => book.metadata, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn()
   book: Book;
 }

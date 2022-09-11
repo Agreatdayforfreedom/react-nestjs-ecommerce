@@ -8,6 +8,9 @@ export class Orders extends Base {
   @OneToMany(() => Order_details, (order_details) => order_details.orders)
   order_details: Order_details[];
 
-  @ManyToOne(() => Customers, (customer) => customer.orders)
+  @ManyToOne(() => Customers, (customer) => customer.orders, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   customer: Customers;
 }

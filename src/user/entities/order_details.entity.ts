@@ -10,9 +10,15 @@ export class Order_details {
   @Column()
   quantity: number;
 
-  @ManyToOne(() => Orders, (order) => order.order_details)
+  @ManyToOne(() => Orders, (order) => order.order_details, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   orders: Orders;
 
-  @ManyToOne(() => Book)
+  @ManyToOne(() => Book, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   book: Book;
 }

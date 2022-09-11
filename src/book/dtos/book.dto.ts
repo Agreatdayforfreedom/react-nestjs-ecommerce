@@ -3,6 +3,7 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
 } from 'class-validator';
@@ -13,6 +14,7 @@ export class CreateBookDto {
   readonly name: string;
 
   @IsString()
+  @IsOptional()
   readonly review?: string;
 
   @IsString()
@@ -25,6 +27,10 @@ export class CreateBookDto {
   @IsNumber()
   @IsPositive()
   readonly stock: number;
+
+  @IsString()
+  @IsOptional()
+  readonly image: string;
 
   @IsArray()
   @IsNotEmpty()
