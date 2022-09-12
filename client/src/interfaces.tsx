@@ -9,6 +9,7 @@ export interface Book {
   categories: Category[];
   name: string;
   price: number;
+  image?: string;
   review: string;
   stock: number;
   createdAt?: string;

@@ -9,6 +9,7 @@ export const PreviewBook = ({ book }: Props) => {
     <>
       <div className="bg-slate-400 mx-2 p-1">
         <p>{book.name}</p>
+        <img src={book.image} alt={book.name} />
         <p>{book.author}</p>
         <p>{book.review}</p>
       </div>

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseFilePipe,
   ParseIntPipe,
   Post,
   Put,
@@ -21,6 +22,7 @@ import { CreateBookDto, UpdateBookDto } from '../../dtos/book.dto';
 import { BookService } from '../../services/book/book.service';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { Role } from '../../../auth/models/role.model';
+import { FileSizeValidationPipe } from '../../pipes/FileSizeValidationPipe.pipe';
 
 @UseGuards(RolesGuard)
 @Controller('book')
@@ -46,12 +48,13 @@ export class BookController {
   }
 
   @Roles(Role.SELLER)
-  @Post('upload')
+  @Post('upload/:id')
   @UseInterceptors(FileInterceptor('file'))
-  upload(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-    // cosnt asd=
-    // return this.bookService.upload(asd="gello");
+  upload(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile('file', FileSizeValidationPipe) file: Express.Multer.File,
+  ) {
+    return this.bookService.upload(id, file);
   }
 
   @Roles(Role.SELLER)

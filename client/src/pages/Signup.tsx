@@ -6,12 +6,12 @@ import { useForm } from '../hooks/useForm';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Auth } from '../context/AuthProvider';
 
-const initialState = {
-  username: '',
-  email: '',
-  password: '',
-  rpassword: '',
-};
+interface SignUpForm {
+  username: string;
+  email: string;
+  password: string;
+  rpassword: string;
+}
 
 export const Signup = () => {
   const [alert, setAlert] = useState<Alert>({} as Alert);
@@ -20,7 +20,7 @@ export const Signup = () => {
 
   //hooks
   const { auth, setAuth, loading } = useAuth();
-  const { handleChange, form } = useForm(initialState);
+  const { handleChange, form } = useForm<SignUpForm>();
 
   const handleSubmit = async (
     evt: FormEvent<HTMLFormElement>

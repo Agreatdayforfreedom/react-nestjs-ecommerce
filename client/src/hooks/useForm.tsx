@@ -1,8 +1,12 @@
 import { ChangeEvent, useState } from 'react';
-import { FormSignUp } from '../interfaces';
 
-export const useForm = <T extends Object>(initialState: T): any => {
-  const [form, setForm] = useState<T>(initialState);
+interface Form<T> {
+  handleChange: (props: ChangeEvent<HTMLInputElement>) => void;
+  form: T;
+}
+
+export const useForm = <T extends Object>(): Form<T> => {
+  const [form, setForm] = useState<T>({} as T);
 
   const handleChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = target;

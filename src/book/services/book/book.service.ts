@@ -1,10 +1,12 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
+
 import { CreateBookDto, UpdateBookDto } from '../../dtos/book.dto';
 import { Book } from '../../entities/book.entity';
-import { In, Repository } from 'typeorm';
 import { Category } from '../../entities/categories.entity';
 import { User } from '../../../user/entities/user.entity';
+import { destroyUpload, uploadFromBuffer } from './uploadFromBuffer';
 
 export interface UserReq {
   //move to another file
@@ -87,8 +89,25 @@ export class BookService {
     return await this.bookRepo.save(book);
   }
 
-  async upload(file: Express.Multer.File) {
-    console.log(file);
+  async upload(id: number, file: Express.Multer.File) {
+    try {
+      // Upload the image
+      const [book] = await this.bookRepo.find({ where: { id: id } });
+      if (!book) {
+        throw new Error('error');
+      }
+      if (book.image.charAt(0) === 'h') {
+        //if it is update it destroys the old image
+        destroyUpload(book);
+      }
+
+      const result: any = await uploadFromBuffer(file.buffer);
+
+      book.image = result.secure_url;
+      return this.bookRepo.save(book);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async update(id: number, payload: UpdateBookDto, req: any) {
@@ -115,6 +134,9 @@ export class BookService {
       where: { id: id },
     });
     if (!book) throw new HttpException('book not found', 404);
+
+    //deleting image
+    destroyUpload(book);
 
     if (book.user.id !== userReq.id) {
       throw new HttpException('You are not owner of this book', 401);

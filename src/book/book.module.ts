@@ -15,6 +15,7 @@ import { Metadata } from './entities/metadata.entity';
 import { Message } from './entities/message.entity';
 import { MessagesController } from './controllers/messages/messages.controller';
 import { MessagesService } from './services/messages/messages.service';
+import cloudinary from 'cloudinary';
 
 @Module({
   imports: [

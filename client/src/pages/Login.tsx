@@ -5,16 +5,15 @@ import { Auth } from '../context/AuthProvider';
 import useAuth from '../context/hooks/useAuth';
 import { useForm } from '../hooks/useForm';
 
-const initialState = {
-  username: '',
-  password: '',
-};
+interface LoginForm {
+  username: string;
+  password: string;
+}
 
 export const Login = () => {
-  const { handleChange, form } = useForm(initialState);
+  const { handleChange, form } = useForm<LoginForm>();
 
   const { setAuth, auth, loading } = useAuth();
-
   const navigate = useNavigate();
 
   const handleSubmit = async (
