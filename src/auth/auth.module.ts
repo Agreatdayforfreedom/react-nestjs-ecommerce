@@ -18,7 +18,7 @@ import { AuthService } from './services/auth.service';
       useFactory: (configService: ConfigType<typeof config>) => {
         return {
           secret: configService.jwt.secret,
-          signOptions: { expiresIn: '60m' },
+          signOptions: { expiresIn: '30d' },
         };
       },
     }),

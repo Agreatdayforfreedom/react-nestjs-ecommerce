@@ -47,7 +47,7 @@ export class BookController {
     return this.bookService.findOne(id);
   }
 
-  @Roles(Role.SELLER)
+  @Roles(Role.ADMIN)
   @Post('upload/:id')
   @UseInterceptors(FileInterceptor('file'))
   upload(
@@ -57,13 +57,13 @@ export class BookController {
     return this.bookService.upload(id, file);
   }
 
-  @Roles(Role.SELLER)
+  @Roles(Role.ADMIN)
   @Post()
   create(@Body() payload: CreateBookDto, @Request() req: any) {
     return this.bookService.create(payload, req);
   }
 
-  @Roles(Role.SELLER)
+  @Roles(Role.ADMIN)
   @Put(':id')
   update(
     @Request() req: any,
@@ -73,7 +73,7 @@ export class BookController {
     return this.bookService.update(id, payload, req);
   }
 
-  @Roles(Role.SELLER)
+  @Roles(Role.ADMIN)
   @Delete(':id')
   delete(@Request() req: any, @Param('id', ParseIntPipe) id: number) {
     return this.bookService.delete(id, req);

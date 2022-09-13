@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link, Outlet, Navigate } from 'react-router-dom';
+import { PrivateHeader } from '../components/PrivateHeader';
 import useAuth from '../context/hooks/useAuth';
 
 const MainLayout = () => {
@@ -13,8 +14,7 @@ const MainLayout = () => {
     <>
       {auth.id ? (
         <>
-          <p>hello</p>
-          <Outlet />
+          <PrivateHeader />
         </>
       ) : (
         <Navigate to="/" />

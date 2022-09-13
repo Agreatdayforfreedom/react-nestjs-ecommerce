@@ -12,6 +12,7 @@ export interface Book {
   image?: string;
   review: string;
   stock: number;
+  metadata?: any;
   createdAt?: string;
   updatedAt?: string;
 }

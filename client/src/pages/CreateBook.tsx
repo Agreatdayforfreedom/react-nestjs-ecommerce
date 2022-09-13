@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { FormEvent } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from '../hooks/useForm';
 import { User } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
@@ -14,26 +15,43 @@ interface FormGen {
 
 export const CreateBook = () => {
   const { form, handleChange } = useForm<FormGen>();
+  const [file, setFile] = useState<any>();
 
-  // const { name, review, price, stock, author } = form;
+  const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
   if (!token) return <p>loading</p>;
 
   const config = configAxios(token);
 
+  //submit
   const handleSubmit = async (
     evt: FormEvent<HTMLFormElement>
   ): Promise<void> => {
     evt.preventDefault();
+
+    const { name, price, stock, author } = form;
+    if ([name, price, stock, author].includes('')) return console.log('error');
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file, file.name);
 
     const { data } = await axios.post(
       `${import.meta.env.VITE_URL_BACK}/book`,
       form,
       config
     );
+    if (data.response) {
+      throw new Error('Error trying to create the book');
+    }
+    await axios.post(
+      `${import.meta.env.VITE_URL_BACK}/book/upload/${data.id}`,
+      formData,
+      config
+    );
 
-    console.log(data);
+    navigate('/');
   };
 
   return (
@@ -95,6 +113,24 @@ export const CreateBook = () => {
             placeholder="e.g Friedrich Nietzsche"
             id="author"
             onChange={handleChange}
+          />
+        </div>
+
+        <div className="flex flex-col my-3">
+          <label
+            htmlFor="file"
+            className="mb-1 font-bold text-slate-600 text-md"
+          >
+            Image
+          </label>
+          <input
+            className="p-2 border"
+            type="file"
+            name="file"
+            id="file"
+            onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+              evt.target.files?.length && setFile(evt.target.files[0])
+            }
           />
         </div>
 

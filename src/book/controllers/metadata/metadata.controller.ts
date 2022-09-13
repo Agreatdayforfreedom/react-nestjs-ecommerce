@@ -20,13 +20,13 @@ import { MetadataService } from '../../services/metadata/metadata.service';
 export class MetadataController {
   constructor(private metadataService: MetadataService) {}
 
-  @Roles(Role.SELLER)
+  @Roles(Role.ADMIN)
   @Post()
   create(@Body() payload: CreateMetadataDto) {
     return this.metadataService.create(payload);
   }
 
-  @Roles(Role.SELLER)
+  @Roles(Role.ADMIN)
   @Put(':id')
   update(
     @Body() payload: UpdateMetadataDto,
@@ -35,7 +35,7 @@ export class MetadataController {
     return this.metadataService.update(id, payload);
   }
 
-  @Roles(Role.SELLER)
+  @Roles(Role.ADMIN)
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.metadataService.delete(id);
