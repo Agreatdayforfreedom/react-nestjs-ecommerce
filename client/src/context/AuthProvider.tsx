@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Loading } from '../interfaces';
 import { Config, configAxios } from '../utils/configAxios';
 
 interface Props {
@@ -19,8 +20,6 @@ export interface AuthContextProps {
   loading: Loading;
   logout: () => void;
 }
-
-export type Loading = boolean;
 
 export const AuthContext = createContext<AuthContextProps>(
   {} as AuthContextProps
@@ -54,7 +53,6 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const logout = () => {
     setAuth({} as Auth);
     localStorage.removeItem('token');
-    console.log(auth);
   };
   return (
     <AuthContext.Provider

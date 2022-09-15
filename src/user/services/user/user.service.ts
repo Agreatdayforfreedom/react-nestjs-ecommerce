@@ -14,7 +14,8 @@ export class UserService {
 
   async findOne(username?: string, email?: string): Promise<User[]> {
     return await this.userRepo.find({
-      where: [{ username: username }, { email: email }],
+      relations: { cart: true },
+      where: [{ username: username }],
     });
   }
 

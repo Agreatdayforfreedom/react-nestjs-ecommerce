@@ -17,11 +17,13 @@ const Home = () => {
   }, []);
 
   return (
-    <section className="flex">
-      {books.map((book: Book) => (
-        <PreviewBook book={book} key={book.name} />
-      ))}
-    </section>
+    <main className="h-screen">
+      <section className="flex">
+        {books.map((book: Book) => (
+          <PreviewBook book={book} key={book.name} />
+        ))}
+      </section>
+    </main>
   );
 };
 

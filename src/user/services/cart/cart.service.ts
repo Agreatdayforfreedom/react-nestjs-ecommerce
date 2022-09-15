@@ -15,13 +15,30 @@ export class CartService {
   ) {}
 
   async getCart(req: any): Promise<Cart> {
-    return await this.cartRepo.find({
-      relations: ['user', 'cItem'],
-      where: { user: { id: req.user.id } },
-    })[0];
+    const [cart] = await this.cartRepo.find({
+      relations: {
+        cItem: {
+          book: true,
+        },
+      },
+      where: { id: req.user.cart.id },
+    });
+    return cart;
   }
 
-  async addToCart(payload: any, req: any): Promise<Cart_item | void> {
+  async getCartItem(req: any): Promise<Cart_item[]> {
+    return await this.cart_itemRepo.find({
+      relations: {
+        cart: true,
+        book: true,
+      },
+      where: {
+        cart: req.user.cart.id,
+      },
+    });
+  }
+
+  async addToCart(payload: any, req: any): Promise<Cart_item> {
     const [cart] = await this.cartRepo.find({
       relations: ['user'],
       where: { user: { id: req.user.id } },
@@ -47,7 +64,7 @@ export class CartService {
         throw new HttpException('There is not enough stock', 400);
 
       cart_item.quantity++;
-      await this.cart_itemRepo.save(cart_item);
+      return await this.cart_itemRepo.save(cart_item);
     }
   }
 
@@ -71,7 +88,6 @@ export class CartService {
 
     cart_item.quantity = payload.quantity;
 
-    console.log('cart_item', cart_item);
     //check if thare is enough stock
     if (cart_item.book.stock < payload.quantity) {
       throw new HttpException('There is not enough stock', 400);
@@ -82,10 +98,13 @@ export class CartService {
 
   async deleteItemCart(id: number, req: any): Promise<void> {
     const [cart_item] = await this.cart_itemRepo.find({
-      relations: ['book'],
+      relations: {
+        book: {
+          user: true,
+        },
+      },
       where: { id: id },
     });
-
     if (cart_item.book.user.id.toString() !== req.user.id.toString()) {
       throw new HttpException('You are not the owner', 400);
     }

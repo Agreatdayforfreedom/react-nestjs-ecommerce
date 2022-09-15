@@ -3,6 +3,12 @@ export interface Category {
   name: string;
 }
 
+export interface Metadata {
+  pages: number;
+  publisher: string;
+  language: string;
+}
+
 export interface Book {
   id: number;
   author: string;
@@ -12,7 +18,7 @@ export interface Book {
   image?: string;
   review: string;
   stock: number;
-  metadata?: any;
+  metadata?: Metadata;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -26,6 +32,19 @@ export interface User {
   updatedAt?: string;
 }
 
+export interface cItem {
+  id: number;
+  quantity: number;
+  book: Book;
+}
+
+export interface Cart {
+  cItem: cItem[];
+  user: User;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface FormSignUp extends User {
   rpassword: string;
 }
@@ -34,3 +53,6 @@ export interface Alert {
   message: string;
   err: boolean;
 }
+
+//types
+export type Loading = boolean;

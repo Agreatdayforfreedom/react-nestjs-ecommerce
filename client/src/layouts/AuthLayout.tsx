@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import Footer from '../components/Footer';
 import { PrivateHeader } from '../components/PrivateHeader';
 import useAuth from '../context/hooks/useAuth';
 
@@ -13,6 +14,8 @@ const AuthLayout = () => {
       {auth.id ? (
         <>
           <PrivateHeader />
+          <Outlet />
+          <Footer />
         </>
       ) : (
         <>

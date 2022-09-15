@@ -27,6 +27,7 @@ export class AuthService {
         id: userCreated.user.id,
         username: userCreated.user.username,
         role: userCreated.user.role,
+        cart: userCreated.cart,
       }),
     };
   }
@@ -36,7 +37,7 @@ export class AuthService {
     if (!user || user.password !== pass) {
       throw new HttpException('Username or password are incorrect', 401);
     }
-
+    console.log(user);
     return {
       id: user.id,
       username: user.username,
@@ -45,6 +46,7 @@ export class AuthService {
         id: user.id,
         username: user.username,
         role: user.role,
+        cart: user.cart,
       }),
     };
   }

@@ -21,6 +21,11 @@ export class CartController {
     return this.cartService.getCart(req);
   }
 
+  @Get('/gz')
+  getCartItem(@Request() req: any) {
+    return this.cartService.getCartItem(req);
+  }
+
   @Post()
   addToCart(@Body() payload: AddCartDto, @Request() req: any) {
     return this.cartService.addToCart(payload, req);
