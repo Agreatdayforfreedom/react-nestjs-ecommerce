@@ -13,8 +13,10 @@ const AuthLayout = () => {
       {auth.id ? (
         <>
           <PrivateHeader />
-          <Outlet />
-          <Footer />
+          <main className="h-screen">
+            <Outlet />
+            <Footer />
+          </main>
         </>
       ) : (
         <>

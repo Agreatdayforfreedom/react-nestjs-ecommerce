@@ -9,8 +9,9 @@ interface Props {
 
 interface CartContextProps {
   cartItems: cItem[];
-  setCart?: (state: cItem[]) => void;
+  setCartItems: (state: cItem[]) => void;
   loading: Loading;
+  setLoading: (state: Loading) => void;
   addToCart: (bookId: number) => void;
   alert: Alert;
   removeFromCart: (id: number) => void;
@@ -72,7 +73,15 @@ export const CartProvider = ({ children }: Props) => {
   };
   return (
     <CartContext.Provider
-      value={{ cartItems, loading, addToCart, alert, removeFromCart }}
+      value={{
+        cartItems,
+        setCartItems,
+        loading,
+        addToCart,
+        setLoading,
+        alert,
+        removeFromCart,
+      }}
     >
       {children}
     </CartContext.Provider>

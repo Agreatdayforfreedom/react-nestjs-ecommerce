@@ -25,7 +25,7 @@ export const Book = () => {
 
   const { message, err } = alert;
   return (
-    <main className="h-screen relative">
+    <>
       <div className="md:flex md:border-b md:mx-2 lg:p-20 transition-all">
         <div className="flex justify-center mt-3 p-1 border-b place-items-start border md:border-none">
           <img className="w-80 md:h-auto" src={book.image} alt={book.name} />
@@ -75,7 +75,7 @@ export const Book = () => {
       </div>
 
       <MetadataBook metadata={book.metadata!} />
-    </main>
+    </>
   );
 };
 

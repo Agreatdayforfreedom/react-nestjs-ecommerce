@@ -2,10 +2,8 @@ import { CartItem } from '../components/CartItem';
 import useCart from '../context/hooks/useCart';
 
 export const Cart = () => {
-  const { cartItems, loading } = useCart();
+  const { cartItems } = useCart();
 
-  console.log(cartItems);
-  if (loading && !cartItems) return <p>loading</p>;
   return (
     <>
       {cartItems.map((c) => (

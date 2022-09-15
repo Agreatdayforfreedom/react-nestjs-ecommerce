@@ -14,15 +14,16 @@ export const CartItem = ({ c }: Props) => {
   const token = localStorage.getItem('token');
   const config = configAxios(token!);
 
-  const { removeFromCart } = useCart();
+  const { removeFromCart, cartItems, setCartItems } = useCart();
 
   const handleChange = async (evt: ChangeEvent<HTMLSelectElement>) => {
     evt.preventDefault();
-    await axios.put(
+    const { data } = await axios.put(
       `${import.meta.env.VITE_URL_BACK}/cart/${c.id}`,
       { quantity: parseInt(evt.target.value, 10) },
       config
     );
+    setCartItems([...cartItems.filter((c) => c.id !== data.id), data]);
   };
 
   return (
