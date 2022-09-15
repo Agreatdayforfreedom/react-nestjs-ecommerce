@@ -37,7 +37,6 @@ export class AuthService {
     if (!user || user.password !== pass) {
       throw new HttpException('Username or password are incorrect', 401);
     }
-    console.log(user);
     return {
       id: user.id,
       username: user.username,

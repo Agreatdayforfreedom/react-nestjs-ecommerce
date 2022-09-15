@@ -31,15 +31,12 @@ export const Login = () => {
         `${import.meta.env.VITE_URL_BACK}/auth/login`,
         { username, password }
       );
-      console.log(data);
       localStorage.setItem('token', data.access_token);
       setAuth(data);
       navigate('/');
     } catch (error) {
       setAuth({} as Auth);
     }
-
-    console.log(form);
   };
 
   if (loading) return <p>loading</p>;

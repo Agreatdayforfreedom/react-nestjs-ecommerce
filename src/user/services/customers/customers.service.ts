@@ -20,12 +20,10 @@ export class CustomersService {
   }
 
   async create(payload: CreateCustomerDto, req: any) {
-    console.log(payload, req.user);
     const customer = this.customersRepo.create(payload);
 
     const [user] = await this.userRepo.find({ where: { id: req.user.id } });
     customer.user = user;
-    console.log(user);
     return await this.customersRepo.save(customer);
   }
 

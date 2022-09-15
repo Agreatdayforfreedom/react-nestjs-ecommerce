@@ -6,7 +6,6 @@ import useAuth from '../context/hooks/useAuth';
 
 const AuthLayout = () => {
   const { auth, loading } = useAuth();
-  console.log('AUTH', auth);
 
   if (loading) return <p>loading</p>;
   return (
