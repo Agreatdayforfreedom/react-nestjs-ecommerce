@@ -24,19 +24,23 @@ export class OrderService {
         customer: {
           user: true,
         },
+        order_details: { book: true },
       },
       where: { customer: { user: req.user.id } },
     });
   }
 
   async findOne(id: number, req: any): Promise<Orders> {
-    return await this.orderRepo.find({
+    const [order] = await this.orderRepo.find({
       relations: {
         customer: true,
-        order_details: true,
+        order_details: {
+          book: true,
+        },
       },
       where: { id: id },
-    })[0];
+    });
+    return order;
   }
 
   async create(req: any) {
@@ -61,7 +65,10 @@ export class OrderService {
           user: true,
         },
       },
-      where: { customer: { user: { id: req.user.id } }, id: id },
+      where: {
+        customer: { user: { id: req.user.id } },
+        id: id,
+      },
     });
 
     const [cart] = await this.cartRepo.find({
@@ -84,7 +91,8 @@ export class OrderService {
       order_details.orders = orderBrought;
       order_details.quantity = item.quantity;
       await this.cart_itemRepo.delete(item.id);
-      return await this.order_detailsRepo.save(order_details);
+      await this.order_detailsRepo.save(order_details);
     });
+    return orderBrought;
   }
 }

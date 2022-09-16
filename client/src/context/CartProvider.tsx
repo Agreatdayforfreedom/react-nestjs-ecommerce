@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { Alert, cItem, Loading } from '../interfaces';
+import { useNavigate } from 'react-router-dom';
+import { Alert, cItem, Loading, Order } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 
 interface Props {
@@ -14,6 +15,7 @@ interface CartContextProps {
   setLoading: (state: Loading) => void;
   addToCart: (bookId: number) => void;
   alert: Alert;
+  setAlert: (state: Alert) => void;
   removeFromCart: (id: number) => void;
   newOrder: () => void;
 }
@@ -26,6 +28,8 @@ export const CartProvider = ({ children }: Props) => {
   const [cartItems, setCartItems] = useState<cItem[]>([]);
   const [loading, setLoading] = useState<Loading>(true);
   const [alert, setAlert] = useState<Alert>({} as Alert);
+
+  const navigate = useNavigate();
 
   const token: string | null = localStorage.getItem('token');
 
@@ -81,9 +85,13 @@ export const CartProvider = ({ children }: Props) => {
         config
       );
       console.log(data);
+      navigate(`/order/${data.id}`);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
-        console.log(error.response.data.message);
+        setAlert({ message: error.response.data.message, err: true });
+        setTimeout(() => {
+          setAlert({} as Alert);
+        }, 2000);
       }
     }
   };
@@ -96,6 +104,7 @@ export const CartProvider = ({ children }: Props) => {
         addToCart,
         setLoading,
         alert,
+        setAlert,
         removeFromCart,
         newOrder,
       }}

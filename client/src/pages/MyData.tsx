@@ -6,33 +6,31 @@
 
 import axios from 'axios';
 import { FormEvent, useEffect, useState } from 'react';
+import useCart from '../context/hooks/useCart';
 import { useForm } from '../hooks/useForm';
+import { Alert, Customer } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
-
-interface Customer {
-  id: number;
-  firstName: string;
-  lastName: string;
-  phone: number;
-  city: string;
-  country: string;
-  state: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 const MyData = () => {
   return (
     <>
-      <FormCustomer />
+      <FormCustomer isCart={false} />
     </>
   );
 };
 
-export const FormCustomer = () => {
+interface Props {
+  // if the form is true then it is in the cart, if not, it is here
+  isCart: boolean;
+}
+
+export const FormCustomer = ({ isCart }: Props) => {
   const [customer, setCustomer] = useState<Customer>({} as Customer);
 
   const { handleChange, form } = useForm<Customer>();
+
+  //to remove form cart if cancel is clicked
+  const { setAlert } = useCart();
 
   const token = localStorage.getItem('token');
   const config = configAxios(token!);
@@ -71,7 +69,9 @@ export const FormCustomer = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-slate-100 mt-10 p-10 rounded-md shadow-md m-auto md:w-4/6 lg:w-1/2"
+      className={`${
+        isCart ? 'bg-lime-700' : 'bg-slate-100'
+      } mt-10 p-10 mx-3 rounded-md shadow-md m-auto md:w-4/6 lg:w-1/2`}
     >
       <div className="flex flex-col my-3">
         <label htmlFor="firstName" className="mb-1 font-bold text-slate-600">
@@ -158,9 +158,19 @@ export const FormCustomer = () => {
         />
       </div>
       <div className="flex justify-end">
+        {isCart && (
+          <button
+            type="submit"
+            className="border px-4 py-3 bg-blue-600 
+          rounded-md font-bold mx-2 text-white hover:bg-blue-700 transition-all"
+            onClick={() => setAlert({} as Alert)}
+          >
+            Cancel
+          </button>
+        )}
         <button
           type="submit"
-          className="border px-4 py-3 bg-orange-400 
+          className="border px-4 py-3 mx-2 bg-orange-400 
           rounded-md font-bold text-white hover:bg-orange-500 transition-all"
         >
           Save

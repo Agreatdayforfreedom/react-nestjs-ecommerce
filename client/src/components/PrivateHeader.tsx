@@ -19,6 +19,7 @@ export const PrivateHeader = () => {
               </>
             )}
             <Link to="/my-data">My data</Link>
+            <Link to="/orders">My orders</Link>
             <button onClick={logout} className="px-2 border border-orange-600">
               Log Out
             </button>

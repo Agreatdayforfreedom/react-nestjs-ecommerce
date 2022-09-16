@@ -11,6 +11,8 @@ import { CreateBook } from './pages/CreateBook';
 import Home from './pages/Home';
 import { Login } from './pages/Login';
 import MyData from './pages/MyData';
+import MyOrders from './pages/MyOrders';
+import { Order } from './pages/Order';
 import { Signup } from './pages/Signup';
 
 function App() {
@@ -30,6 +32,8 @@ function App() {
             <Route path="/" element={<MainLayout />}>
               <Route path="/create" element={<CreateBook />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/order/:id" element={<Order />} />
+              <Route path="/orders" element={<MyOrders />} />
             </Route>
           </Routes>
         </CartProvider>

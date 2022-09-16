@@ -45,6 +45,32 @@ export interface Cart {
   updatedAt?: string;
 }
 
+export interface Customer {
+  id: number;
+  firstName: string;
+  lastName: string;
+  phone: number;
+  city: string;
+  country: string;
+  state: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface OrderDetails {
+  id: number;
+  quantity: number;
+  book: Book;
+}
+
+export interface Order {
+  id: number;
+  customer: Customer;
+  order_details: OrderDetails[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface FormSignUp extends User {
   rpassword: string;
 }
