@@ -3,6 +3,7 @@ import { ChangeEvent, useState } from 'react';
 interface Form<T> {
   handleChange: (props: ChangeEvent<HTMLInputElement>) => void;
   form: T;
+  setForm: (state: T) => void;
 }
 
 export const useForm = <T extends Object>(): Form<T> => {
@@ -17,5 +18,6 @@ export const useForm = <T extends Object>(): Form<T> => {
   return {
     handleChange,
     form,
+    setForm,
   };
 };

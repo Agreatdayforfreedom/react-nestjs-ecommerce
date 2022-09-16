@@ -24,11 +24,7 @@ export class User extends Base {
   @Column({ default: Role_Enum.USER, enum: Role_Enum })
   role?: string;
 
-  @OneToOne(() => Customers, (customer) => customer.user, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn()
+  @OneToOne(() => Customers, (customer) => customer.user)
   customer: Customers;
 
   @OneToOne(() => Cart, (cart) => cart.user)

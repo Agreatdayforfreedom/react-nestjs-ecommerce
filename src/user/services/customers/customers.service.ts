@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateCustomerDto } from 'src/user/dtos/customers.dto';
+import { CreateCustomerDto, UpdateCustomerDto } from '../../dtos/customers.dto';
 import { User } from '../../entities/user.entity';
 import { Repository } from 'typeorm';
 import { Customers } from '../../entities/customers.entity';
@@ -27,7 +27,8 @@ export class CustomersService {
     return await this.customersRepo.save(customer);
   }
 
-  async update(id: number, payload: any) {
+  //send req and validate if he is owner
+  async update(payload: UpdateCustomerDto, id: number) {
     const [customer] = await this.customersRepo.find({ where: { id: id } });
     const customerUpdated = this.customersRepo.merge(customer, payload);
     return await this.customersRepo.save(customerUpdated);

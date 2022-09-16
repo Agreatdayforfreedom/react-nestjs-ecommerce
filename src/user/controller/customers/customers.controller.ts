@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Request,
+} from '@nestjs/common';
+import { CreateCustomerDto, UpdateCustomerDto } from '../../dtos/customers.dto';
 import { CustomersService } from '../../services/customers/customers.service';
 
 @Controller('customers')
@@ -11,7 +21,15 @@ export class CustomersController {
   }
 
   @Post()
-  create(@Body() payload: any, @Request() req: any) {
+  create(@Body() payload: CreateCustomerDto, @Request() req: any) {
     return this.customersService.create(payload, req);
+  }
+
+  @Put(':id')
+  update(
+    @Body() payload: UpdateCustomerDto,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.customersService.update(payload, id);
   }
 }

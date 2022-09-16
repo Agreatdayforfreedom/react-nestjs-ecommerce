@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import { Alert, cItem, Loading } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
@@ -15,6 +15,7 @@ interface CartContextProps {
   addToCart: (bookId: number) => void;
   alert: Alert;
   removeFromCart: (id: number) => void;
+  newOrder: () => void;
 }
 
 export const CartContext = createContext<CartContextProps>(
@@ -71,6 +72,21 @@ export const CartProvider = ({ children }: Props) => {
     await axios.delete(`${import.meta.env.VITE_URL_BACK}/cart/${id}`, config);
     setCartItems([...cartItems.filter((c) => c.id !== id)]);
   };
+
+  const newOrder = async () => {
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_URL_BACK}/order`,
+        {},
+        config
+      );
+      console.log(data);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        console.log(error.response.data.message);
+      }
+    }
+  };
   return (
     <CartContext.Provider
       value={{
@@ -81,6 +97,7 @@ export const CartProvider = ({ children }: Props) => {
         setLoading,
         alert,
         removeFromCart,
+        newOrder,
       }}
     >
       {children}

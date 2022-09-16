@@ -7,13 +7,18 @@ export const PrivateHeader = () => {
 
   return (
     <header>
-      <div className="border border-b-slate-600 flex justify-between">
+      <div className="flex justify-between">
         <Link to="/" className="p-4 font-bold">
           Logo pue
         </Link>
         <div>
           <div className="border">
-            {auth.role === 'admin' && <Link to="create">Add Book</Link>}
+            {auth.role === 'admin' && (
+              <>
+                <Link to="create">Add Book</Link>
+              </>
+            )}
+            <Link to="/my-data">My data</Link>
             <button onClick={logout} className="px-2 border border-orange-600">
               Log Out
             </button>
@@ -27,8 +32,13 @@ export const PrivateHeader = () => {
           <div>search</div>
         </div>
       </div>
-      <div className="flex justify-end">
-        <p className="w-fit border">admin</p>
+      <div className="flex justify-end before:content-[''] before:w-full before:border-t before:border-r before:border-slate-600">
+        <Link
+          to="/admin"
+          className="w-fit border-b border-b-slate-600 px-2 shadow-md"
+        >
+          admin
+        </Link>
       </div>
     </header>
   );
