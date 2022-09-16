@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Order } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 
@@ -27,7 +28,18 @@ const MyOrders = () => {
   return (
     <div>
       {orders.map((o) => (
-        <div>{/* <p>Num Order {o.num_order}</p> */}</div>
+        <div className="flex justify-between items-end m-2 p-2 border w-11/12 mx-auto hover:shadow-2xl hover:w-[93%] transition-all">
+          <div>
+            <p>{o.order_details.length} Products</p>
+            <p>Num Order {o.num_order}</p>
+          </div>
+          <Link
+            to={`/order/${o.id}`}
+            className="bg-blue-600 text-white rounded px-2 py-1 hover:bg-blue-700"
+          >
+            Details
+          </Link>
+        </div>
       ))}
     </div>
   );

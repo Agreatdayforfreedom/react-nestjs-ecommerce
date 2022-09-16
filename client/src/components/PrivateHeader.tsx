@@ -1,39 +1,124 @@
 import { Link } from 'react-router-dom';
 import useAuth from '../context/hooks/useAuth';
 import { RiShoppingCartFill } from 'react-icons/ri';
+import { BiSearchAlt } from 'react-icons/bi';
+import { useEffect, useState } from 'react';
+import useCart from '../context/hooks/useCart';
 
 export const PrivateHeader = () => {
   const { auth, logout } = useAuth();
+  const { cartItems } = useCart();
+  const [lengthCart, setLengthCart] = useState<number>(0);
 
+  useEffect(() => {
+    console.log('a');
+    setLengthCart(cartItems.length);
+  }, [cartItems]);
   return (
     <header>
-      <div className="flex justify-between">
-        <Link to="/" className="p-4 font-bold">
-          Logo pue
-        </Link>
+      <div className="md:flex md:items-start justify-between items-center">
         <div>
-          <div className="border">
+          <Link to="/" className="p-4 text-4xl font-bold">
+            Library
+          </Link>
+          <div className="flex items-center border border-black mx-2 my-3">
+            <label className="flex justify-center w-8" htmlFor="searc">
+              <BiSearchAlt size="25" />
+            </label>
+            <input
+              type="text"
+              placeholder="Search for anything"
+              id="search"
+              className="p-2 pl-0 w-full focus-visible:outline-none"
+            />
+          </div>
+        </div>
+        <div>
+          <div className="border-l-2 border-b-2 border-orange-300 border-dotted">
             {auth.role === 'admin' && (
               <>
-                <Link to="create">Add Book</Link>
+                <Link
+                  to="/create"
+                  className="px-2 
+              border-orange-300
+              hover:border-x-2 hover:border-dotted 
+              hover:text-orange-500
+              transition-all"
+                >
+                  Add Book
+                </Link>
               </>
             )}
-            <Link to="/my-data">My data</Link>
-            <Link to="/orders">My orders</Link>
-            <button onClick={logout} className="px-2 border border-orange-600">
+            <Link
+              to="/my-data"
+              className="px-2 
+              border-orange-300
+              hover:border-x-2 hover:border-dotted 
+              hover:text-orange-500
+              transition-all"
+            >
+              My data
+            </Link>
+            <Link
+              to="/orders"
+              className="px-2 
+              border-orange-300
+              hover:border-x-2 hover:border-dotted
+              hover:text-orange-500 transition-all"
+            >
+              My orders
+            </Link>
+            <button
+              onClick={logout}
+              className="px-2 pb-1 border-l-2 border-dotted border-orange-600 hover:font-bold hover:text-orange-400 transition-all"
+            >
               Log Out
             </button>
           </div>
-          <Link to="/cart">
-            <RiShoppingCartFill
-              size="25"
-              className="text-orange-800 hover:cursor-pointer hover:text-orange-900 transition-all"
-            />
-          </Link>
-          <div>search</div>
+          <div className="flex justify-end">
+            <div className="flex items-end mr-4">
+              <Link to="/cart">
+                <RiShoppingCartFill
+                  size="35"
+                  className=" text-orange-800 hover:cursor-pointer 
+                mt-8 hover:text-orange-900 transition-all"
+                />
+              </Link>
+              <p className="px-1 text-2xl font-bold text-gray-700 transition-all">
+                {lengthCart}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex justify-end before:content-[''] before:w-full before:border-t before:border-r before:border-slate-600">
+      {/* sub header */}
+      <div className="flex justify-end">
+        <div className="w-full border-t border-r border-slate-600 flex justify-center relative">
+          <Link
+            to="#"
+            className="absolute px-3 mx-0.5 bg-slate-600 text-white left-[35%]"
+          >
+            Categories
+          </Link>
+          <Link
+            to="#"
+            className="absolute px-3 mx-0.5 bg-slate-600 text-white left-1/2"
+          >
+            News
+          </Link>
+          <Link
+            to="#"
+            className="absolute px-3 mx-0.5 bg-slate-600 text-white left-[60%]"
+          >
+            Top 100
+          </Link>
+          <Link
+            to="#"
+            className="absolute px-3  mx-0.5 bg-slate-600 text-white left-[72%]"
+          >
+            Books
+          </Link>
+        </div>
         <Link
           to="/admin"
           className="w-fit border-b border-b-slate-600 px-2 shadow-md"

@@ -67,6 +67,7 @@ export interface Order {
   id: number;
   customer: Customer;
   order_details: OrderDetails[];
+  num_order: string;
   createdAt: Date;
   updatedAt: Date;
 }

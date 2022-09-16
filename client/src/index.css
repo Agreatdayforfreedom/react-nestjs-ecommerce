@@ -10,10 +10,9 @@
 
 html,
 body {
-  min-height: 100%;
-  position: relative;
 }
 
 #root {
-  overflow-y: scroll;
+  position: relative;
+  min-height: 100vh;
 }
