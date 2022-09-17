@@ -76,6 +76,11 @@ export interface FormSignUp extends User {
   rpassword: string;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+}
+
 export interface Alert {
   message: string;
   err: boolean;

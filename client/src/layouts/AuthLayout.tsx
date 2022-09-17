@@ -1,12 +1,13 @@
 import { Link, Outlet } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { Loading } from '../components/Loading';
 import { PrivateHeader } from '../components/PrivateHeader';
 import useAuth from '../context/hooks/useAuth';
 
 const AuthLayout = () => {
   const { auth, loading } = useAuth();
 
-  if (loading) return <p>loading</p>;
+  if (loading) return <Loading />;
   return (
     <>
       {auth.id ? (

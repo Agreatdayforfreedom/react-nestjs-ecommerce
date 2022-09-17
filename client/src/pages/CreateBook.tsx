@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
+import { Loading } from '../components/Loading';
 import { useForm } from '../hooks/useForm';
 import { User } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
@@ -17,11 +18,12 @@ interface FormGen {
 export const CreateBook = () => {
   const { form, handleChange } = useForm<FormGen>();
   const [file, setFile] = useState<any>();
+  const [catId, setCatId] = useState<string[]>([]);
 
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
-  if (!token) return <p>loading</p>;
+  if (!token) return <Loading />;
 
   const config = configAxios(token);
 
@@ -53,6 +55,25 @@ export const CreateBook = () => {
     );
 
     navigate('/');
+  };
+  const handleChangeSelect = (evt: ChangeEvent<HTMLSelectElement>) => {
+    //get all opts
+    var options = evt.target.options;
+    for (var i = 0, l = options.length; i < l; i++) {
+      //if is selected then true
+      if (options[i].selected) {
+        //and if exist in catId state then return
+        if (catId.find((v) => v === options[i].value)) {
+          return;
+        }
+        //else add to the array
+        setCatId([...catId, options[i].value]);
+      }
+    }
+  };
+
+  const quitCategory = (cid: any) => {
+    setCatId(catId.filter((c) => c !== cid));
   };
 
   return (
@@ -134,7 +155,36 @@ export const CreateBook = () => {
             }
           />
         </div>
-
+        <div className="flex flex-col">
+          <label
+            htmlFor="categories"
+            className="mb-1 font-bold text-slate-600 text-md"
+          >
+            Category
+          </label>
+          <select
+            multiple
+            className="p-1 rounded border border-orange-700"
+            name="categories"
+            id="categories"
+            onChange={handleChangeSelect}
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+          {catId &&
+            catId.map((cid) => (
+              <div className="flex my-1">
+                <p className="font-bold">{cid}</p>
+                <button
+                  onClick={() => quitCategory(cid)}
+                  className="flex text-sm rounded-full mx-2 px-2 bg-red-800"
+                >
+                  x
+                </button>
+              </div>
+            ))}
+        </div>
         <div className="flex flex-col my-3">
           <label
             htmlFor="review"

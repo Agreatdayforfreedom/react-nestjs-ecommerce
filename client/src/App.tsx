@@ -8,6 +8,7 @@ import MainLayout from './layouts/MainLayout';
 import { Admin } from './pages/Admin';
 import { Book } from './pages/Book';
 import { Cart } from './pages/Cart';
+import { Categories } from './pages/Categories';
 import { CreateBook } from './pages/CreateBook';
 import { CreateCategory } from './pages/CreateCategory';
 import Home from './pages/Home';
@@ -29,6 +30,7 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/categories" element={<Categories />} />
             </Route>
             <Route path="/" element={<MainLayout />}>
               <Route path="/my-data" element={<MyData />} />

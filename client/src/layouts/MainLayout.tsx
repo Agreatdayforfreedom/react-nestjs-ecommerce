@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link, Outlet, Navigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { Loading } from '../components/Loading';
 import { PrivateHeader } from '../components/PrivateHeader';
 import useAuth from '../context/hooks/useAuth';
 
@@ -10,7 +11,7 @@ const MainLayout = () => {
   useEffect(() => {
     console.log(auth);
   }, []);
-  if (loading) return <p>loading</p>;
+  if (loading) return <Loading />;
   return (
     <>
       {auth.id ? (

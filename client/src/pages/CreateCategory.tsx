@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { FormEvent } from 'react';
 import { Button } from '../components/Button';
+import { Loading } from '../components/Loading';
 import { useForm } from '../hooks/useForm';
 import { configAxios } from '../utils/configAxios';
 
@@ -11,7 +12,7 @@ export const CreateCategory = () => {
   const { form, handleChange } = useForm<Category>();
 
   const token = localStorage.getItem('token');
-  if (!token) return <p>loading</p>;
+  if (!token) return <Loading />;
   const config = configAxios(token);
 
   const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {

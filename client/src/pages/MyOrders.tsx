@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Loading } from '../components/Loading';
 import { Order } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 
@@ -8,7 +9,7 @@ const MyOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
-  if (!token) return <p>loading</p>;
+  if (!token) return <Loading />;
 
   const config = configAxios(token);
 
@@ -24,7 +25,7 @@ const MyOrders = () => {
     getOrders();
   }, []);
 
-  if (loading) return <p>loading</p>;
+  if (loading) return <Loading />;
   return (
     <div>
       {orders.map((o) => (

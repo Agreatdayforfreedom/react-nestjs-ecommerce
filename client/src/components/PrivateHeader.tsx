@@ -87,7 +87,10 @@ export const PrivateHeader = () => {
       {/* sub header */}
       <div className="flex justify-end">
         <div className="w-full border-t border-r border-slate-600 flex justify-center relative">
-          <Link to="#" className="px-3 mx-0.5 bg-slate-600 text-white">
+          <Link
+            to="/categories"
+            className="px-3 mx-0.5 bg-slate-600 text-white"
+          >
             Categories
           </Link>
           <Link
