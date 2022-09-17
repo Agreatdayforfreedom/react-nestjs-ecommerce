@@ -8,10 +8,6 @@
   padding: 0px;
 }
 
-html,
-body {
-}
-
 #root {
   position: relative;
   min-height: 100vh;

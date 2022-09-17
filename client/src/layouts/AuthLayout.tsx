@@ -12,7 +12,7 @@ const AuthLayout = () => {
       {auth.id ? (
         <>
           <PrivateHeader />
-          <main className="pb-10">
+          <main className="pb-20">
             <Outlet />
           </main>
           <Footer />
@@ -33,7 +33,10 @@ const AuthLayout = () => {
               <div>search</div>
             </div>
           </header>
-          <Outlet />
+          <main className="pb-20">
+            <Outlet />
+          </main>
+          <Footer />
         </>
       )}
     </>

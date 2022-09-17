@@ -16,8 +16,9 @@ const MainLayout = () => {
       {auth.id ? (
         <>
           <PrivateHeader />
-          <Outlet />
-
+          <main className="pb-20">
+            <Outlet />
+          </main>
           <Footer />
         </>
       ) : (

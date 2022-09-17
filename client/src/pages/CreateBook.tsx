@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/Button';
 import { useForm } from '../hooks/useForm';
 import { User } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
@@ -152,14 +153,7 @@ export const CreateBook = () => {
         </div>
 
         <div className="flex justify-end">
-          {/* TODO: convert to component */}
-          <button
-            type="submit"
-            className="border px-4 py-3 bg-orange-400 
-          rounded-md font-bold text-white hover:bg-orange-500 transition-all"
-          >
-            Sign Up
-          </button>
+          <Button bName="Create" />
         </div>
       </form>
     </>
