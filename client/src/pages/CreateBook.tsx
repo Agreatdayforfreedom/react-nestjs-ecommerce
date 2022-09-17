@@ -18,7 +18,7 @@ interface FormGen {
 export const CreateBook = () => {
   const { form, handleChange } = useForm<FormGen>();
   const [file, setFile] = useState<any>();
-  const [catId, setCatId] = useState<string[]>([]);
+  const [catId, setCatId] = useState<number[]>([]);
 
   const navigate = useNavigate();
 
@@ -32,17 +32,15 @@ export const CreateBook = () => {
     evt: FormEvent<HTMLFormElement>
   ): Promise<void> => {
     evt.preventDefault();
-
     const { name, price, stock, author } = form;
     if ([name, price, stock, author].includes('')) return console.log('error');
     if (!file) return;
 
     const formData = new FormData();
     formData.append('file', file, file.name);
-
     const { data } = await axios.post(
       `${import.meta.env.VITE_URL_BACK}/book`,
-      form,
+      { ...form, categories: catId },
       config
     );
     if (data.response) {
@@ -63,11 +61,11 @@ export const CreateBook = () => {
       //if is selected then true
       if (options[i].selected) {
         //and if exist in catId state then return
-        if (catId.find((v) => v === options[i].value)) {
+        if (catId.find((v) => v.toString() === options[i].value)) {
           return;
         }
         //else add to the array
-        setCatId([...catId, options[i].value]);
+        setCatId([...catId, parseInt(options[i].value)]);
       }
     }
   };
@@ -174,7 +172,7 @@ export const CreateBook = () => {
           </select>
           {catId &&
             catId.map((cid) => (
-              <div className="flex my-1">
+              <div className="flex my-1" key={cid}>
                 <p className="font-bold">{cid}</p>
                 <button
                   onClick={() => quitCategory(cid)}

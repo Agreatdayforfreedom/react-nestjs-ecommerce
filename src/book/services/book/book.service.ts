@@ -62,7 +62,10 @@ export class BookService {
 
   async findOne(id: number): Promise<Book> {
     const [book] = await this.bookRepo.find({
-      relations: ['metadata'],
+      relations: {
+        categories: true,
+        metadata: true,
+      },
       where: { id: id },
     });
 

@@ -1,7 +1,15 @@
-import React, { createContext } from 'react';
+import React, { createContext, ReactNode } from 'react';
 
-const BookContext = createContext(null);
+export interface BookContextProps {}
 
-export const BookProvider = () => {
-  return <div>BookProvider</div>;
+interface Props {
+  children: ReactNode;
+}
+
+export const BookContext = createContext<BookContextProps>(
+  {} as BookContextProps
+);
+
+export const BookProvider = ({ children }: Props) => {
+  return <BookContext.Provider value={{}}>{children}</BookContext.Provider>;
 };
