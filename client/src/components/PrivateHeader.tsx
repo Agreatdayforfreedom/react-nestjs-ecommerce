@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import useAuth from '../context/hooks/useAuth';
 import { RiShoppingCartFill } from 'react-icons/ri';
-import { BiSearchAlt } from 'react-icons/bi';
 import { useEffect, useState } from 'react';
 import useCart from '../context/hooks/useCart';
+import { Search } from './Search';
 
 export const PrivateHeader = () => {
   const { auth, logout } = useAuth();
@@ -27,17 +27,7 @@ export const PrivateHeader = () => {
           >
             Library
           </Link>
-          <div className="flex items-center border border-black mx-2 my-3">
-            <label className="flex justify-center w-8" htmlFor="searc">
-              <BiSearchAlt size="25" />
-            </label>
-            <input
-              type="text"
-              placeholder="Search for anything"
-              id="search"
-              className="p-2 pl-0 w-full focus-visible:outline-none"
-            />
-          </div>
+          <Search />
         </div>
         {/* cart */}
         <div className="order-1 md:order-2 w-full flex flex-col items-end">
@@ -85,7 +75,7 @@ export const PrivateHeader = () => {
         </div>
       </div>
       {/* sub header */}
-      <div className="flex justify-end">
+      <nav className="flex justify-end">
         <div className="w-full border-t border-r border-slate-600 flex justify-center relative">
           <Link
             to="/categories"
@@ -103,7 +93,7 @@ export const PrivateHeader = () => {
             Top 100
           </Link>
           <Link
-            to="#"
+            to="/books"
             className="px-3  mx-0.5 bg-slate-600 text-white left-[72%]"
           >
             Books
@@ -117,7 +107,7 @@ export const PrivateHeader = () => {
             admin
           </Link>
         )}
-      </div>
+      </nav>
     </header>
   );
 };

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import { Loading } from '../components/Loading';
 import { PreviewBook } from '../components/PreviewBook';
 import { useForm } from '../hooks/useForm';
 import { Book, Category } from '../interfaces';
@@ -37,7 +38,7 @@ export const Categories = () => {
     fetch();
   }, [queries]);
 
-  if (loading) return <p>loading</p>;
+  if (loading) return <Loading />;
   if (queries.search === '') {
     return (
       <div className="flex w-2/3 m-auto justify-between mt-10">

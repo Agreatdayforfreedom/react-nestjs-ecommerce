@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Between, Brackets, FindOptionsWhere, In, Repository } from 'typeorm';
 
 import { CreateBookDto, UpdateBookDto } from '../../dtos/book.dto';
 import { Book } from '../../entities/book.entity';
@@ -30,25 +30,34 @@ export class BookService {
   }
   async findAllFilter(query: any): Promise<Book[]> {
     if (query.minPrice && query.maxPrice) {
-      return await this.bookRepo
+      let qb = this.bookRepo
         .createQueryBuilder('book')
-        .leftJoinAndSelect('book.categories', 'categories')
-        .where('book.name like :name', {
-          name: `%${query.search}%`,
-        })
-        .orWhere('book.author like :author', {
-          author: `%${query.search}%`,
-        })
-        .andWhere('book.price > :minPrice', {
-          minPrice: query.minPrice,
+        .where('book.price > :minPrice', {
+          minPrice: parseInt(query.minPrice, 10),
         })
         .andWhere('book.price < :maxPrice', {
-          maxPrice: query.maxPrice,
+          maxPrice: parseInt(query.maxPrice, 10),
         })
-        .getMany();
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('book.name like :name', {
+              name: `%${query.search}%`,
+            }).orWhere('book.author like :author', {
+              author: `%${query.search}%`,
+            });
+          }),
+        );
+
+      if (query.order_price) {
+        qb.orderBy('book.price', `${query.order_price as 'DESC' | 'ASC'}`);
+      }
+      if (query.order_stock) {
+        qb.orderBy('book.stock', `${query.order_stock as 'DESC' | 'ASC'}`);
+      }
+      return await qb.getMany();
     }
 
-    return await this.bookRepo
+    const qb = this.bookRepo
       .createQueryBuilder('book')
       .leftJoinAndSelect('book.categories', 'categories')
       .where('book.name like :name', {
@@ -56,8 +65,14 @@ export class BookService {
       })
       .orWhere('book.author like :author', {
         author: `%${query.search}%`,
-      })
-      .getMany();
+      });
+    if (query.order_price) {
+      qb.orderBy('book.price', `${query.order_price as 'DESC' | 'ASC'}`);
+    }
+    if (query.order_stock) {
+      qb.orderBy('book.stock', `${query.order_stock as 'DESC' | 'ASC'}`);
+    }
+    return await qb.getMany();
   }
 
   async findOne(id: number): Promise<Book> {
@@ -67,6 +82,8 @@ export class BookService {
         metadata: true,
       },
       where: { id: id },
+      order: { id: 'ASC' },
+      //default order should be most relevant
     });
 
     return book;

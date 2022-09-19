@@ -8,6 +8,7 @@ import AuthLayout from './layouts/AuthLayout';
 import MainLayout from './layouts/MainLayout';
 import { Admin } from './pages/Admin';
 import { Book } from './pages/Book';
+import { Books } from './pages/Books';
 import { Cart } from './pages/Cart';
 import { Categories } from './pages/Categories';
 import { CreateBook } from './pages/CreateBook';
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/categories" element={<Categories />} />
+                <Route path="/books" element={<Books />} />
               </Route>
               <Route path="/" element={<MainLayout />}>
                 <Route path="/my-data" element={<MyData />} />
