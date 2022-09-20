@@ -32,22 +32,12 @@ export class BookService {
     if (query.minPrice && query.maxPrice) {
       let qb = this.bookRepo
         .createQueryBuilder('book')
-        .where('book.price > :minPrice', {
+        .where('book.price >= :minPrice', {
           minPrice: parseInt(query.minPrice, 10),
         })
-        .andWhere('book.price < :maxPrice', {
+        .andWhere('book.price <= :maxPrice', {
           maxPrice: parseInt(query.maxPrice, 10),
-        })
-        .andWhere(
-          new Brackets((qb) => {
-            qb.where('book.name like :name', {
-              name: `%${query.search}%`,
-            }).orWhere('book.author like :author', {
-              author: `%${query.search}%`,
-            });
-          }),
-        );
-
+        });
       if (query.order_price) {
         qb.orderBy('book.price', `${query.order_price as 'DESC' | 'ASC'}`);
       }

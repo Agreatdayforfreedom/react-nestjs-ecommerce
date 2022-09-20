@@ -15,7 +15,9 @@ export class CategoriesService {
   ) {}
 
   async findAll() {
-    return await this.categoryRepo.find();
+    return await this.categoryRepo.find({
+      relations: ['books'],
+    });
   }
 
   async findOne(id: number) {

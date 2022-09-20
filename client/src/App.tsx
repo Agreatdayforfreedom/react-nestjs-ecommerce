@@ -17,6 +17,7 @@ import Home from './pages/Home';
 import { Login } from './pages/Login';
 import MyData from './pages/MyData';
 import MyOrders from './pages/MyOrders';
+import { News } from './pages/News';
 import { Order } from './pages/Order';
 import { Signup } from './pages/Signup';
 
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/books" element={<Books />} />
+                <Route path="/news" element={<News />} />
               </Route>
               <Route path="/" element={<MainLayout />}>
                 <Route path="/my-data" element={<MyData />} />

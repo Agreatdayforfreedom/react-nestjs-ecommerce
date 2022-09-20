@@ -4,6 +4,7 @@ import { RiShoppingCartFill } from 'react-icons/ri';
 import { useEffect, useState } from 'react';
 import useCart from '../context/hooks/useCart';
 import { Search } from './Search';
+import { MenuNav } from './MenuNav';
 
 export const PrivateHeader = () => {
   const { auth, logout } = useAuth();
@@ -11,7 +12,6 @@ export const PrivateHeader = () => {
   const [lengthCart, setLengthCart] = useState<number>(0);
 
   useEffect(() => {
-    console.log('a');
     setLengthCart(cartItems.length);
   }, [cartItems]);
   return (
@@ -27,7 +27,11 @@ export const PrivateHeader = () => {
           >
             Library
           </Link>
-          <Search />
+          <div className="relative flex justify-center items-center">
+            {/* menu */}
+            <MenuNav />
+            <Search />
+          </div>
         </div>
         {/* cart */}
         <div className="order-1 md:order-2 w-full flex flex-col items-end">
@@ -75,39 +79,41 @@ export const PrivateHeader = () => {
         </div>
       </div>
       {/* sub header */}
-      <nav className="flex justify-end">
-        <div className="w-full border-t border-r border-slate-600 flex justify-center relative">
-          <Link
-            to="/categories"
-            className="px-3 mx-0.5 bg-slate-600 text-white"
-          >
-            Categories
-          </Link>
-          <Link
-            to="#"
-            className="px-3 md:mx-0.5 bg-slate-600 text-white left-1/2"
-          >
-            News
-          </Link>
-          <Link to="#" className="px-3 mx-0.5 bg-slate-600 text-white">
-            Top 100
-          </Link>
-          <Link
-            to="/books"
-            className="px-3  mx-0.5 bg-slate-600 text-white left-[72%]"
-          >
-            Books
-          </Link>
-        </div>
-        {auth.role === 'admin' && (
-          <Link
-            to="/admin"
-            className="w-fit border-b border-b-slate-600 px-2 shadow-md"
-          >
-            admin
-          </Link>
-        )}
-      </nav>
+      <div className="border-t text-center border-slate-600 sm:border-none">
+        <nav className="hidden sm:flex justify-end">
+          <div className="w-full border-t border-r border-slate-600 flex justify-center relative">
+            <Link
+              to="/categories"
+              className="px-3 mx-0.5 bg-slate-600 text-white"
+            >
+              Categories
+            </Link>
+            <Link
+              to="#"
+              className="px-3 md:mx-0.5 bg-slate-600 text-white left-1/2"
+            >
+              Some
+            </Link>
+            <Link to="#" className="px-3 mx-0.5 bg-slate-600 text-white">
+              Top 100
+            </Link>
+            <Link
+              to="/news"
+              className="px-3  mx-0.5 bg-slate-600 text-white left-[72%]"
+            >
+              News
+            </Link>
+          </div>
+          {auth.role === 'admin' && (
+            <Link
+              to="/admin"
+              className="w-fit border-b border-b-slate-600 px-2 shadow-md"
+            >
+              admin
+            </Link>
+          )}
+        </nav>
+      </div>
     </header>
   );
 };

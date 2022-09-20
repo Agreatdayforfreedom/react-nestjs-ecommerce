@@ -79,6 +79,7 @@ export interface FormSignUp extends User {
 export interface Category {
   id: number;
   name: string;
+  books: Book[];
 }
 
 export interface Alert {

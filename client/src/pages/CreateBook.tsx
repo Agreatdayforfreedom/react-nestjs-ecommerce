@@ -3,6 +3,7 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { Loading } from '../components/Loading';
+import useBook from '../context/hooks/useBook';
 import { useForm } from '../hooks/useForm';
 import { User } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
@@ -24,6 +25,8 @@ export const CreateBook = () => {
 
   const token = localStorage.getItem('token');
   if (!token) return <Loading />;
+
+  const { categories, loading } = useBook();
 
   const config = configAxios(token);
 
@@ -65,6 +68,7 @@ export const CreateBook = () => {
           return;
         }
         //else add to the array
+        console.log(options[i], 'OPTIONS');
         setCatId([...catId, parseInt(options[i].value)]);
       }
     }
@@ -74,6 +78,7 @@ export const CreateBook = () => {
     setCatId(catId.filter((c) => c !== cid));
   };
 
+  if (loading) return <p>loading</p>;
   return (
     <>
       <form
@@ -167,8 +172,9 @@ export const CreateBook = () => {
             id="categories"
             onChange={handleChangeSelect}
           >
-            <option value="1">1</option>
-            <option value="2">2</option>
+            {categories.map((opt) => (
+              <option value={opt.id}>{opt.name}</option>
+            ))}
           </select>
           {catId &&
             catId.map((cid) => (
