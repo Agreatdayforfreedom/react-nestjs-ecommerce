@@ -22,7 +22,6 @@ export const CreateCategory = () => {
       form,
       config
     );
-    console.log(data);
   };
 
   return (

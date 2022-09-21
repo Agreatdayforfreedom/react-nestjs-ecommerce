@@ -49,7 +49,6 @@ export const FormCustomer = ({ isCart }: Props) => {
   const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (customer) {
-      console.log(form);
       const { data } = await axios.put(
         `${import.meta.env.VITE_URL_BACK}/customers/${customer.id}`,
         form,
@@ -57,7 +56,6 @@ export const FormCustomer = ({ isCart }: Props) => {
       );
       setCustomer(data);
     } else {
-      console.log('error');
       const { data } = await axios.post(
         `${import.meta.env.VITE_URL_BACK}/customers`,
         form,

@@ -1,11 +1,21 @@
+import { useEffect } from 'react';
 import { BiSearchAlt } from 'react-icons/bi';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useBook from '../context/hooks/useBook';
 import { useForm } from '../hooks/useForm';
 
 export const Search = () => {
-  const { search } = useBook();
+  const { search, params } = useBook();
   const { form, setForm, handleChange } = useForm<{ search: string }>();
 
+  const navigate = useNavigate();
+  const loc = useLocation();
+
+  useEffect(() => {
+    if (params.get('search')) {
+      navigate(`books${loc.search}`);
+    }
+  }, [params]);
   return (
     <div className="flex items-center border border-black mx-2 my-3">
       <label className="flex justify-center w-8" htmlFor="searc">

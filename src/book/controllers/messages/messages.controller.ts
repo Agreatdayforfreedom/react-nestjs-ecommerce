@@ -13,6 +13,8 @@ import {
 import { MessagesService } from '../../services/messages/messages.service';
 import { CreateMessageDto } from '../../dtos/message.dto';
 import { Public } from '../../../auth/decorators/public.decorator';
+import { PayloadAuth } from '../../../auth/models/token.model';
+import { User } from '../../../auth/decorators/user.decorator';
 
 @Controller('messages')
 export class MessagesController {
@@ -28,22 +30,22 @@ export class MessagesController {
   create(
     @Body() payload: CreateMessageDto,
     @Param('id', ParseIntPipe) id: number,
-    @Request() req: any,
+    @User() userReq: PayloadAuth,
   ) {
-    return this.messageService.create(payload, id, req);
+    return this.messageService.create(payload, id, userReq);
   }
 
   @Put(':id')
   update(
     @Body() payload: CreateMessageDto,
     @Param('id', ParseIntPipe) id: number,
-    @Request() req: any,
+    @User() userReq: PayloadAuth,
   ) {
-    return this.messageService.update(payload, id, req);
+    return this.messageService.update(payload, id, userReq);
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number, @Request() req: any) {
-    return this.messageService.delete(id, req);
+  delete(@Param('id', ParseIntPipe) id: number, @User() userReq: PayloadAuth) {
+    return this.messageService.delete(id, userReq);
   }
 }

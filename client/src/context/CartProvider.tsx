@@ -84,7 +84,6 @@ export const CartProvider = ({ children }: Props) => {
         {},
         config
       );
-      console.log(data);
       navigate(`/order/${data.id}`);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {

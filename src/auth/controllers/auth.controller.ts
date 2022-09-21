@@ -1,14 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Public } from '../decorators/public.decorator';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { User } from '../decorators/user.decorator';
+import { PayloadAuth } from '../models/token.model';
 import { AuthService } from '../services/auth.service';
 
 @Controller('auth')
@@ -28,7 +21,7 @@ export class AuthController {
   }
 
   @Get('profile')
-  profile(@Request() req: any) {
-    return req.user;
+  profile(@User() user: PayloadAuth) {
+    return user;
   }
 }

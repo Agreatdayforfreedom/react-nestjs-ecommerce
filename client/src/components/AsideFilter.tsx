@@ -4,6 +4,7 @@ import useBook from '../context/hooks/useBook';
 
 export const AsideFilter = () => {
   const { search } = useBook();
+
   return (
     <div className="hidden md:block md:w-1/4 lg:w-1/6 lg mx-2">
       <aside className="relative border w-full h-96 border-slate-400 ">

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import useBook from '../context/hooks/useBook';
 
-export const DDFiltersAndOrders = ({ search }: any) => {
-  const [hidden, setHidden] = useState<any>({
+export const DDFiltersAndOrders = () => {
+  const [hidden, setHidden] = useState<{ filter: boolean; order: boolean }>({
     filter: false,
     order: false,
   });
+
+  const { search } = useBook();
 
   const toggleActions = (selected: string) => {
     if (selected === 'filter') {
@@ -29,6 +32,7 @@ export const DDFiltersAndOrders = ({ search }: any) => {
               className="p-1 hover:bg-orange-300 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '1', max_price: '10' });
+                setHidden({ filter: false, order: false });
               }}
             >
               $1 ~ $10
@@ -37,6 +41,7 @@ export const DDFiltersAndOrders = ({ search }: any) => {
               className="p-1 hover:bg-orange-200 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '10', max_price: '20' });
+                setHidden({ filter: false, order: false });
               }}
             >
               $10 ~ $20
@@ -45,6 +50,7 @@ export const DDFiltersAndOrders = ({ search }: any) => {
               className="p-1 hover:bg-orange-300 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '20', max_price: '50' });
+                setHidden({ filter: false, order: false });
               }}
             >
               $20 ~ $50
@@ -53,6 +59,7 @@ export const DDFiltersAndOrders = ({ search }: any) => {
               className="p-1 hover:bg-orange-300 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '50', max_price: '100' });
+                setHidden({ filter: false, order: false });
               }}
             >
               $50 ~ $100
@@ -61,6 +68,7 @@ export const DDFiltersAndOrders = ({ search }: any) => {
               className="p-1 hover:bg-orange-300 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '100', max_price: '10000' });
+                setHidden({ filter: false, order: false });
               }}
             >
               more than $100
@@ -80,6 +88,7 @@ export const DDFiltersAndOrders = ({ search }: any) => {
               className="p-1 hover:bg-orange-300 hover:cursor-pointer"
               onClick={() => {
                 search({ order_price: 'DESC' });
+                setHidden({ filter: false, order: false });
               }}
             >
               highest price
@@ -88,6 +97,7 @@ export const DDFiltersAndOrders = ({ search }: any) => {
               className="p-1 hover:bg-orange-300 hover:cursor-pointer"
               onClick={() => {
                 search({ order_price: 'ASC' });
+                setHidden({ filter: false, order: false });
               }}
             >
               lowest price
@@ -96,6 +106,7 @@ export const DDFiltersAndOrders = ({ search }: any) => {
               className="p-1 hover:bg-orange-300 hover:cursor-pointer"
               onClick={() => {
                 search({ order_stock: 'DESC' });
+                setHidden({ filter: false, order: false });
               }}
             >
               stock

@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseFilePipe,
   ParseIntPipe,
   Post,
   Put,
@@ -19,10 +18,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { RolesGuard } from '../../../auth/guards/roles.guard';
 import { Public } from '../../../auth/decorators/public.decorator';
 import { CreateBookDto, UpdateBookDto } from '../../dtos/book.dto';
-import { BookService } from '../../services/book/book.service';
+import { BookService, Query as IQuery } from '../../services/book/book.service';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { Role } from '../../../auth/models/role.model';
 import { FileSizeValidationPipe } from '../../pipes/FileSizeValidationPipe.pipe';
+import { User } from '../../../auth/decorators/user.decorator';
+import { PayloadAuth } from '../../../auth/models/token.model';
 
 @UseGuards(RolesGuard)
 @Controller('book')
@@ -30,15 +31,14 @@ export class BookController {
   constructor(private bookService: BookService) {}
 
   @Public()
-  @Get('books')
-  findAll() {
-    return this.bookService.findAll();
-  }
-
-  @Public()
   @Get()
-  findAllFilter(@Query() query?: any) {
+  findAllFilter(@Query() query: IQuery) {
     return this.bookService.findAllFilter(query);
+  }
+  @Public()
+  @Get('category')
+  findByCategory(@Query() query: IQuery) {
+    return this.bookService.findByCategory(query);
   }
 
   @Public()
@@ -59,23 +59,23 @@ export class BookController {
 
   @Roles(Role.ADMIN)
   @Post()
-  create(@Body() payload: CreateBookDto, @Request() req: any) {
-    return this.bookService.create(payload, req);
+  create(@Body() payload: CreateBookDto, @User() userReq: PayloadAuth) {
+    return this.bookService.create(payload, userReq);
   }
 
   @Roles(Role.ADMIN)
   @Put(':id')
   update(
-    @Request() req: any,
+    @User() userReq: PayloadAuth,
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateBookDto,
   ) {
-    return this.bookService.update(id, payload, req);
+    return this.bookService.update(id, payload, userReq);
   }
 
   @Roles(Role.ADMIN)
   @Delete(':id')
-  delete(@Request() req: any, @Param('id', ParseIntPipe) id: number) {
-    return this.bookService.delete(id, req);
+  delete(@User() userReq: PayloadAuth, @Param('id', ParseIntPipe) id: number) {
+    return this.bookService.delete(id, userReq);
   }
 }

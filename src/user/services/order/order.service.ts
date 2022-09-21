@@ -6,6 +6,7 @@ import { Orders } from '../../entities/orders.entity';
 import { Cart } from '../../entities/cart.entity';
 import { Order_details } from '../../entities/order_details.entity';
 import { Cart_item } from '../../entities/cart_item.entity';
+import { PayloadAuth } from '../../../auth/models/token.model';
 
 @Injectable()
 export class OrderService {
@@ -18,7 +19,7 @@ export class OrderService {
     private order_detailsRepo: Repository<Order_details>,
   ) {}
 
-  async findAll(req: any): Promise<Orders[]> {
+  async findAll(userReq: PayloadAuth): Promise<Orders[]> {
     return this.orderRepo.find({
       relations: {
         customer: {
@@ -26,11 +27,11 @@ export class OrderService {
         },
         order_details: { book: true },
       },
-      where: { customer: { user: req.user.id } },
+      where: { customer: { user: { id: userReq.id } } },
     });
   }
 
-  async findOne(id: number, req: any): Promise<Orders> {
+  async findOne(id: number, userReq: PayloadAuth): Promise<Orders> {
     const [order] = await this.orderRepo.find({
       relations: {
         customer: true,
@@ -43,12 +44,12 @@ export class OrderService {
     return order;
   }
 
-  async create(req: any) {
+  async create(userReq: PayloadAuth) {
     const order = new Orders();
 
     const [customer] = await this.customerRepo.find({
       relations: ['user'],
-      where: { user: { id: req.user.id } },
+      where: { user: { id: userReq.id } },
     });
 
     if (!customer) {
@@ -66,7 +67,7 @@ export class OrderService {
         },
       },
       where: {
-        customer: { user: { id: req.user.id } },
+        customer: { user: { id: userReq.id } },
         id: id,
       },
     });
@@ -78,7 +79,7 @@ export class OrderService {
           book: true,
         },
       },
-      where: { user: { id: req.user.id } },
+      where: { user: { id: userReq.id } },
     });
 
     if (cart.cItem.length === 0) {

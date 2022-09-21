@@ -6,7 +6,7 @@ import { DDFiltersAndOrders } from '../components/DDFiltersAndOrders';
 import { Loading } from '../components/Loading';
 import { PreviewBook } from '../components/PreviewBook';
 import useBook from '../context/hooks/useBook';
-import { Book, Category } from '../interfaces';
+import { Book } from '../interfaces';
 
 export const Categories = () => {
   const [categoriesBooks, setCategoriesBooks] = useState<Book[]>([]);
@@ -14,18 +14,17 @@ export const Categories = () => {
 
   const loc = useLocation();
 
-  const { categories, loading: loadingBook } = useBook();
+  const { categories, loading: loadingBook, search } = useBook();
 
   useEffect(() => {
     setCategoriesBooks([]);
-    console.log(loc);
     const fetch = async () => {
       if (loc.search === '') return;
       const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/categories/${loc.search.at(-1)}
+        `${import.meta.env.VITE_URL_BACK}/book/category${loc.search}
         `
       );
-      setCategoriesBooks(data[0].books);
+      setCategoriesBooks(data);
       setLoading(false);
     };
     fetch();
@@ -57,7 +56,7 @@ export const Categories = () => {
         <DDFiltersAndOrders />
       </div>
       <section className="w-full">
-        <div className="grid border p-1 mx-2 mt-2 gap-1 grid-cols-1 sm:grid-cols-3">
+        <div className="grid border p-1 mx-2 mt-2 gap-1 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {categoriesBooks &&
             categoriesBooks.map((book) => (
               <PreviewBook book={book} key={book.id} />

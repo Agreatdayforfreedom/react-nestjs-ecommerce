@@ -7,10 +7,6 @@ import useAuth from '../context/hooks/useAuth';
 
 const MainLayout = () => {
   const { auth, loading } = useAuth();
-
-  useEffect(() => {
-    console.log(auth);
-  }, []);
   if (loading) return <Loading />;
   return (
     <>

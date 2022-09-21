@@ -98,7 +98,7 @@ export const PrivateHeader = () => {
               Top 100
             </Link>
             <Link
-              to="/news"
+              to="/news?order_news=DESC"
               className="px-3  mx-0.5 bg-slate-600 text-white left-[72%]"
             >
               News

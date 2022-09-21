@@ -8,6 +8,8 @@ import {
   Put,
   Request,
 } from '@nestjs/common';
+import { User } from '../../../auth/decorators/user.decorator';
+import { PayloadAuth } from '../../../auth/models/token.model';
 import { CreateCustomerDto, UpdateCustomerDto } from '../../dtos/customers.dto';
 import { CustomersService } from '../../services/customers/customers.service';
 
@@ -16,13 +18,13 @@ export class CustomersController {
   constructor(private customersService: CustomersService) {}
 
   @Get()
-  findCostumer(@Request() req: any) {
-    return this.customersService.findCustomer(req);
+  findCostumer(@User() userReq: PayloadAuth) {
+    return this.customersService.findCustomer(userReq);
   }
 
   @Post()
-  create(@Body() payload: CreateCustomerDto, @Request() req: any) {
-    return this.customersService.create(payload, req);
+  create(@Body() payload: CreateCustomerDto, @User() userReq: PayloadAuth) {
+    return this.customersService.create(payload, userReq);
   }
 
   @Put(':id')

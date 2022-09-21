@@ -6,7 +6,6 @@ import { Loading } from '../components/Loading';
 
 export const AdminLayout = () => {
   const { auth, loading } = useAuth();
-  console.log(auth);
   if (loading) return <Loading />;
   return (
     <div>

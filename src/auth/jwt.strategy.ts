@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ConfigType } from '@nestjs/config';
 import { Inject, Injectable } from '@nestjs/common';
 import config from '../config';
-import { PayloadToken } from './models/token.model';
+import { PayloadAuth } from './models/token.model';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: PayloadToken) {
+  async validate(payload: PayloadAuth) {
     return {
       id: payload.id,
       username: payload.username,

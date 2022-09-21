@@ -1,5 +1,5 @@
-export interface PayloadToken {
-  id: string;
+export interface PayloadAuth {
+  id: number;
   username: string;
   role: string;
   cart: {

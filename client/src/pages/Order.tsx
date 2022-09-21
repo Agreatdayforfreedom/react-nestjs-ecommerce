@@ -36,7 +36,6 @@ export const Order = () => {
     (p, c) => p + c.book.price * c.quantity,
     0
   );
-  console.log('ORDER', order);
   return (
     <div className="md:flex md:justify-between">
       {order.order_details.map((od) => (

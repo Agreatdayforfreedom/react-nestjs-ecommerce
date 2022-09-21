@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateMessageDto } from '../../dtos/message.dto';
 import { Book } from '../../entities/book.entity';
 import { User } from '../../../user/entities/user.entity';
+import { PayloadAuth } from '../../../auth/models/token.model';
 
 export interface ArrMessageAndLength<T, K> {
   readonly length: T;
@@ -35,12 +36,12 @@ export class MessagesService {
   async create(
     payload: CreateMessageDto,
     bookId: number,
-    req: any,
+    userReq: PayloadAuth,
   ): Promise<Message> {
     const message = this.messageRepo.create(payload);
 
     const [findUser] = await this.userRepo.find({
-      where: { id: req.user.id },
+      where: { id: userReq.id },
     });
     const [findBook] = await this.bookRepo.find({
       where: { id: bookId },
@@ -57,14 +58,14 @@ export class MessagesService {
   async update(
     payload: CreateMessageDto,
     messageId: number,
-    req: any,
+    userReq: PayloadAuth,
   ): Promise<Message> {
     const [message] = await this.messageRepo.find({
       relations: ['user'],
       where: { id: messageId },
     });
 
-    if (message.user.id.toString() !== req.user.id.toString())
+    if (message.user.id.toString() !== userReq.id.toString())
       throw new HttpException('You are not the owner of the message', 401);
 
     const messageUpdated = this.messageRepo.merge(message, payload);
@@ -72,13 +73,13 @@ export class MessagesService {
     return await this.messageRepo.save(messageUpdated);
   }
 
-  async delete(messageId: number, req: any): Promise<void> {
+  async delete(messageId: number, userReq: PayloadAuth): Promise<void> {
     const [message] = await this.messageRepo.find({
       relations: ['user'],
       where: { id: messageId },
     });
 
-    if (message.user.id.toString() !== req.user.id.toString())
+    if (message.user.id.toString() !== userReq.id.toString())
       throw new HttpException('You are not the owner of the message', 401);
 
     await this.messageRepo.delete(messageId);

@@ -1,18 +1,28 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Brackets, FindOptionsWhere, In, Repository } from 'typeorm';
+import { In, Repository, SelectQueryBuilder } from 'typeorm';
 
 import { CreateBookDto, UpdateBookDto } from '../../dtos/book.dto';
 import { Book } from '../../entities/book.entity';
 import { Category } from '../../entities/categories.entity';
 import { User } from '../../../user/entities/user.entity';
 import { destroyUpload, uploadFromBuffer } from './uploadFromBuffer';
+import { PayloadAuth } from 'src/auth/models/token.model';
 
 export interface UserReq {
-  //move to another file
   id: number;
   username: string;
   role: string;
+}
+
+export interface Query {
+  search?: string;
+  maxPrice?: string;
+  minPrice?: string;
+  cat?: string;
+  order_price?: string;
+  order_stock?: string;
+  order_news?: string;
 }
 
 @Injectable()
@@ -23,45 +33,45 @@ export class BookService {
     @InjectRepository(User) private userRepo: Repository<User>,
   ) {}
 
-  async findAll(): Promise<Book[]> {
-    return await this.bookRepo.find({
-      relations: ['categories'],
-    });
-  }
-  async findAllFilter(query: any): Promise<Book[]> {
+  qbFilters(qb: SelectQueryBuilder<Book>, query: Query): void {
     if (query.minPrice && query.maxPrice) {
-      let qb = this.bookRepo
-        .createQueryBuilder('book')
-        .where('book.price >= :minPrice', {
-          minPrice: parseInt(query.minPrice, 10),
-        })
-        .andWhere('book.price <= :maxPrice', {
-          maxPrice: parseInt(query.maxPrice, 10),
-        });
-      if (query.order_price) {
-        qb.orderBy('book.price', `${query.order_price as 'DESC' | 'ASC'}`);
-      }
-      if (query.order_stock) {
-        qb.orderBy('book.stock', `${query.order_stock as 'DESC' | 'ASC'}`);
-      }
-      return await qb.getMany();
-    }
-
-    const qb = this.bookRepo
-      .createQueryBuilder('book')
-      .leftJoinAndSelect('book.categories', 'categories')
-      .where('book.name like :name', {
-        name: `%${query.search}%`,
-      })
-      .orWhere('book.author like :author', {
-        author: `%${query.search}%`,
+      qb.where('book.price >= :minPrice', {
+        minPrice: parseInt(query.minPrice, 10),
+      }).andWhere('book.price <= :maxPrice', {
+        maxPrice: parseInt(query.maxPrice, 10),
       });
+    }
+    if (query.order_news) {
+      qb.orderBy('book.createdAt', `${query.order_news as 'DESC' | 'ASC'}`);
+    }
     if (query.order_price) {
       qb.orderBy('book.price', `${query.order_price as 'DESC' | 'ASC'}`);
     }
     if (query.order_stock) {
       qb.orderBy('book.stock', `${query.order_stock as 'DESC' | 'ASC'}`);
     }
+  }
+
+  async findAllFilter(query: Query): Promise<Book[]> {
+    let qb = this.bookRepo.createQueryBuilder('book');
+    if (query.search) {
+      qb.where('book.name like :name', {
+        name: `%${query.search}%`,
+      }).orWhere('book.author like :author', {
+        author: `%${query.search}%`,
+      });
+    }
+    this.qbFilters(qb, query);
+
+    return await qb.getMany();
+  }
+
+  async findByCategory(query: Query) {
+    let qb = this.bookRepo
+      .createQueryBuilder('book')
+      .innerJoinAndSelect('book.categories', 'categories')
+      .where('categories.id = :id', { id: query.cat.at(-1) });
+    this.qbFilters(qb, query);
     return await qb.getMany();
   }
 
@@ -79,10 +89,8 @@ export class BookService {
     return book;
   }
 
-  async create(payload: CreateBookDto, req: any): Promise<Book> {
+  async create(payload: CreateBookDto, userReq: PayloadAuth): Promise<Book> {
     const book = this.bookRepo.create(payload);
-
-    const userReq = req.user as UserReq;
 
     const [user] = await this.userRepo.find({ where: { id: userReq.id } });
 
@@ -120,9 +128,7 @@ export class BookService {
     }
   }
 
-  async update(id: number, payload: UpdateBookDto, req: any) {
-    const userReq = req.user as UserReq;
-
+  async update(id: number, payload: UpdateBookDto, userReq: PayloadAuth) {
     const [book] = await this.bookRepo.find({
       relations: ['user'],
       where: { id: id },
@@ -136,9 +142,7 @@ export class BookService {
     return await this.bookRepo.save(bookUpdated);
   }
 
-  async delete(id: number, req: any) {
-    const userReq = req.user as { id: number; username: string; role: string };
-
+  async delete(id: number, userReq: PayloadAuth) {
     const [book] = await this.bookRepo.find({
       relations: { user: true },
       where: { id: id },

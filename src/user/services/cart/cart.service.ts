@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Cart } from '../../entities/cart.entity';
 import { Book } from '../../../book/entities/book.entity';
 import { UpdateCartDto } from 'src/user/dtos/cart.dto';
+import { PayloadAuth } from 'src/auth/models/token.model';
 
 @Injectable()
 export class CartService {
@@ -14,34 +15,36 @@ export class CartService {
     @InjectRepository(Book) private bookRepo: Repository<Book>,
   ) {}
 
-  async getCart(req: any): Promise<Cart> {
+  async getCart(userReq: PayloadAuth): Promise<Cart> {
     const [cart] = await this.cartRepo.find({
       relations: {
         cItem: {
           book: true,
         },
       },
-      where: { id: req.user.cart.id },
+      where: { id: userReq.cart.id },
     });
     return cart;
   }
 
-  async getCartItem(req: any): Promise<Cart_item[]> {
+  async getCartItem(userReq: PayloadAuth): Promise<Cart_item[]> {
     return await this.cart_itemRepo.find({
       relations: {
         cart: true,
         book: true,
       },
       where: {
-        cart: req.user.cart.id,
+        cart: {
+          id: userReq.cart.id,
+        },
       },
     });
   }
 
-  async addToCart(payload: any, req: any): Promise<Cart_item> {
+  async addToCart(payload: any, userReq: PayloadAuth): Promise<Cart_item> {
     const [cart] = await this.cartRepo.find({
       relations: ['user'],
-      where: { user: { id: req.user.id } },
+      where: { user: { id: userReq.id } },
     });
 
     const [item] = await this.bookRepo.find({ where: { id: payload.bookId } });
@@ -71,7 +74,7 @@ export class CartService {
   async updateItemCart(
     payload: UpdateCartDto,
     id: number,
-    req: any,
+    userReq: PayloadAuth,
   ): Promise<Cart_item> {
     const [cart_item] = await this.cart_itemRepo.find({
       relations: {
@@ -82,7 +85,7 @@ export class CartService {
       where: { id: id },
     });
 
-    if (cart_item.book.user.id.toString() !== req.user.id.toString()) {
+    if (cart_item.book.user.id.toString() !== userReq.id.toString()) {
       throw new HttpException('You are not the owner', 400);
     }
 
@@ -96,7 +99,7 @@ export class CartService {
     return await this.cart_itemRepo.save(cart_item);
   }
 
-  async deleteItemCart(id: number, req: any): Promise<void> {
+  async deleteItemCart(id: number, userReq: PayloadAuth): Promise<void> {
     const [cart_item] = await this.cart_itemRepo.find({
       relations: {
         book: {
@@ -105,7 +108,7 @@ export class CartService {
       },
       where: { id: id },
     });
-    if (cart_item.book.user.id.toString() !== req.user.id.toString()) {
+    if (cart_item.book.user.id.toString() !== userReq.id.toString()) {
       throw new HttpException('You are not the owner', 400);
     }
 
