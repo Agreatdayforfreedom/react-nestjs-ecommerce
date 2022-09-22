@@ -79,27 +79,27 @@ export const PrivateHeader = () => {
         </div>
       </div>
       {/* sub header */}
-      <div className="border-t text-center border-slate-600 sm:border-none">
-        <nav className="hidden sm:flex justify-end">
-          <div className="w-full border-t border-r border-slate-600 flex justify-center relative">
+      <div className="border-t text-center border-slate-600 md:border-none">
+        <nav className="hidden md:flex justify-end">
+          <div className="w-full border-t border-r border-slate-600 flex justify-center">
             <Link
               to="/categories"
-              className="px-3 mx-0.5 bg-slate-600 text-white"
+              className="px-6 py-1 mx-2 bg-slate-600 text-white"
             >
               Categories
             </Link>
-            <Link
-              to="#"
-              className="px-3 md:mx-0.5 bg-slate-600 text-white left-1/2"
-            >
+            <Link to="#" className="px-6 py-1 mx-2 bg-slate-600 text-white ">
               Some
             </Link>
-            <Link to="#" className="px-3 mx-0.5 bg-slate-600 text-white">
+            <Link
+              to="#"
+              className="px-6 py-1 mx-2 bg-slate-600 text-white whitespace-nowrap"
+            >
               Top 100
             </Link>
             <Link
               to="/news?order_news=DESC"
-              className="px-3  mx-0.5 bg-slate-600 text-white left-[72%]"
+              className="px-6 py-1 mx-2 bg-slate-600 text-white flex"
             >
               News
             </Link>

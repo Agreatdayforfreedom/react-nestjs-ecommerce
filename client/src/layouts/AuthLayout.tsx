@@ -83,22 +83,25 @@ const AuthLayout = () => {
                 <div className="w-full border-t border-r border-slate-600 flex justify-center relative">
                   <Link
                     to="/categories"
-                    className="px-3 mx-0.5 bg-slate-600 text-white"
+                    className="px-6 py-1 mx-2 bg-slate-600 text-white"
                   >
                     Categories
                   </Link>
                   <Link
                     to="#"
-                    className="px-3 md:mx-0.5 bg-slate-600 text-white left-1/2"
+                    className="px-6 py-1 mx-2 md:mx-0.5 bg-slate-600 text-white left-1/2"
                   >
                     Some
                   </Link>
-                  <Link to="#" className="px-3 mx-0.5 bg-slate-600 text-white">
+                  <Link
+                    to="#"
+                    className="px-6 py-1 mx-2 bg-slate-600 text-white"
+                  >
                     Top 100
                   </Link>
                   <Link
                     to="/news?order_news=DESC"
-                    className="px-3  mx-0.5 bg-slate-600 text-white left-[72%]"
+                    className="px-6 py-1 mx-2 bg-slate-600 text-white left-[72%]"
                   >
                     News
                   </Link>

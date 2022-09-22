@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, In, Repository, SelectQueryBuilder } from 'typeorm';
 
 import { CreateBookDto, UpdateBookDto } from '../../dtos/book.dto';
 import { Book } from '../../entities/book.entity';
@@ -35,11 +35,15 @@ export class BookService {
 
   qbFilters(qb: SelectQueryBuilder<Book>, query: Query): void {
     if (query.minPrice && query.maxPrice) {
-      qb.where('book.price >= :minPrice', {
-        minPrice: parseInt(query.minPrice, 10),
-      }).andWhere('book.price <= :maxPrice', {
-        maxPrice: parseInt(query.maxPrice, 10),
-      });
+      qb.andWhere(
+        new Brackets((qb) => {
+          qb.where('book.price >= :minPrice', {
+            minPrice: parseInt(query.minPrice, 10),
+          }).andWhere('book.price <= :maxPrice', {
+            maxPrice: parseInt(query.maxPrice, 10),
+          });
+        }),
+      );
     }
     if (query.order_news) {
       qb.orderBy('book.createdAt', `${query.order_news as 'DESC' | 'ASC'}`);

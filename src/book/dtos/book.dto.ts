@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import {
   IsArray,
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -27,6 +28,9 @@ export class CreateBookDto {
   @IsNumber()
   @IsPositive()
   readonly stock: number;
+
+  @IsBoolean()
+  readonly isNew: boolean;
 
   @IsArray()
   @IsNotEmpty()

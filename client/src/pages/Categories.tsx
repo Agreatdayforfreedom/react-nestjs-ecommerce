@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { AsideFilter } from '../components/AsideFilter';
 import { DDFiltersAndOrders } from '../components/DDFiltersAndOrders';
 import { Loading } from '../components/Loading';
+import { OrderMenu } from '../components/OrderMenu';
 import { PreviewBook } from '../components/PreviewBook';
 import useBook from '../context/hooks/useBook';
 import { Book } from '../interfaces';
@@ -50,19 +51,22 @@ export const Categories = () => {
 
   if (loading || loadingBook) return <Loading />;
   return (
-    <div className="md:flex">
-      <AsideFilter />
-      <div className="md:hidden">
-        <DDFiltersAndOrders />
-      </div>
-      <section className="w-full">
-        <div className="grid border p-1 mx-2 mt-2 gap-1 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {categoriesBooks &&
-            categoriesBooks.map((book) => (
-              <PreviewBook book={book} key={book.id} />
-            ))}
+    <>
+      <OrderMenu />
+      <div className="md:flex">
+        <AsideFilter />
+        <div className="md:hidden">
+          <DDFiltersAndOrders />
         </div>
-      </section>
-    </div>
+        <section className="w-full">
+          <div className="grid border p-1 mx-2 mt-2 gap-1 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {categoriesBooks &&
+              categoriesBooks.map((book) => (
+                <PreviewBook book={book} key={book.id} />
+              ))}
+          </div>
+        </section>
+      </div>
+    </>
   );
 };

@@ -35,6 +35,9 @@ export class Book extends Base {
   @Column({ default: 'without image' })
   image?: string;
 
+  @Column({ default: true })
+  isNew: boolean;
+
   @OneToOne(() => Metadata, (metadata) => metadata.book)
   metadata: Metadata;
 

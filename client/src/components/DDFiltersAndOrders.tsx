@@ -18,18 +18,28 @@ export const DDFiltersAndOrders = () => {
 
   return (
     <div className="h-full items-end">
-      <ul className="flex mt-2">
-        <li className="mx-2 p-1 px-4 bg-orange-400 font-bold text-white relative">
+      <ul className="relative flex mt-2">
+        <li className="mx-2 p-1 px-8 bg-slate-900 font-bold text-white">
           <button onClick={() => toggleActions('filter')}>Filter by</button>
           <ul
             className={`${
-              hidden.filter
-                ? 'block w-44 transition-all'
-                : 'hidden w-0 h-0 transition-all'
-            } absolute bg-orange-400 border border-gray-600 left-1/2 top-full shadow-2xl`}
+              hidden.filter ? 'block transition-all' : 'hidden transition-all'
+            } absolute w-full z-50 bg-slate-900/95 border border-gray-600 left-0 top-full shadow-2xl text-slate-300`}
           >
+            <header className="text-center text-orange-400 border border-orange-500">
+              <h2 className="p-1">Filter search</h2>
+            </header>
             <li
-              className="p-1 hover:bg-orange-300 hover:cursor-pointer"
+              className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
+              onClick={() => {
+                search({ min_price: '0', max_price: '0' });
+                setHidden({ filter: false, order: false });
+              }}
+            >
+              All
+            </li>
+            <li
+              className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '1', max_price: '10' });
                 setHidden({ filter: false, order: false });
@@ -38,7 +48,7 @@ export const DDFiltersAndOrders = () => {
               $1 ~ $10
             </li>
             <li
-              className="p-1 hover:bg-orange-200 hover:cursor-pointer"
+              className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '10', max_price: '20' });
                 setHidden({ filter: false, order: false });
@@ -47,7 +57,7 @@ export const DDFiltersAndOrders = () => {
               $10 ~ $20
             </li>
             <li
-              className="p-1 hover:bg-orange-300 hover:cursor-pointer"
+              className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '20', max_price: '50' });
                 setHidden({ filter: false, order: false });
@@ -56,7 +66,7 @@ export const DDFiltersAndOrders = () => {
               $20 ~ $50
             </li>
             <li
-              className="p-1 hover:bg-orange-300 hover:cursor-pointer"
+              className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '50', max_price: '100' });
                 setHidden({ filter: false, order: false });
@@ -65,7 +75,7 @@ export const DDFiltersAndOrders = () => {
               $50 ~ $100
             </li>
             <li
-              className="p-1 hover:bg-orange-300 hover:cursor-pointer"
+              className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
                 search({ min_price: '100', max_price: '10000' });
                 setHidden({ filter: false, order: false });
@@ -75,43 +85,46 @@ export const DDFiltersAndOrders = () => {
             </li>
           </ul>
         </li>
-        <li className="mx-2 p-1 px-4 bg-orange-400 font-bold text-white relative">
+        <li className="mx-2 p-1 px-8 bg-slate-900 font-bold text-white">
           <button onClick={() => toggleActions('order')}>Order by</button>
           <ul
             className={`${
               hidden.order
-                ? 'block w-44 transition-all'
+                ? 'block transition-all'
                 : 'hidden w-0 h-0 transition-all'
-            } absolute bg-orange-400 border border-gray-600 left-1/2 top-full shadow-2xl`}
+            } absolute w-full z-50 bg-slate-900/95 border border-gray-600 left-0 top-full shadow-2xl text-slate-300`}
           >
+            <header className="text-center text-orange-400 border border-orange-500">
+              <h2 className="p-1">Order search</h2>
+            </header>
             <li
-              className="p-1 hover:bg-orange-300 hover:cursor-pointer"
+              className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
                 search({ order_price: 'DESC' });
                 setHidden({ filter: false, order: false });
               }}
             >
-              highest price
+              Highest price
             </li>
             <li
-              className="p-1 hover:bg-orange-300 hover:cursor-pointer"
+              className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
                 search({ order_price: 'ASC' });
                 setHidden({ filter: false, order: false });
               }}
             >
-              lowest price
+              Lowest price
             </li>
             <li
-              className="p-1 hover:bg-orange-300 hover:cursor-pointer"
+              className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
                 search({ order_stock: 'DESC' });
                 setHidden({ filter: false, order: false });
               }}
             >
-              stock
+              Stock
             </li>
-            <li className="p-1 hover:bg-orange-300 hover:cursor-pointer">
+            <li className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer">
               Best sellers
             </li>
           </ul>

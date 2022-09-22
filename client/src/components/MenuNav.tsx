@@ -11,7 +11,7 @@ export const MenuNav = () => {
   };
 
   return (
-    <div className="sm:hidden">
+    <div className="md:hidden">
       <button onClick={toggleHidden}>
         <HiOutlineMenuAlt2 size="40" />
       </button>

@@ -44,6 +44,11 @@ export const BookProvider = ({ children }: Props) => {
       setParams({ search: query.search });
     }
     if (query.max_price && query.min_price) {
+      if (query.max_price === '0' && query.min_price === '0') {
+        params.delete('minPrice');
+        params.delete('maxPrice');
+        return setParams(params);
+      }
       params.set('minPrice', query.min_price);
       params.set('maxPrice', query.max_price);
       setParams(params);
