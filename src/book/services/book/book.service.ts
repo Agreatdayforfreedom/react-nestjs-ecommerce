@@ -57,14 +57,15 @@ export class BookService {
   }
 
   async findAllFilter(query: Query): Promise<Book[]> {
-    let qb = this.bookRepo.createQueryBuilder('book');
-    if (query.search) {
-      qb.where('book.name like :name', {
-        name: `%${query.search}%`,
-      }).orWhere('book.author like :author', {
-        author: `%${query.search}%`,
-      });
-    }
+    let qb = this.bookRepo.createQueryBuilder('book').where(
+      new Brackets((qb) => {
+        qb.where('book.name like :name', {
+          name: `%${query.search}%`,
+        }).orWhere('book.author like :author', {
+          author: `%${query.search}%`,
+        });
+      }),
+    );
     this.qbFilters(qb, query);
 
     return await qb.getMany();

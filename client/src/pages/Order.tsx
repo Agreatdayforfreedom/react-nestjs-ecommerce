@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 import { OrderDetail } from '../components/OrderDetail';
 import { Order as IOrder } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
@@ -12,7 +12,7 @@ export const Order = () => {
   const { id } = useParams();
 
   const token = localStorage.getItem('token');
-  if (!token) return <Loading />;
+  if (!token) return <Spinner />;
 
   const config = configAxios(token);
 
@@ -31,7 +31,7 @@ export const Order = () => {
     };
     getOrder();
   }, []);
-  if (loading) return <Loading />;
+  if (loading) return <Spinner />;
   const total = order.order_details.reduce(
     (p, c) => p + c.book.price * c.quantity,
     0

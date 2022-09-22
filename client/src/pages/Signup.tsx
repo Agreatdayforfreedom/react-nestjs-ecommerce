@@ -5,7 +5,7 @@ import useAuth from '../context/hooks/useAuth';
 import { useForm } from '../hooks/useForm';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Auth } from '../context/AuthProvider';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 
 interface SignUpForm {
   username: string;
@@ -57,7 +57,7 @@ export const Signup = () => {
   };
 
   const { message } = alert;
-  if (loading) return <Loading />;
+  if (loading) return <Spinner />;
   if (auth.id) return <Navigate to="/" />;
   return (
     <section className="mx-4">

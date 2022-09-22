@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import useBook from '../context/hooks/useBook';
+import { Book } from '../interfaces';
+import { Spinner } from './Loading';
 
 export const DDFiltersAndOrders = () => {
   const [hidden, setHidden] = useState<{ filter: boolean; order: boolean }>({
@@ -7,7 +9,7 @@ export const DDFiltersAndOrders = () => {
     order: false,
   });
 
-  const { search } = useBook();
+  const { search, loading, booksLength } = useBook();
 
   const toggleActions = (selected: string) => {
     if (selected === 'filter') {
@@ -16,6 +18,13 @@ export const DDFiltersAndOrders = () => {
     setHidden({ filter: false, order: !hidden.order });
   };
 
+  if (loading && !booksLength) return <Spinner />;
+  const getBooksLength = (min: number, max: number) => {
+    const b: Array<Book> = booksLength.filter(
+      (b: Book) => b.price >= min && b.price <= max
+    );
+    return b.length;
+  };
   return (
     <div className="h-full items-end">
       <ul className="relative flex mt-2">
@@ -36,7 +45,12 @@ export const DDFiltersAndOrders = () => {
                 setHidden({ filter: false, order: false });
               }}
             >
-              All
+              <p>
+                All{' '}
+                <span className="text-slate-400">
+                  ({getBooksLength(0, 10000)})
+                </span>
+              </p>
             </li>
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
@@ -45,7 +59,12 @@ export const DDFiltersAndOrders = () => {
                 setHidden({ filter: false, order: false });
               }}
             >
-              $1 ~ $10
+              <p>
+                $1 ~ $10{' '}
+                <span className="text-slate-400">
+                  ({getBooksLength(1, 10)})
+                </span>
+              </p>
             </li>
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
@@ -54,7 +73,12 @@ export const DDFiltersAndOrders = () => {
                 setHidden({ filter: false, order: false });
               }}
             >
-              $10 ~ $20
+              <p>
+                $10 ~ $20{' '}
+                <span className="text-slate-400">
+                  ({getBooksLength(10, 20)})
+                </span>
+              </p>
             </li>
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
@@ -63,7 +87,12 @@ export const DDFiltersAndOrders = () => {
                 setHidden({ filter: false, order: false });
               }}
             >
-              $20 ~ $50
+              <p>
+                $20 ~ $50{' '}
+                <span className="text-slate-400">
+                  ({getBooksLength(20, 50)})
+                </span>
+              </p>
             </li>
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
@@ -72,7 +101,12 @@ export const DDFiltersAndOrders = () => {
                 setHidden({ filter: false, order: false });
               }}
             >
-              $50 ~ $100
+              <p>
+                $50 ~ $100{' '}
+                <span className="text-slate-400">
+                  ({getBooksLength(50, 100)})
+                </span>
+              </p>
             </li>
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
@@ -81,7 +115,12 @@ export const DDFiltersAndOrders = () => {
                 setHidden({ filter: false, order: false });
               }}
             >
-              more than $100
+              <p>
+                more than $100{' '}
+                <span className="text-slate-400">
+                  ({getBooksLength(100, 10000)})
+                </span>
+              </p>
             </li>
           </ul>
         </li>

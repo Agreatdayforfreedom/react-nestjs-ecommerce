@@ -19,6 +19,7 @@ export interface BookContextProps {
   loading: Loading;
   categories: Category[];
   params: URLSearchParams;
+  booksLength: Book[];
 }
 
 export const BookContext = createContext<BookContextProps>(
@@ -29,6 +30,7 @@ export const BookProvider = ({ children }: Props) => {
   const [params, setParams] = useSearchParams();
 
   const [loading, setLoading] = useState<Loading>(true);
+  const [booksLength, setBooksLength] = useState<Book[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
   const search = async (query: {
@@ -86,6 +88,41 @@ export const BookProvider = ({ children }: Props) => {
     fetch();
   }, []);
 
+  const id = params.get('cat');
+  const searchParam = params.get('search');
+
+  useEffect(() => {
+    const getBySearch = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios(
+          `${import.meta.env.VITE_URL_BACK}/book?search=${searchParam}`
+        );
+        setBooksLength(data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    searchParam && getBySearch();
+  }, [params]);
+
+  useEffect(() => {
+    const getByCat = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios(
+          `${import.meta.env.VITE_URL_BACK}/categories/${id && id.at(-1)}`
+        );
+        setBooksLength(data.books);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    id && getByCat();
+  }, [params]);
+
   return (
     <BookContext.Provider
       value={{
@@ -93,6 +130,7 @@ export const BookProvider = ({ children }: Props) => {
         loading,
         categories,
         params,
+        booksLength,
       }}
     >
       {children}

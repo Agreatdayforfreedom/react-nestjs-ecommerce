@@ -21,7 +21,7 @@ export class CategoriesService {
   }
 
   async findOne(id: number) {
-    const category = this.categoryRepo.find({
+    const [category] = await this.categoryRepo.find({
       relations: ['books'],
       where: { id: id },
     });

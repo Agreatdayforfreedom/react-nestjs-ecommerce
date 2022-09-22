@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 import { PreviewBook } from '../components/PreviewBook';
 import useBook from '../context/hooks/useBook';
 import { Book, Loading as ILoading } from '../interfaces';
@@ -50,7 +50,7 @@ export const News = () => {
     }
   }, [loc]);
 
-  if (loading && loadingCat) return <Loading />;
+  if (loading && loadingCat) return <Spinner />;
   return (
     <div className="flex flex-col md:flex-row">
       <div className="md:hidden mt-2">

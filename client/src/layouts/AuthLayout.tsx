@@ -1,7 +1,7 @@
 import { RiShoppingCartFill } from 'react-icons/ri';
 import { Link, Outlet } from 'react-router-dom';
 import Footer from '../components/Footer';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 import { MenuNav } from '../components/MenuNav';
 import { PrivateHeader } from '../components/PrivateHeader';
 import { Search } from '../components/Search';
@@ -10,7 +10,7 @@ import useAuth from '../context/hooks/useAuth';
 const AuthLayout = () => {
   const { auth, loading } = useAuth();
 
-  if (loading) return <Loading />;
+  if (loading) return <Spinner />;
   return (
     <>
       {auth.id ? (

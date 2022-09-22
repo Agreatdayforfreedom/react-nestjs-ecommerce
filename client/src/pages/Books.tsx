@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DDFiltersAndOrders } from '../components/DDFiltersAndOrders';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 import { PreviewBook } from '../components/PreviewBook';
 import useBook from '../context/hooks/useBook';
 import { IoMdArrowDropright } from 'react-icons/io';
@@ -34,7 +34,7 @@ export const Books = () => {
     getBooksWithFilter();
   }, [loc]);
 
-  if (loading) return <Loading />;
+  if (loading) return <Spinner />;
   return (
     <>
       <OrderMenu />

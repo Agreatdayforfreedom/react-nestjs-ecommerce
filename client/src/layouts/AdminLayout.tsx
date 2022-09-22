@@ -2,11 +2,11 @@ import useAuth from '../context/hooks/useAuth';
 import { Navigate, Outlet } from 'react-router-dom';
 import { PrivateHeader } from '../components/PrivateHeader';
 import Footer from '../components/Footer';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 
 export const AdminLayout = () => {
   const { auth, loading } = useAuth();
-  if (loading) return <Loading />;
+  if (loading) return <Spinner />;
   return (
     <div>
       {auth.id && auth.role === 'admin' ? (

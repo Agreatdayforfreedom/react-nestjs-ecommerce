@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 import { Auth } from '../context/AuthProvider';
 import useAuth from '../context/hooks/useAuth';
 import { useForm } from '../hooks/useForm';
@@ -40,7 +40,7 @@ export const Login = () => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <Spinner />;
   if (auth.id) return <Navigate to="/" />;
   return (
     <div>

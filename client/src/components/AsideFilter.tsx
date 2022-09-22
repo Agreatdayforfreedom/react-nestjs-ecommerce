@@ -1,9 +1,21 @@
-import React from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { IoMdArrowDropright } from 'react-icons/io';
+import { useLocation } from 'react-router-dom';
 import useBook from '../context/hooks/useBook';
+import { Book, Category } from '../interfaces';
+import { Spinner } from './Loading';
 
 export const AsideFilter = () => {
-  const { search } = useBook();
+  const { search, booksLength, loading } = useBook();
+
+  if (loading && !booksLength) return <Spinner />;
+  const getBooksLength = (min: number, max: number) => {
+    const b: Array<Book> = booksLength.filter(
+      (b: Book) => b.price >= min && b.price <= max
+    );
+    return b.length;
+  };
 
   return (
     <div className="hidden md:block md:w-1/4 lg:w-1/6 lg mx-2">
@@ -22,7 +34,7 @@ export const AsideFilter = () => {
           >
             <IoMdArrowDropright size="17" />
             <p>
-              All <span>{}</span>
+              All <span>({getBooksLength(0, 1000)})</span>
             </p>
           </li>
           <li
@@ -32,7 +44,9 @@ export const AsideFilter = () => {
             }}
           >
             <IoMdArrowDropright size="17" />
-            $1 ~ $10
+            <p>
+              $1 ~ $10 <span>({getBooksLength(1, 10)})</span>
+            </p>
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
@@ -41,7 +55,9 @@ export const AsideFilter = () => {
             }}
           >
             <IoMdArrowDropright size="17" />
-            $10 ~ $20
+            <p>
+              $10 ~ $20 <span>({getBooksLength(10, 20)})</span>
+            </p>
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
@@ -50,7 +66,9 @@ export const AsideFilter = () => {
             }}
           >
             <IoMdArrowDropright size="17" />
-            $20 ~ $50
+            <p>
+              $20 ~ $50 <span>({getBooksLength(20, 50)})</span>
+            </p>
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
@@ -59,7 +77,9 @@ export const AsideFilter = () => {
             }}
           >
             <IoMdArrowDropright size="17" />
-            $50 ~ $100
+            <p>
+              $50 ~ $100 <span>({getBooksLength(50, 100)})</span>
+            </p>
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
@@ -68,7 +88,9 @@ export const AsideFilter = () => {
             }}
           >
             <IoMdArrowDropright size="17" />
-            more than $100
+            <p>
+              more than $100 <span>({getBooksLength(100, 10000)})</span>
+            </p>
           </li>
         </ul>
       </aside>

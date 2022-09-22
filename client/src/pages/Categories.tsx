@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AsideFilter } from '../components/AsideFilter';
 import { DDFiltersAndOrders } from '../components/DDFiltersAndOrders';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 import { OrderMenu } from '../components/OrderMenu';
 import { PreviewBook } from '../components/PreviewBook';
 import useBook from '../context/hooks/useBook';
@@ -31,7 +31,7 @@ export const Categories = () => {
     fetch();
   }, [loc]);
 
-  if (loadingBook) return <Loading />;
+  if (loadingBook) return <Spinner />;
   if (loc.search === '') {
     return (
       <div className="flex w-2/3 m-auto justify-between mt-10">
@@ -49,7 +49,7 @@ export const Categories = () => {
     );
   }
 
-  if (loading || loadingBook) return <Loading />;
+  if (loading || loadingBook) return <Spinner />;
   return (
     <>
       <OrderMenu />

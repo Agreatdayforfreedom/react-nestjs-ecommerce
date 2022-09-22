@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { Link, Outlet, Navigate } from 'react-router-dom';
 import Footer from '../components/Footer';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 import { PrivateHeader } from '../components/PrivateHeader';
 import useAuth from '../context/hooks/useAuth';
 
 const MainLayout = () => {
   const { auth, loading } = useAuth();
-  if (loading) return <Loading />;
+  if (loading) return <Spinner />;
   return (
     <>
       {auth.id ? (

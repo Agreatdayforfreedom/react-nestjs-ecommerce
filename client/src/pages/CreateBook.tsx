@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
-import { Loading } from '../components/Loading';
+import { Spinner } from '../components/Loading';
 import useBook from '../context/hooks/useBook';
 import { useForm } from '../hooks/useForm';
 import { User } from '../interfaces';
@@ -24,7 +24,7 @@ export const CreateBook = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
-  if (!token) return <Loading />;
+  if (!token) return <Spinner />;
 
   const { categories, loading } = useBook();
 
