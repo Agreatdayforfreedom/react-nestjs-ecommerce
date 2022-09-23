@@ -1,8 +1,15 @@
 import axios from 'axios';
-import { createContext, ReactNode, useEffect, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  createContext,
+  MutableRefObject,
+  ReactNode,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Book, Category, Loading } from '../interfaces';
-import { Order } from '../pages/Order';
 
 interface Props {
   children: ReactNode;
@@ -12,33 +19,49 @@ export interface BookContextProps {
     search?: string;
     max_price?: string;
     min_price?: string;
-    order_price?: string;
-    order_stock?: string;
+    order?: string;
     cat?: string;
   }) => void;
   loading: Loading;
   categories: Category[];
   params: URLSearchParams;
   booksLength: Book[];
+  getBooksLength: (p1: number | 'all', p2?: number) => number;
+  toggleActions: (val: keyof OpenOrCloseDropDownMenus) => void;
+  hidden: OpenOrCloseDropDownMenus;
 }
 
 export const BookContext = createContext<BookContextProps>(
   {} as BookContextProps
 );
 
+interface OpenOrCloseDropDownMenus {
+  filterby: boolean;
+  orderby: boolean;
+  menunav: boolean;
+}
+
 export const BookProvider = ({ children }: Props) => {
   const [params, setParams] = useSearchParams();
-
+  const [hidden, setHidden] = useState<OpenOrCloseDropDownMenus>({
+    filterby: false,
+    orderby: false,
+    menunav: false,
+  });
   const [loading, setLoading] = useState<Loading>(true);
   const [booksLength, setBooksLength] = useState<Book[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+
+  const toggleActions = (val: keyof OpenOrCloseDropDownMenus) => {
+    setHidden({} as OpenOrCloseDropDownMenus);
+    setHidden((prevValue) => ({ ...prevValue, [val]: !hidden[val] }));
+  };
 
   const search = async (query: {
     search?: string;
     max_price?: string;
     min_price?: string;
-    order_price?: string;
-    order_stock?: string;
+    order?: string;
     cat?: string;
   }) => {
     //setting name/author in the query
@@ -55,18 +78,11 @@ export const BookProvider = ({ children }: Props) => {
       params.set('maxPrice', query.max_price);
       setParams(params);
     }
-    if (query.order_price) {
-      if (params.get('order_stock')) {
-        params.delete('order_stock');
+    if (query.order) {
+      if (params.get('order')) {
+        params.delete('order');
       }
-      params.set('order_price', query.order_price);
-      setParams(params);
-    }
-    if (query.order_stock) {
-      if (params.get('order_price')) {
-        params.delete('order_price');
-      }
-      params.set('order_stock', query.order_stock);
+      params.set('order', query.order);
       setParams(params);
     }
     if (query.cat) {
@@ -74,7 +90,6 @@ export const BookProvider = ({ children }: Props) => {
       setParams(params);
     }
   };
-
   //categories
   useEffect(() => {
     const fetch = async () => {
@@ -92,7 +107,7 @@ export const BookProvider = ({ children }: Props) => {
   const searchParam = params.get('search');
 
   useEffect(() => {
-    const getBySearch = async () => {
+    const getToGetLenght = async () => {
       try {
         setLoading(true);
         const { data } = await axios(
@@ -104,7 +119,7 @@ export const BookProvider = ({ children }: Props) => {
         console.log(error);
       }
     };
-    searchParam && getBySearch();
+    searchParam && getToGetLenght();
   }, [params]);
 
   useEffect(() => {
@@ -123,6 +138,17 @@ export const BookProvider = ({ children }: Props) => {
     id && getByCat();
   }, [params]);
 
+  const getBooksLength = (p1: number | 'all', p2?: number): number => {
+    if (p1 === 'all') {
+      p1 = 0;
+      p2 = 10000;
+    }
+    const b: Array<Book> = booksLength.filter(
+      (b: Book) => b.price >= p1 && b.price <= p2!
+    );
+    return b.length;
+  };
+
   return (
     <BookContext.Provider
       value={{
@@ -131,6 +157,9 @@ export const BookProvider = ({ children }: Props) => {
         categories,
         params,
         booksLength,
+        getBooksLength,
+        toggleActions,
+        hidden,
       }}
     >
       {children}

@@ -1,26 +1,32 @@
 import axios from 'axios';
+import { stringify } from 'querystring';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AsideFilter } from '../components/AsideFilter';
 import { DDFiltersAndOrders } from '../components/DDFiltersAndOrders';
+import { FilterCard } from '../components/FilterCard';
 import { Spinner } from '../components/Loading';
 import { OrderMenu } from '../components/OrderMenu';
 import { PreviewBook } from '../components/PreviewBook';
 import useBook from '../context/hooks/useBook';
 import { Book } from '../interfaces';
+import { SpawnBooksSection } from '../components/SpawnBooksSection';
 
+interface CatBooks {
+  cat: string;
+  books: Book[];
+}
 export const Categories = () => {
-  const [categoriesBooks, setCategoriesBooks] = useState<Book[]>([]);
+  const [categoriesBooks, setCategoriesBooks] = useState<CatBooks>(
+    {} as CatBooks
+  );
   const [loading, setLoading] = useState(true);
 
   const loc = useLocation();
-
-  const { categories, loading: loadingBook, search } = useBook();
+  const { categories, loading: loadingBook } = useBook();
 
   useEffect(() => {
-    setCategoriesBooks([]);
     const fetch = async () => {
-      if (loc.search === '') return;
       const { data } = await axios(
         `${import.meta.env.VITE_URL_BACK}/book/category${loc.search}
         `
@@ -28,11 +34,13 @@ export const Categories = () => {
       setCategoriesBooks(data);
       setLoading(false);
     };
-    fetch();
+    if (loc.search !== '') {
+      fetch();
+    }
   }, [loc]);
 
-  if (loadingBook) return <Spinner />;
   if (loc.search === '') {
+    if (loadingBook) return <Spinner />;
     return (
       <div className="flex w-2/3 m-auto justify-between mt-10">
         {categories.map((c) => (
@@ -48,25 +56,14 @@ export const Categories = () => {
       </div>
     );
   }
+  if (loading) return <Spinner />;
 
-  if (loading || loadingBook) return <Spinner />;
   return (
     <>
-      <OrderMenu />
-      <div className="md:flex">
-        <AsideFilter />
-        <div className="md:hidden">
-          <DDFiltersAndOrders />
-        </div>
-        <section className="w-full">
-          <div className="grid border p-1 mx-2 mt-2 gap-1 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {categoriesBooks &&
-              categoriesBooks.map((book) => (
-                <PreviewBook book={book} key={book.id} />
-              ))}
-          </div>
-        </section>
-      </div>
+      <SpawnBooksSection
+        books={categoriesBooks.books}
+        text={categoriesBooks.cat}
+      />
     </>
   );
 };

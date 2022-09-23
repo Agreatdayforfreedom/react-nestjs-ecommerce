@@ -15,14 +15,19 @@ export interface UserReq {
   role: string;
 }
 
+enum Order {
+  priceASC = 'price%ASC',
+  priceDESC = 'price%DESC',
+  stock = 'stock',
+  news = 'news',
+}
+
 export interface Query {
   search?: string;
   maxPrice?: string;
   minPrice?: string;
   cat?: string;
-  order_price?: string;
-  order_stock?: string;
-  order_news?: string;
+  order?: Order;
 }
 
 @Injectable()
@@ -45,14 +50,17 @@ export class BookService {
         }),
       );
     }
-    if (query.order_news) {
-      qb.orderBy('book.createdAt', `${query.order_news as 'DESC' | 'ASC'}`);
+    if (query.order === Order.news || !query.order) {
+      const order = 'DESC';
+      qb.orderBy('book.createdAt', `${order as 'DESC' | 'ASC'}`);
     }
-    if (query.order_price) {
-      qb.orderBy('book.price', `${query.order_price as 'DESC' | 'ASC'}`);
+    if (query.order === Order.priceDESC || query.order === Order.priceASC) {
+      const order = query.order.split('%')[1];
+      qb.orderBy('book.price', `${order as 'DESC' | 'ASC'}`);
     }
-    if (query.order_stock) {
-      qb.orderBy('book.stock', `${query.order_stock as 'DESC' | 'ASC'}`);
+    if (query.order === Order.stock) {
+      const order = 'DESC';
+      qb.orderBy('book.stock', `${order as 'DESC' | 'ASC'}`);
     }
   }
 
@@ -74,10 +82,16 @@ export class BookService {
   async findByCategory(query: Query) {
     let qb = this.bookRepo
       .createQueryBuilder('book')
-      .innerJoinAndSelect('book.categories', 'categories')
-      .where('categories.id = :id', { id: query.cat.at(-1) });
+      .innerJoinAndSelect('book.categories', 'categories');
+    if (query.cat) {
+      qb.where('categories.id = :id', { id: query.cat.at(-1) });
+    }
     this.qbFilters(qb, query);
-    return await qb.getMany();
+    const cat = query.cat.slice(0, -1);
+    return {
+      cat,
+      books: await qb.getMany(),
+    };
   }
 
   async findOne(id: number): Promise<Book> {

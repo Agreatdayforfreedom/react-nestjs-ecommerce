@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useBook from '../context/hooks/useBook';
+import { Order } from '../enums';
 
 export const OrderMenu = () => {
-  const [hidden, setHidden] = useState<boolean>(false);
   const [getNameOrder, setGetNameOrder] = useState<string>('Order by');
 
-  const { search } = useBook();
-
-  const toggleActions = () => {
-    setHidden(!hidden);
-  };
-
+  const { search, toggleActions, hidden } = useBook();
+  useEffect(() => {
+    console.log('reload');
+    console.log(getNameOrder);
+  }, []);
   return (
-    <div className="relative flex justify-end my-1 mx-3">
-      <div className="hidden md:block mx-2 p-1 px-8 bg-slate-900 font-bold text-white">
-        <button onClick={() => toggleActions()}>{getNameOrder}</button>
+    <div className="md:relative flex justify-end my-1 mx-3">
+      <div className="mx-2 p-1 px-8 bg-slate-900 font-bold text-white">
+        <button onClick={() => toggleActions('orderby')}>{getNameOrder}</button>
         <ul
           className={`${
-            hidden ? 'block transition-all' : 'hidden w-0 h-0 transition-all'
+            hidden.orderby
+              ? 'block transition-all'
+              : 'hidden w-0 h-0 transition-all'
           } absolute w-full z-50 bg-slate-900/95 border border-gray-600 left-0 top-full shadow-2xl text-slate-300`}
         >
           <header className="text-center text-orange-400 border border-orange-500">
@@ -26,9 +27,9 @@ export const OrderMenu = () => {
           <li
             className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
             onClick={() => {
-              search({ order_price: 'DESC' });
+              search({ order: Order.priceDESC });
               setGetNameOrder('Highest price');
-              setHidden(false);
+              toggleActions('orderby');
             }}
           >
             Highest price
@@ -36,9 +37,9 @@ export const OrderMenu = () => {
           <li
             className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
             onClick={() => {
-              search({ order_price: 'ASC' });
+              search({ order: Order.priceASC });
               setGetNameOrder('Lowest price');
-              setHidden(false);
+              toggleActions('orderby');
             }}
           >
             Lowest price
@@ -46,9 +47,9 @@ export const OrderMenu = () => {
           <li
             className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
             onClick={() => {
-              search({ order_stock: 'DESC' });
+              search({ order: Order.stock });
               setGetNameOrder('Stock');
-              setHidden(false);
+              toggleActions('orderby');
             }}
           >
             Stock

@@ -4,22 +4,18 @@ import { IoMdArrowDropright } from 'react-icons/io';
 import { useLocation } from 'react-router-dom';
 import useBook from '../context/hooks/useBook';
 import { Book, Category } from '../interfaces';
+import { FilterCard } from './FilterCard';
 import { Spinner } from './Loading';
 
 export const AsideFilter = () => {
-  const { search, booksLength, loading } = useBook();
+  const { search, booksLength, loading, getBooksLength } = useBook();
 
   if (loading && !booksLength) return <Spinner />;
-  const getBooksLength = (min: number, max: number) => {
-    const b: Array<Book> = booksLength.filter(
-      (b: Book) => b.price >= min && b.price <= max
-    );
-    return b.length;
-  };
 
   return (
-    <div className="hidden md:block md:w-1/4 lg:w-1/6 lg mx-2">
-      <aside className="relative border w-full h-96 border-slate-400 ">
+    <div className="hidden md:block md:w-1/4 lg:w-1/5 lg mx-2">
+      <FilterCard />
+      <aside className="relative border w-full h-96 border-slate-400 mt-4">
         <h2 className="absolute w-3/4 -top-4 left-5 text-orange-600 text-center text-xl bg-white ">
           Filter By
         </h2>
