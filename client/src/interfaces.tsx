@@ -4,9 +4,11 @@ export interface Category {
 }
 
 export interface Metadata {
+  id?: string;
   pages: number;
   publisher: string;
   language: string;
+  book: Book;
 }
 
 export interface Book {
@@ -21,6 +23,7 @@ export interface Book {
   metadata?: Metadata;
   createdAt?: string;
   updatedAt?: string;
+  isNew: boolean;
 }
 
 export interface User {

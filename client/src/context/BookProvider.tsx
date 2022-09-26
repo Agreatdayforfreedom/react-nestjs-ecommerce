@@ -1,15 +1,9 @@
 import axios from 'axios';
-import {
-  createContext,
-  MutableRefObject,
-  ReactNode,
-  RefObject,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Book, Category, Loading } from '../interfaces';
+import { createContext, ReactNode, useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { FormGen } from '../components/FormBook';
+import { Book, Category, Loading, Metadata } from '../interfaces';
+import { configAxios } from '../utils/configAxios';
 
 interface Props {
   children: ReactNode;
@@ -29,6 +23,14 @@ export interface BookContextProps {
   getBooksLength: (p1: number | 'all', p2?: number) => number;
   toggleActions: (val: keyof OpenOrCloseDropDownMenus) => void;
   hidden: OpenOrCloseDropDownMenus;
+  setCatId: (state: number[]) => void;
+  catId: number[];
+  handleSubmit: (book: FormGen) => void;
+  setFile: (state: any) => void;
+  book: Book;
+  getBook: (id: string) => void;
+  deleteBook: (id: string) => void;
+  handleSubmitMetadata: (metadata: Metadata, id: string) => void;
 }
 
 export const BookContext = createContext<BookContextProps>(
@@ -51,10 +53,119 @@ export const BookProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState<Loading>(true);
   const [booksLength, setBooksLength] = useState<Book[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [file, setFile] = useState<any>();
+  const [catId, setCatId] = useState<number[]>([]);
+  const [book, setBook] = useState<Book>({} as Book);
+
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem('token');
+  if (!token) return <p>loading</p>;
+
+  const config = configAxios(token);
 
   const toggleActions = (val: keyof OpenOrCloseDropDownMenus) => {
     setHidden({} as OpenOrCloseDropDownMenus);
     setHidden((prevValue) => ({ ...prevValue, [val]: !hidden[val] }));
+  };
+
+  //get book
+  const getBook = async (id: string) => {
+    setLoading(true);
+    const { data } = await axios(`${import.meta.env.VITE_URL_BACK}/book/${id}`);
+    setBook(data);
+    setLoading(false);
+  };
+
+  //send create book or udpate one
+  const handleSubmit = (book: FormGen) => {
+    if (book.id) {
+      //update
+      updateBook(book);
+    } else {
+      //create
+      createBook(book);
+    }
+  };
+
+  //create book
+  const createBook = async (book: FormGen): Promise<void> => {
+    const { name, price, stock, author } = book;
+    if ([name, price, stock, author].includes('')) return console.log('error');
+
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_URL_BACK}/book`,
+      { ...book, categories: catId },
+      config
+    );
+    console.log(data);
+    if (data.response) {
+      throw new Error('Error trying to create the book');
+    }
+
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file, file.name);
+
+      await axios.post(
+        `${import.meta.env.VITE_URL_BACK}/book/upload/${data.id}`,
+        formData,
+        config
+      );
+    }
+
+    navigate(`/admin/add-metadata/${data.id}`);
+  };
+
+  const updateBook = async (book: FormGen) => {
+    const { id, ...rest } = book;
+    console.log(rest, catId);
+    const { data } = await axios.put(
+      `${import.meta.env.VITE_URL_BACK}/book/${id}`,
+      { ...rest, categories: catId },
+      config
+    );
+    console.log(data);
+  };
+
+  const deleteBook = async (id: string) => {
+    await axios.delete(`${import.meta.env.VITE_URL_BACK}/book/${id}`, config);
+    navigate('/admin');
+  };
+
+  const handleSubmitMetadata = (metadata: Metadata, id: string) => {
+    if (metadata.id) {
+      //update
+      console.log(metadata, 'UPDATE');
+      updateMetadata(metadata);
+    } else {
+      //create
+      console.log(metadata, 'CREATE');
+
+      addMetadata(metadata, id);
+    }
+  };
+
+  const addMetadata = async (metadata: Metadata, id: string) => {
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_URL_BACK}/metadata`,
+      { ...metadata, book: id },
+      config
+    );
+    console.log(data);
+    navigate(`/book/${data.book.id}`);
+  };
+
+  const updateMetadata = async (metadata: Metadata) => {
+    const { id, ...rest } = metadata;
+
+    const { data } = await axios.put(
+      `${import.meta.env.VITE_URL_BACK}/metadata/${id}`,
+      rest,
+      config
+    );
+    console.log(data);
+    navigate(`/book/${metadata.book.id}`);
   };
 
   const search = async (query: {
@@ -103,7 +214,7 @@ export const BookProvider = ({ children }: Props) => {
     fetch();
   }, []);
 
-  const id = params.get('cat');
+  const idCat = params.get('cat');
   const searchParam = params.get('search');
 
   useEffect(() => {
@@ -127,7 +238,7 @@ export const BookProvider = ({ children }: Props) => {
       try {
         setLoading(true);
         const { data } = await axios(
-          `${import.meta.env.VITE_URL_BACK}/categories/${id && id.at(-1)}`
+          `${import.meta.env.VITE_URL_BACK}/categories/${idCat && idCat.at(-1)}`
         );
         setBooksLength(data.books);
         setLoading(false);
@@ -135,7 +246,7 @@ export const BookProvider = ({ children }: Props) => {
         console.log(error);
       }
     };
-    id && getByCat();
+    idCat && getByCat();
   }, [params]);
 
   const getBooksLength = (p1: number | 'all', p2?: number): number => {
@@ -160,6 +271,14 @@ export const BookProvider = ({ children }: Props) => {
         getBooksLength,
         toggleActions,
         hidden,
+        setCatId,
+        catId,
+        handleSubmit,
+        setFile,
+        book,
+        getBook,
+        deleteBook,
+        handleSubmitMetadata,
       }}
     >
       {children}

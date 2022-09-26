@@ -11,7 +11,7 @@ export const Admin = () => {
         Add book
       </Link>
       <Link
-        to="admin/create-category"
+        to="/admin/create-category"
         className="bg-white p-2 my-1 rounded hover:text-white hover:font-bold hover:bg-amber-600 hover:border transition-all"
       >
         Add Categories

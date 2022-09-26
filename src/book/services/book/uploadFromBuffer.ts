@@ -17,10 +17,12 @@ export const uploadFromBuffer = (buffer: Buffer) => {
 };
 
 export const destroyUpload = async (book: Book): Promise<void> => {
-  const splitUrl = book.image.split('/');
-  const toDestroy = splitUrl
-    .at(-2)
-    .concat('/')
-    .concat(splitUrl.at(-1).split('.').at(0));
-  await cloudinary.uploader.destroy(toDestroy);
+  if (book.image) {
+    const splitUrl = book.image.split('/');
+    const toDestroy = splitUrl
+      .at(-2)
+      .concat('/')
+      .concat(splitUrl.at(-1).split('.').at(0));
+    await cloudinary.uploader.destroy(toDestroy);
+  }
 };

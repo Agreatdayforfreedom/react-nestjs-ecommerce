@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
 import { BookProvider } from './context/BookProvider';
@@ -6,8 +5,8 @@ import { CartProvider } from './context/CartProvider';
 import { AdminLayout } from './layouts/AdminLayout';
 import AuthLayout from './layouts/AuthLayout';
 import MainLayout from './layouts/MainLayout';
+import { AddMetadata } from './pages/AddMetadata';
 import { Admin } from './pages/Admin';
-import { AdminBooks } from './pages/AdminBooks';
 import { Book } from './pages/Book';
 import { Books } from './pages/Books';
 import { Cart } from './pages/Cart';
@@ -21,6 +20,8 @@ import MyOrders from './pages/MyOrders';
 import { News } from './pages/News';
 import { Order } from './pages/Order';
 import { Signup } from './pages/Signup';
+import { UpdateBook } from './pages/UpdateBook';
+import { UpdateMetadata } from './pages/UpdateMetadata';
 
 function App() {
   return (
@@ -46,8 +47,16 @@ function App() {
               </Route>
               <Route path="/" element={<AdminLayout />}>
                 <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/books" element={<AdminBooks />} />
                 <Route path="/admin/create-book" element={<CreateBook />} />
+                <Route path="/admin/update-book/:id" element={<UpdateBook />} />
+                <Route
+                  path="/admin/add-metadata/:id"
+                  element={<AddMetadata />}
+                />
+                <Route
+                  path="/admin/update-metadata/:idM"
+                  element={<UpdateMetadata />}
+                />
                 <Route
                   path="admin/create-category"
                   element={<CreateCategory />}

@@ -67,10 +67,10 @@ export class BookService {
   async findAllFilter(query: Query): Promise<Book[]> {
     let qb = this.bookRepo.createQueryBuilder('book').where(
       new Brackets((qb) => {
-        qb.where('book.name like :name', {
-          name: `%${query.search}%`,
-        }).orWhere('book.author like :author', {
-          author: `%${query.search}%`,
+        qb.where('LOWER(book.name) like :name', {
+          name: `%${query.search.toLocaleLowerCase()}%`,
+        }).orWhere('LOWER(book.author) like :author', {
+          author: `%${query.search.toLocaleLowerCase()}%`,
         });
       }),
     );
@@ -101,8 +101,6 @@ export class BookService {
         metadata: true,
       },
       where: { id: id },
-      order: { id: 'ASC' },
-      //default order should be most relevant
     });
 
     return book;
@@ -148,6 +146,7 @@ export class BookService {
   }
 
   async update(id: number, payload: UpdateBookDto, userReq: PayloadAuth) {
+    console.log(id, payload);
     const [book] = await this.bookRepo.find({
       relations: ['user'],
       where: { id: id },
@@ -156,6 +155,12 @@ export class BookService {
 
     if (book.user.id !== userReq.id) {
       throw new HttpException('You are not owner of this book', 401);
+    }
+    if (payload.categories) {
+      const categories = await this.categoryRepo.find({
+        where: { id: In([...payload.categories]) },
+      });
+      book.categories = categories;
     }
     const bookUpdated = this.bookRepo.merge(book, payload);
     return await this.bookRepo.save(bookUpdated);

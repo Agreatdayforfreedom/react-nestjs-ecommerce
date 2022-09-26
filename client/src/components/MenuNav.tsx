@@ -18,38 +18,34 @@ export const MenuNav = () => {
       <div
         className={
           hidden.menunav
-            ? 'flex flex-col z-50 items-center absolute left-0 w-full -bottom-32 bg-slate-900/90 py-2'
+            ? 'flex flex-col z-50 items-center absolute left-0 w-full -bottom-44 bg-slate-900/90 py-2'
             : 'hidden'
         }
       >
         <Link
           to="/categories"
-          className="flex flex-col relative px-3 w-full text-white text-center after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-px after:w-0 after:bg-slate-500 after:hover:w-full after:transition-all
-          before:content-[''] before:absolute before:right-1/2 before:bottom-0 before:h-px before:w-0 before:bg-slate-500 before:hover:w-full before:transition-all"
+          className="font-bold text-white p-1 hover:bg-slate-900/90 w-full text-center"
           onClick={() => toggleActions('menunav')}
         >
           Categories
         </Link>
         <Link
           to="#"
-          className="flex flex-col relative px-3 w-full text-white text-center after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-px after:w-0 after:bg-slate-500 after:hover:w-full after:transition-all
-          before:content-[''] before:absolute before:right-1/2 before:bottom-0 before:h-px before:w-0 before:bg-slate-500 before:hover:w-full before:transition-all"
+          className="font-bold text-white p-1 hover:bg-slate-900/90 w-full text-center"
           onClick={() => toggleActions('menunav')}
         >
           Some
         </Link>
         <Link
           to="#"
-          className="flex flex-col relative px-3 w-full text-white text-center after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-px after:w-0 after:bg-slate-500 after:hover:w-full after:transition-all
-          before:content-[''] before:absolute before:right-1/2 before:bottom-0 before:h-px before:w-0 before:bg-slate-500 before:hover:w-full before:transition-all"
+          className="font-bold text-white p-1 hover:bg-slate-900/90 w-full text-center"
           onClick={() => toggleActions('menunav')}
         >
           Top 100
         </Link>
         <Link
           to="/news?order_news=DESC"
-          className="flex flex-col relative px-3 w-full text-white text-center after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-px after:w-0 after:bg-slate-500 after:hover:w-full after:transition-all
-          before:content-[''] before:absolute before:right-1/2 before:bottom-0 before:h-px before:w-0 before:bg-slate-500 before:hover:w-full before:transition-all"
+          className="font-bold text-white p-1 hover:bg-slate-900/90 w-full text-center"
           onClick={() => toggleActions('menunav')}
         >
           News
@@ -57,11 +53,10 @@ export const MenuNav = () => {
         {auth.role === 'admin' && (
           <Link
             to="/admin"
-            className="flex flex-col relative px-3 w-full text-white text-center after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-px after:w-0 after:bg-slate-500 after:hover:w-full after:transition-all
-          before:content-[''] before:absolute before:right-1/2 before:bottom-0 before:h-px before:w-0 before:bg-slate-500 before:hover:w-full before:transition-all"
+            className="font-bold text-orange-400 p-1 hover:bg-slate-900/90 w-full text-center"
             onClick={() => toggleActions('menunav')}
           >
-            admin
+            Admin
           </Link>
         )}
       </div>

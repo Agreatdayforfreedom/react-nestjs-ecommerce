@@ -1,32 +1,57 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { RiArrowLeftSLine } from 'react-icons/ri';
+import { Link, useParams } from 'react-router-dom';
+import { Spinner } from '../components/Loading';
+import useAuth from '../context/hooks/useAuth';
+import useBook from '../context/hooks/useBook';
 import useCart from '../context/hooks/useCart';
-import { Book as IBook, Metadata } from '../interfaces';
+import { Metadata } from '../interfaces';
 
 interface Props {
   metadata: Metadata;
+  bookId: number;
 }
 
 export const Book = () => {
-  const [book, setBook] = useState<IBook>({} as IBook);
-
-  const param = useParams();
+  const { auth, loading: loadingAuth } = useAuth();
   const { addToCart, alert } = useCart();
+  const { book, getBook, loading: loadingBook, deleteBook } = useBook();
+
+  const params = useParams();
+
   useEffect(() => {
-    const getBook = async () => {
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/book/${param.id}`
-      );
-      setBook(data);
-    };
-    getBook();
+    if (params && params.id) {
+      getBook(params.id);
+    }
   }, []);
+  const handleDelete = () => {
+    if (params.id) {
+      deleteBook(params.id);
+    }
+  };
 
   const { message, err } = alert;
+  if (loadingAuth || loadingBook) return <p>loading</p>;
   return (
     <>
       <div className="md:flex md:border-b md:mx-2 lg:p-20 transition-all">
+        {auth.id && (
+          <div className="flex justify-end">
+            <Link
+              to={`/admin/update-book/${book.id}`}
+              className="px-2 mx-2 mt-2 bg-orange-500 rounded text-white hover:bg-orange-700"
+            >
+              Update
+            </Link>
+            <button
+              onClick={handleDelete}
+              className="px-2 mx-2 mt-2 bg-red-500 rounded text-white hover:bg-red-900"
+            >
+              Remove
+            </button>
+          </div>
+        )}
         <div className="flex justify-center mt-3 p-1 border-b place-items-start border md:border-none">
           <img className="w-80 md:h-auto" src={book.image} alt={book.name} />
         </div>
@@ -74,16 +99,57 @@ export const Book = () => {
         </div>
       </div>
 
-      <MetadataBook metadata={book.metadata!} />
+      <MetadataBook metadata={book.metadata!} bookId={book.id} />
     </>
   );
 };
 
-const MetadataBook = ({ metadata }: Props) => {
+const MetadataBook = ({ metadata, bookId }: Props) => {
+  const [menuAdminMetadata, setMenuAdminMetadata] = useState(false);
+  const { auth, loading: loadingAuth } = useAuth();
+
+  const openMenuMetadata = () => {
+    setMenuAdminMetadata(!menuAdminMetadata);
+  };
+
+  if (loadingAuth) return <Spinner />;
   if (metadata && metadata.pages) {
     return (
       <section className="mx-2">
-        <h2 className="text-xl">Details</h2>
+        <div className="flex justify-between items-center mx-2">
+          <h2 className="text-xl">Details</h2>
+          {auth.id && (
+            <div className="relative">
+              <button onClick={openMenuMetadata}>
+                <RiArrowLeftSLine
+                  size={25}
+                  className={
+                    menuAdminMetadata
+                      ? '-rotate-90 transition-all hover:cursor-pointer'
+                      : 'transition-all hover:cursor-pointer'
+                  }
+                />
+                <div
+                  className={
+                    menuAdminMetadata
+                      ? 'absolute block bg-slate-700 border-black rounded py-1 px-2 -bottom-12 -left-20'
+                      : 'hidden'
+                  }
+                >
+                  <Link
+                    to={`/admin/update-metadata/${metadata.id}`}
+                    className="text-white hover:text-orange-500"
+                  >
+                    Update
+                  </Link>
+                  <button className="text-white hover:text-red-700">
+                    Remove
+                  </button>
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
         <table className="flex border border-orange-400  bg-orange-200 ">
           <thead>
             <tr className="flex flex-col justify-between">
@@ -114,7 +180,21 @@ const MetadataBook = ({ metadata }: Props) => {
         </table>
       </section>
     );
+  } else if (!metadata && auth.id) {
+    return (
+      <div className="flex flex-col items-center">
+        <p className="text-blue-900 font-bold px-2">There is no metadata yet</p>
+        <Link
+          to={`/admin/add-metadata/${bookId}`}
+          className="px-2 mx-2 mt-2 bg-orange-500 rounded text-white hover:bg-orange-700"
+        >
+          Add Metadata
+        </Link>
+      </div>
+    );
   } else {
-    return <p>There is no metadata yet</p>;
+    return (
+      <p className="text-blue-900 font-bold px-2">There is no metadata yet</p>
+    );
   }
 };

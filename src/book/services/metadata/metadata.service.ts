@@ -14,6 +14,18 @@ export class MetadataService {
 
   async getMetadata(): Promise<Metadata> {
     return await this.metadataRepo.find()[0];
+  } ///????
+
+  async findMetadata(id: number): Promise<Metadata> {
+    const [metadata] = await this.metadataRepo.find({
+      relations: {
+        book: true,
+      },
+      where: {
+        id: id,
+      },
+    });
+    return metadata;
   }
 
   async create(payload: CreateMetadataDto): Promise<Metadata> {

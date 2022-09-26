@@ -9,6 +9,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
+import { Public } from '../../../auth/decorators/public.decorator';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { RolesGuard } from '../../../auth/guards/roles.guard';
 import { Role } from '../../../auth/models/role.model';
@@ -19,6 +20,12 @@ import { MetadataService } from '../../services/metadata/metadata.service';
 @Controller('metadata')
 export class MetadataController {
   constructor(private metadataService: MetadataService) {}
+
+  @Public()
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.metadataService.findMetadata(id);
+  }
 
   @Roles(Role.ADMIN)
   @Post()
