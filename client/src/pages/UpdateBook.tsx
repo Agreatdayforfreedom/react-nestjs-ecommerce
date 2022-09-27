@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowReturn } from '../components/ArrowReturn';
+import { ArrowBack } from '../components/ArrowReturn';
 import { FormBook } from '../components/FormBook';
 
 export const UpdateBook = () => {

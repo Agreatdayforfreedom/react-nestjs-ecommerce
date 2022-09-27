@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  URLSearchParamsInit,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { FormGen } from '../components/FormBook';
 import { Book, Category, Loading, Metadata } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
@@ -19,6 +23,15 @@ export interface BookContextProps {
   loading: Loading;
   categories: Category[];
   params: URLSearchParams;
+  setParams: (
+    nextInit: URLSearchParamsInit,
+    navigateOptions?:
+      | {
+          replace?: boolean | undefined;
+          state?: any;
+        }
+      | undefined
+  ) => void;
   booksLength: Book[];
   getBooksLength: (p1: number | 'all', p2?: number) => number;
   toggleActions: (val: keyof OpenOrCloseDropDownMenus) => void;
@@ -274,6 +287,7 @@ export const BookProvider = ({ children }: Props) => {
         loading,
         categories,
         params,
+        setParams,
         booksLength,
         getBooksLength,
         toggleActions,

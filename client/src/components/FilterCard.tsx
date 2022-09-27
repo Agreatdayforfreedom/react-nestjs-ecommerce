@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
 import useBook from '../context/hooks/useBook';
+import { TiDelete } from 'react-icons/ti';
 
 export const FilterCard = () => {
-  const { params, getBooksLength } = useBook();
+  const { params, setParams, getBooksLength } = useBook();
 
   const minPrice: string | null = params.get('minPrice');
   const maxPrice: string | null = params.get('maxPrice');
@@ -15,11 +15,20 @@ export const FilterCard = () => {
     parseInt(maxPrice, 10)
   );
 
+  const delFilter = () => {
+    if (minPrice && maxPrice) {
+      console.log('hello');
+      params.delete('minPrice');
+      params.delete('maxPrice');
+      setParams(params);
+    }
+  };
+
   return (
     <div
       className={
         minPrice
-          ? 'relative flex flex-col border border-slate-400 px-2 justify-center w-5/6 sm:w-1/2 mx-auto my-3 md:mx-0 md:w-full text-sm'
+          ? 'relative flex flex- border border-slate-400 px-2 justify-center w-5/6 sm:w-1/2 mx-auto my-3 md:mx-0 md:w-full text-sm'
           : 'hidden'
       }
     >
@@ -51,6 +60,9 @@ export const FilterCard = () => {
           </p>
         </>
       )}
+      <button onClick={delFilter} className="px-2 md:p-0 text-red-700">
+        <TiDelete size={20} />
+      </button>
     </div>
   );
 };

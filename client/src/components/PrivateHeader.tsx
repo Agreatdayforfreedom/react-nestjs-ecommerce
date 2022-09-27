@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import useAuth from '../context/hooks/useAuth';
 import { RiShoppingCartFill } from 'react-icons/ri';
+import { GiBookshelf } from 'react-icons/gi';
 import { useEffect, useState } from 'react';
 import useCart from '../context/hooks/useCart';
 import { Search } from './Search';
 import { MenuNav } from './MenuNav';
+import { IoMdArrowDropright } from 'react-icons/io';
 
 export const PrivateHeader = () => {
   const { auth, logout } = useAuth();
@@ -15,17 +17,21 @@ export const PrivateHeader = () => {
     setLengthCart(cartItems.length);
   }, [cartItems]);
   return (
-    <header>
+    <header className="relative">
       <div className="flex flex-col md:flex-row md:items-start justify-between items-center">
         <div className="order-2 md:order-1 w-full">
           <Link
             to="/"
             className="
-          
-          px-2 text-4xl font-bold
+            sm:absolute z-40 sm:pt-3 md:relative top-0
+          flex text-amber-900
+          px-2 text-6xl font-bold
           "
           >
-            Library
+            Library{' '}
+            <span className="">
+              <GiBookshelf />
+            </span>
           </Link>
           <div className="relative flex justify-center items-center">
             {/* menu */}
@@ -35,7 +41,7 @@ export const PrivateHeader = () => {
         </div>
         {/* cart */}
         <div className="order-1 md:order-2 w-full flex flex-col items-end">
-          <div className="border-l-2 border-b-2 border-orange-300 border-dotted w-fit">
+          <div className="border-l-2 z-50 border-b-2 border-orange-300 border-dotted w-fit">
             <Link
               to="/my-data"
               className="px-2 
@@ -63,11 +69,11 @@ export const PrivateHeader = () => {
             </button>
           </div>
           <div className="flex justify-end">
-            <div className="flex items-end mr-4">
+            <div className="z-50 flex items-end mr-4">
               <Link to="/cart">
                 <RiShoppingCartFill
                   size="35"
-                  className=" text-orange-800 hover:cursor-pointer 
+                  className=" mt-4 text-orange-800 hover:cursor-pointer 
                 md:mt-8 hover:text-orange-900 transition-all"
                 />
               </Link>

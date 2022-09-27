@@ -1,18 +1,18 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { IoMdArrowDropright } from 'react-icons/io';
 import { Link, useLocation } from 'react-router-dom';
 import { Spinner } from '../components/Loading';
 import { PreviewBook } from '../components/PreviewBook';
 import useBook from '../context/hooks/useBook';
 import { Book, Loading as ILoading } from '../interfaces';
 
-export const News = () => {
+export const New = () => {
   const [hidden, setHidden] = useState(true);
   const [booksNews, setBooksNews] = useState<Book[]>([]);
   const [loading, setLoading] = useState<ILoading>(true);
 
-  const { loading: loadingCat, categories, search, params } = useBook();
-  const loc = useLocation();
+  const { loading: loadingCat, categories, search } = useBook();
 
   const toggleActions = () => {
     setHidden(!hidden);
@@ -33,23 +33,6 @@ export const News = () => {
     getBooks();
   }, []);
 
-  // useEffect(() => {
-  //   const getBooks = async () => {
-  //     try {
-  //       const { data } = await axios(
-  //         `${import.meta.env.VITE_URL_BACK}/book/category${loc.search}`
-  //       );
-  //       setBooksNews(data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   if (loc.search.split('&').length > 1) {
-  //     getBooks();
-  //   }
-  // }, [loc]);
-
   if (loading && loadingCat) return <Spinner />;
   return (
     <div className="flex flex-col md:flex-row">
@@ -61,35 +44,38 @@ export const News = () => {
           <ul
             className={`${
               hidden ? 'hidden' : 'block'
-            } absolute bg-slate-900/80 border border-gray-600 left-0 top-full w-full shadow-2xl`}
+            } absolute z-50 bg-slate-900/95 border border-gray-600 left-0 top-full w-full shadow-2xl`}
           >
             {categories.map((c) => (
-              <li className="w-full py-1 text-center border-b hover:bg-slate-900/75">
-                <button
-                  onClick={() => search({ cat: `${c.name}${c.id}` })}
-                  className="px-2 text-white border-orange-500 hover:border-b "
+              <li className="w-full py-1 text-center hover:bg-slate-900/90">
+                <Link
+                  to={`/categories?cat=${c.name}${c.id}`}
+                  className="px-2 text-white b"
                 >
                   {c.name}{' '}
                   <span className="text-slate-300">({c.books.length})</span>
-                </button>
+                </Link>
               </li>
             ))}
           </ul>
         </div>
       </div>
-      <aside className="hidden md:block w-1/4 border border-slate-500 mx-2">
-        <h2 className="text-orange-600 text-center text-xl bg-orange-100 border-b">
+      <aside className="relative hidden md:block w-1/4 border border-slate-500 mx-2">
+        <h2 className="absolute w-4/5 m-auto -top-3 left-0 right-0 text-orange-600 text-center bg-white">
           Select Category
         </h2>
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-5">
           {categories.map((c) => (
-            <Link
-              className="px-2 text-sm border-y border-orange-200 hover:bg-orange-100"
-              to={`/categories?cat=${c.name}${c.id}`}
-            >
-              {c.name}{' '}
-              <span className="text-slate-600">({c.books.length})</span>
-            </Link>
+            <div className="flex items-center text-slate-600 hover:text-black">
+              <IoMdArrowDropright size="17" />
+              <Link
+                className="pr-2 text-sm "
+                to={`/categories?cat=${c.name}${c.id}`}
+              >
+                {c.name}{' '}
+                <span className="text-slate-600">({c.books.length})</span>
+              </Link>
+            </div>
           ))}
         </div>
       </aside>

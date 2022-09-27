@@ -5,7 +5,7 @@ interface Props {
   to: string;
 }
 
-export const ArrowReturn = ({ to }: Props) => {
+export const ArrowBack = ({ to }: Props) => {
   return (
     <div className="absolute left-4 top-4 hover:left-3.5 transition-all">
       <Link to={to}>
