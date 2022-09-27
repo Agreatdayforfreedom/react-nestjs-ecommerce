@@ -11,6 +11,14 @@ export interface Metadata {
   book: Book;
 }
 
+export interface Message {
+  id: number;
+  createdAt?: string;
+  updatedAt?: string;
+  message: string;
+  user: User;
+}
+
 export interface Book {
   id: number;
   author: string;
@@ -21,6 +29,7 @@ export interface Book {
   review: string;
   stock: number;
   metadata?: Metadata;
+  messages: Message[];
   createdAt?: string;
   updatedAt?: string;
   isNew: boolean;

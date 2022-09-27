@@ -27,6 +27,7 @@ export class MessagesService {
     const messages = await this.messageRepo
       .createQueryBuilder('message')
       .leftJoinAndSelect('message.book', 'book')
+      .leftJoinAndSelect('message.user', 'user')
       .where('message.book = :bookId', { bookId: id })
       .limit(query.limit)
       .getMany();

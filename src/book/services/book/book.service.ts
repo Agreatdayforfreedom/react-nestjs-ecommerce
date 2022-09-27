@@ -105,6 +105,9 @@ export class BookService {
     const [book] = await this.bookRepo.find({
       relations: {
         categories: true,
+        messages: {
+          user: true,
+        },
         metadata: true,
       },
       where: { id: id },

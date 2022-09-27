@@ -1,15 +1,28 @@
-import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { FormEvent, useEffect, useState } from 'react';
 import { RiArrowLeftSLine } from 'react-icons/ri';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Button } from '../components/Button';
 import { Spinner } from '../components/Loading';
 import useAuth from '../context/hooks/useAuth';
 import useBook from '../context/hooks/useBook';
 import useCart from '../context/hooks/useCart';
-import { Metadata } from '../interfaces';
+import { useForm } from '../hooks/useForm';
+import { Message, Metadata } from '../interfaces';
+import { configAxios } from '../utils/configAxios';
 
-interface Props {
+interface PropsMetadata {
   metadata: Metadata;
   bookId: number;
+}
+
+interface PropsMessages {
+  bookId: number;
+}
+
+interface Messages {
+  length: number;
+  messages: Message[];
 }
 
 export const Book = () => {
@@ -64,6 +77,22 @@ export const Book = () => {
               <p className="first-letter:uppercase mb-5 px-2 text-slate-700">
                 {book.review}
               </p>
+              <div className="flex">
+                <p className="font-bold">Catalogs:</p>
+                {book.categories &&
+                  book.categories.map((c) => (
+                    <>
+                      <div className="flex">
+                        <Link
+                          to={`/categories?cat=${c.name}${c.id}`}
+                          className="px-1 hover:underline"
+                        >
+                          {c.name},
+                        </Link>
+                      </div>
+                    </>
+                  ))}
+              </div>
             </div>
             <div className="m-2 border-b border-b-slate-400 pb-2">
               <div className="flex justify-between">
@@ -101,11 +130,12 @@ export const Book = () => {
       </div>
 
       <MetadataBook metadata={book.metadata!} bookId={book.id} />
+      <Reviews bookId={book.id!} />
     </>
   );
 };
 
-const MetadataBook = ({ metadata, bookId }: Props) => {
+const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
   const [menuAdminMetadata, setMenuAdminMetadata] = useState(false);
   const { auth, loading: loadingAuth } = useAuth();
   const { deleteMetadata, loading: loadingBook } = useBook();
@@ -208,4 +238,108 @@ const MetadataBook = ({ metadata, bookId }: Props) => {
       <p className="text-blue-900 font-bold px-2">There is no metadata yet</p>
     );
   }
+};
+
+const Reviews = ({ bookId }: PropsMessages) => {
+  //TODO: IMPLEMENT UPDATE and DELETE and STARS FOR THE BOOK
+  //TODO: REdirect or whatever you what
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [limit, setLimit] = useState<string>('5');
+  const [params, setParams] = useSearchParams();
+  const [alert, setAlert] = useState<string>('');
+
+  const token = localStorage.getItem('token');
+  if (!token) return <p>loading</p>; //go to signin
+
+  const config = configAxios(token);
+
+  const { handleChange, form } = useForm<{ message: string }>();
+
+  useEffect(() => {
+    setParams({ limit });
+    const getMessages = async () => {
+      if (bookId) {
+        const { data } = await axios(
+          `${
+            import.meta.env.VITE_URL_BACK
+          }/messages/${bookId}?limit=${params.get('limit')}`
+        );
+        setMessages(data.messages);
+        setLoading(false);
+      }
+    };
+    getMessages();
+  }, [limit]);
+
+  const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    if (bookId) {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_URL_BACK}/messages/${bookId}`,
+        form,
+        config
+      );
+      console.log(data);
+      setMessages([...messages, data]);
+    }
+  };
+
+  useEffect(() => {
+    console.log(limit, 'LOMIT');
+  }, [limit]);
+
+  const appendLimit = () => {
+    const limit = params.get('limit');
+    if (limit) {
+      const limitPlus5 = parseInt(limit, 10) + 5;
+      if (parseInt(limit, 10) > messages.length) {
+        setAlert('No more reviews');
+      }
+      setParams({ limit: limitPlus5.toString() });
+      setLimit(limitPlus5.toString());
+    }
+  };
+
+  if (loading) return <Spinner />;
+  return (
+    <div className="mx-2 mt-10 border-t-2 border-t-gray-500 pt-5">
+      <div className="border p-3">
+        <h3>
+          Reviews: <span>{messages.length}</span>
+        </h3>
+        {messages &&
+          messages.map((m) => (
+            <div className="p-2 border-b">
+              <p className="text-slate-800">{m.user.username}:</p>
+              <p className="px-3 text-sm text-ellipsis overflow-hidden">
+                {m.message}
+              </p>
+            </div>
+          ))}
+        <div className="text-end">
+          <button
+            className="text-sm text-orange-600 hover:underline"
+            onClick={() => appendLimit()}
+          >
+            Show more
+          </button>
+          {alert && <p className="text-sm text-red-500">{alert}</p>}
+        </div>
+      </div>
+      <form className="mt-2" onSubmit={handleSubmit}>
+        <textarea
+          name="message"
+          id="message"
+          className="border border-orange-500
+            p-2 w-full"
+          placeholder="Your review here"
+          onChange={handleChange}
+        ></textarea>
+        <div className="text-end">
+          <Button bName="Send" />
+        </div>
+      </form>
+    </div>
+  );
 };
