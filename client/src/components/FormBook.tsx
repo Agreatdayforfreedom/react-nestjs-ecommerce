@@ -1,11 +1,8 @@
-import axios from 'axios';
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { IoMdVolumeHigh } from 'react-icons/io';
-import { useNavigate, useParams } from 'react-router-dom';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import useBook from '../context/hooks/useBook';
 import { useForm } from '../hooks/useForm';
 import { Book } from '../interfaces';
-import { configAxios } from '../utils/configAxios';
 import { Button } from './Button';
 
 export interface FormGen {

@@ -22,7 +22,7 @@ export const News = () => {
     const getBooks = async () => {
       try {
         const { data } = await axios(
-          `${import.meta.env.VITE_URL_BACK}/book${loc.search}`
+          `${import.meta.env.VITE_URL_BACK}/book?order=new`
         );
         setBooksNews(data);
         setLoading(false);
@@ -33,22 +33,22 @@ export const News = () => {
     getBooks();
   }, []);
 
-  useEffect(() => {
-    const getBooks = async () => {
-      try {
-        const { data } = await axios(
-          `${import.meta.env.VITE_URL_BACK}/book/category${loc.search}`
-        );
-        setBooksNews(data);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    if (loc.search.split('&').length > 1) {
-      getBooks();
-    }
-  }, [loc]);
+  // useEffect(() => {
+  //   const getBooks = async () => {
+  //     try {
+  //       const { data } = await axios(
+  //         `${import.meta.env.VITE_URL_BACK}/book/category${loc.search}`
+  //       );
+  //       setBooksNews(data);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   if (loc.search.split('&').length > 1) {
+  //     getBooks();
+  //   }
+  // }, [loc]);
 
   if (loading && loadingCat) return <Spinner />;
   return (

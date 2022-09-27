@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useBook from '../context/hooks/useBook';
 import { useForm } from '../hooks/useForm';
@@ -12,7 +12,7 @@ export const FormMetadata = () => {
 
   const { handleSubmitMetadata } = useBook();
   const params = useParams();
-  console.log(params);
+
   useEffect(() => {
     const getMetadata = async () => {
       const { data } = await axios(
@@ -26,7 +26,7 @@ export const FormMetadata = () => {
     }
   }, [params]);
 
-  const submit = (evt: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (params.idM) {
       handleSubmitMetadata(form, params.idM);
@@ -39,7 +39,7 @@ export const FormMetadata = () => {
   return (
     <form
       className="bg-slate-100 p-8 rounded-md shadow-md m-auto md:w-4/6 lg:w-1/2"
-      onSubmit={submit}
+      onSubmit={handleSubmit}
     >
       <div className="flex flex-col my-3">
         <label htmlFor="publisher" className="mb-1 font-bold text-slate-600">

@@ -31,6 +31,7 @@ export interface BookContextProps {
   getBook: (id: string) => void;
   deleteBook: (id: string) => void;
   handleSubmitMetadata: (metadata: Metadata, id: string) => void;
+  deleteMetadata: (id: string) => void;
 }
 
 export const BookContext = createContext<BookContextProps>(
@@ -159,13 +160,19 @@ export const BookProvider = ({ children }: Props) => {
   const updateMetadata = async (metadata: Metadata) => {
     const { id, ...rest } = metadata;
 
-    const { data } = await axios.put(
+    await axios.put(
       `${import.meta.env.VITE_URL_BACK}/metadata/${id}`,
       rest,
       config
     );
-    console.log(data);
     navigate(`/book/${metadata.book.id}`);
+  };
+
+  const deleteMetadata = async (id: string) => {
+    await axios.delete(
+      `${import.meta.env.VITE_URL_BACK}/metadata/${id}`,
+      config
+    );
   };
 
   const search = async (query: {
@@ -279,6 +286,7 @@ export const BookProvider = ({ children }: Props) => {
         getBook,
         deleteBook,
         handleSubmitMetadata,
+        deleteMetadata,
       }}
     >
       {children}

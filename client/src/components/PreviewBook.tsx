@@ -1,3 +1,4 @@
+import { MdOutlineFiberNew } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { Book } from '../interfaces';
 
@@ -8,7 +9,12 @@ interface Props {
 export const PreviewBook = ({ book }: Props) => {
   return (
     <>
-      <div className="w-full text-center border">
+      <div className="relative w-full text-center border">
+        <div className="absolute -top-2">
+          {book.isNew && (
+            <MdOutlineFiberNew size="40" className="text-orange-600" />
+          )}
+        </div>
         <Link to={`/book/${book.id}`}>
           <img
             src={book.image}

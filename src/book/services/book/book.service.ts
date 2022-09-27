@@ -19,7 +19,7 @@ enum Order {
   priceASC = 'price%ASC',
   priceDESC = 'price%DESC',
   stock = 'stock',
-  news = 'news',
+  news = 'new',
 }
 
 export interface Query {
@@ -39,6 +39,20 @@ export class BookService {
   ) {}
 
   qbFilters(qb: SelectQueryBuilder<Book>, query: Query): void {
+    if (query.search) {
+      qb.where(
+        new Brackets((qb) => {
+          qb.where('LOWER(book.name) like :name', {
+            name: `%${query.search.toLocaleLowerCase()}%`,
+          }).orWhere('LOWER(book.author) like :author', {
+            author: `%${query.search.toLocaleLowerCase()}%`,
+          });
+        }),
+      );
+    }
+    if (query.order === Order.news) {
+      qb.where('book.isNew = :new', { new: true });
+    }
     if (query.minPrice && query.maxPrice) {
       qb.andWhere(
         new Brackets((qb) => {
@@ -65,15 +79,8 @@ export class BookService {
   }
 
   async findAllFilter(query: Query): Promise<Book[]> {
-    let qb = this.bookRepo.createQueryBuilder('book').where(
-      new Brackets((qb) => {
-        qb.where('LOWER(book.name) like :name', {
-          name: `%${query.search.toLocaleLowerCase()}%`,
-        }).orWhere('LOWER(book.author) like :author', {
-          author: `%${query.search.toLocaleLowerCase()}%`,
-        });
-      }),
-    );
+    let qb = this.bookRepo.createQueryBuilder('book');
+
     this.qbFilters(qb, query);
 
     return await qb.getMany();
