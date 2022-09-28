@@ -7,11 +7,6 @@ import { Book } from '../../entities/book.entity';
 import { User } from '../../../user/entities/user.entity';
 import { PayloadAuth } from '../../../auth/models/token.model';
 
-export interface ArrMessageAndLength<T, K> {
-  readonly length: T;
-  readonly messages: K[];
-}
-
 @Injectable()
 export class MessagesService {
   constructor(
@@ -20,18 +15,27 @@ export class MessagesService {
     @InjectRepository(User) private userRepo: Repository<User>,
   ) {}
 
-  public async findAll(
-    id: number,
-    query: any,
-  ): Promise<ArrMessageAndLength<number, Message>> {
-    const messages = await this.messageRepo
+  async findAll(id: number, query: any): Promise<Message[]> {
+    return await this.messageRepo
       .createQueryBuilder('message')
       .leftJoinAndSelect('message.book', 'book')
       .leftJoinAndSelect('message.user', 'user')
       .where('message.book = :bookId', { bookId: id })
       .limit(query.limit)
       .getMany();
-    return { length: messages.length, messages };
+  }
+
+  async findOwnReviews(id: number, userReq: PayloadAuth): Promise<Message[]> {
+    return await this.messageRepo.find({
+      relations: {
+        book: true,
+        user: true,
+      },
+      where: {
+        book: { id: id },
+        user: { id: userReq.id },
+      },
+    });
   }
 
   async create(
@@ -40,7 +44,6 @@ export class MessagesService {
     userReq: PayloadAuth,
   ): Promise<Message> {
     const message = this.messageRepo.create(payload);
-
     const [findUser] = await this.userRepo.find({
       where: { id: userReq.id },
     });

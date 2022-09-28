@@ -47,7 +47,6 @@ export const FormBook = () => {
     if (!params.id) {
       setCatId([]);
     }
-    console.log(params);
   }, [params, book]);
 
   //submit
@@ -76,7 +75,6 @@ export const FormBook = () => {
           return;
         }
         //else add to the array
-        console.log(options[i], 'OPTIONS');
         setCatId([...catId, parseInt(options[i].value)]);
       }
     }

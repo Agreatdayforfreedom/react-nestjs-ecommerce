@@ -12,11 +12,11 @@ export interface Metadata {
 }
 
 export interface Message {
-  id: number;
+  id?: number;
   createdAt?: string;
   updatedAt?: string;
   message: string;
-  user: User;
+  user?: User;
 }
 
 export interface Book {
@@ -36,6 +36,7 @@ export interface Book {
 }
 
 export interface User {
+  id: number;
   username: string;
   email: string;
   password: string;

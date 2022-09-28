@@ -8,7 +8,6 @@ import {
   Post,
   Put,
   Query,
-  Request,
 } from '@nestjs/common';
 import { MessagesService } from '../../services/messages/messages.service';
 import { CreateMessageDto } from '../../dtos/message.dto';
@@ -24,6 +23,14 @@ export class MessagesController {
   @Get(':id')
   findAll(@Param('id', ParseIntPipe) id: number, @Query() query?: any) {
     return this.messageService.findAll(id, query);
+  }
+
+  @Get('own/:id')
+  findOwnReviews(
+    @Param('id', ParseIntPipe) id: number,
+    @User() userReq: PayloadAuth,
+  ) {
+    return this.messageService.findOwnReviews(id, userReq);
   }
 
   @Post(':id')

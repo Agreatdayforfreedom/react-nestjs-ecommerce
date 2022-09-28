@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { FormEvent, useEffect, useState } from 'react';
-import { RiArrowLeftSLine } from 'react-icons/ri';
+import { RiArrowLeftSLine, RiPencilFill } from 'react-icons/ri';
+import { AiFillDelete } from 'react-icons/ai';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { Spinner } from '../components/Loading';
@@ -9,7 +10,6 @@ import useBook from '../context/hooks/useBook';
 import useCart from '../context/hooks/useCart';
 import { useForm } from '../hooks/useForm';
 import { Message, Metadata } from '../interfaces';
-import { configAxios } from '../utils/configAxios';
 
 interface PropsMetadata {
   metadata: Metadata;
@@ -20,10 +20,24 @@ interface PropsMessages {
   bookId: number;
 }
 
-interface Messages {
-  length: number;
+interface PropsMessagesForm {
+  bookId: number;
   messages: Message[];
 }
+
+interface PropsMessageCard {
+  message: Message;
+  own?: boolean;
+}
+
+interface PropsOwnMessageCard {
+  ownMessages: Message;
+}
+
+// export interface MessageForm {
+//   id?: number;
+//   message: string;
+// }
 
 export const Book = () => {
   const { auth, loading: loadingAuth } = useAuth();
@@ -37,6 +51,7 @@ export const Book = () => {
       getBook(params.id);
     }
   }, []);
+
   const handleDelete = () => {
     if (params.id) {
       deleteBook(params.id);
@@ -81,16 +96,14 @@ export const Book = () => {
                 <p className="font-bold">Catalogs:</p>
                 {book.categories &&
                   book.categories.map((c) => (
-                    <>
-                      <div className="flex">
-                        <Link
-                          to={`/categories?cat=${c.name}${c.id}`}
-                          className="px-1 hover:underline"
-                        >
-                          {c.name},
-                        </Link>
-                      </div>
-                    </>
+                    <div className="flex" key={c.id}>
+                      <Link
+                        to={`/categories?cat=${c.name}${c.id}`}
+                        className="px-1 hover:underline"
+                      >
+                        {c.name},
+                      </Link>
+                    </div>
                   ))}
               </div>
             </div>
@@ -129,8 +142,8 @@ export const Book = () => {
         </section>
       </div>
 
-      <MetadataBook metadata={book.metadata!} bookId={book.id} />
-      <Reviews bookId={book.id!} />
+      <MetadataBook metadata={book.metadata!} bookId={book.id && book.id} />
+      <Questions bookId={book.id && book.id} />
     </>
   );
 };
@@ -149,8 +162,10 @@ const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
       deleteMetadata(metadata.id);
     }
   };
-
-  if (loadingAuth) return <Spinner />;
+  useEffect(() => {
+    console.log('dwo');
+  }, []);
+  if (loadingAuth || loadingBook) return <Spinner />;
   if (metadata && metadata.pages) {
     return (
       <section className="mx-2">
@@ -167,27 +182,28 @@ const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
                       : 'transition-all hover:cursor-pointer'
                   }
                 />
-                <div
-                  className={
-                    menuAdminMetadata
-                      ? 'absolute block bg-slate-700 border-black rounded py-1 px-2 -bottom-12 -left-20'
-                      : 'hidden'
-                  }
-                >
-                  <Link
-                    to={`/admin/update-metadata/${metadata.id}`}
-                    className="text-white hover:text-orange-500"
-                  >
-                    Update
-                  </Link>
-                  <button
-                    onClick={handleDelete}
-                    className="text-white hover:text-red-700"
-                  >
-                    Remove
-                  </button>
-                </div>
               </button>
+
+              <div
+                className={
+                  menuAdminMetadata
+                    ? 'absolute block bg-slate-700 border-black rounded py-1 px-2 -bottom-12 -left-20'
+                    : 'hidden'
+                }
+              >
+                <Link
+                  to={`/admin/update-metadata/${metadata.id}`}
+                  className="text-white hover:text-orange-500"
+                >
+                  Update
+                </Link>
+                <button
+                  onClick={handleDelete}
+                  className="text-white hover:text-red-700"
+                >
+                  Remove
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -240,54 +256,22 @@ const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
   }
 };
 
-const Reviews = ({ bookId }: PropsMessages) => {
-  //TODO: IMPLEMENT UPDATE and DELETE and STARS FOR THE BOOK
-  //TODO: REdirect or whatever you what
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+const Questions = ({ bookId }: PropsMessages) => {
   const [limit, setLimit] = useState<string>('5');
   const [params, setParams] = useSearchParams();
   const [alert, setAlert] = useState<string>('');
 
-  const token = localStorage.getItem('token');
-  if (!token) return <p>loading</p>; //go to signin
-
-  const config = configAxios(token);
-
-  const { handleChange, form } = useForm<{ message: string }>();
-
+  const { getMessages, messages, ownMessages, getOwnMessages, loading } =
+    useBook();
   useEffect(() => {
-    setParams({ limit });
-    const getMessages = async () => {
-      if (bookId) {
-        const { data } = await axios(
-          `${
-            import.meta.env.VITE_URL_BACK
-          }/messages/${bookId}?limit=${params.get('limit')}`
-        );
-        setMessages(data.messages);
-        setLoading(false);
-      }
-    };
-    getMessages();
-  }, [limit]);
-
-  const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
     if (bookId) {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_URL_BACK}/messages/${bookId}`,
-        form,
-        config
-      );
-      console.log(data);
-      setMessages([...messages, data]);
-    }
-  };
+      // setParams({ limit });
+      console.log('lomit');
 
-  useEffect(() => {
-    console.log(limit, 'LOMIT');
-  }, [limit]);
+      getMessages(bookId);
+      getOwnMessages(bookId);
+    }
+  }, []);
 
   const appendLimit = () => {
     const limit = params.get('limit');
@@ -306,40 +290,129 @@ const Reviews = ({ bookId }: PropsMessages) => {
     <div className="mx-2 mt-10 border-t-2 border-t-gray-500 pt-5">
       <div className="border p-3">
         <h3>
-          Reviews: <span>{messages.length}</span>
+          Questions: <span>{messages && messages.length}</span>
         </h3>
         {messages &&
-          messages.map((m) => (
-            <div className="p-2 border-b">
-              <p className="text-slate-800">{m.user.username}:</p>
-              <p className="px-3 text-sm text-ellipsis overflow-hidden">
-                {m.message}
-              </p>
-            </div>
-          ))}
+          messages.map((m) => <MessageCard message={m} key={m.id} />)}
         <div className="text-end">
           <button
-            className="text-sm text-orange-600 hover:underline"
-            onClick={() => appendLimit()}
+            className={
+              messages.length === 0
+                ? 'hidden'
+                : 'text-sm text-orange-600 hover:underline'
+            }
+            onClick={appendLimit}
           >
             Show more
           </button>
           {alert && <p className="text-sm text-red-500">{alert}</p>}
         </div>
       </div>
-      <form className="mt-2" onSubmit={handleSubmit}>
-        <textarea
-          name="message"
-          id="message"
-          className="border border-orange-500
-            p-2 w-full"
-          placeholder="Your review here"
-          onChange={handleChange}
-        ></textarea>
-        <div className="text-end">
-          <Button bName="Send" />
+      <FormMessage bookId={bookId} messages={messages} />
+      <div>
+        <h3 className="border-b">Your Quesions</h3>
+        {ownMessages &&
+          ownMessages.map((m: any) => (
+            <OwnMessageCard ownMessages={m} key={m.id} />
+          ))}
+      </div>
+    </div>
+  );
+};
+
+const FormMessage = ({ bookId }: PropsMessagesForm) => {
+  const { handleChange, form, setForm } = useForm<Message>();
+  const { handleSubmitMessage, messageEditMode, catchMessageToEdit } =
+    useBook();
+
+  useEffect(() => {
+    if (messageEditMode.message) {
+      setForm(messageEditMode);
+    }
+  }, [messageEditMode]);
+  // receiving the messaje object and setting in the textarea value if it exists
+
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+
+    handleSubmitMessage(form, bookId);
+    setForm({ message: '' });
+  };
+  return (
+    <form className="mt-2" onSubmit={handleSubmit}>
+      <textarea
+        name="message"
+        id="message"
+        className={
+          messageEditMode.message
+            ? 'border-2 border-red-500 p-2 w-full'
+            : 'border border-orange-500 p-2 w-full'
+        }
+        value={form.message && form.message}
+        placeholder="Your review here"
+        onChange={handleChange}
+      ></textarea>
+      <div className="text-end">
+        {messageEditMode.message && (
+          <button
+            type="button"
+            className="rounded bg-blue-800 p-2 font-bold text-white hover:bg-blue-900 transition-all"
+            onClick={() => {
+              catchMessageToEdit({ message: '' }), setForm({ message: '' });
+            }}
+          >
+            Cancel
+          </button>
+        )}
+
+        <Button bName={messageEditMode.message ? 'Save' : 'Send'} />
+      </div>
+    </form>
+  );
+};
+
+const OwnMessageCard = ({ ownMessages }: PropsOwnMessageCard) => {
+  return <MessageCard message={ownMessages} own={true} />;
+};
+
+const MessageCard = ({ message, own }: PropsMessageCard) => {
+  const { auth, loading } = useAuth();
+  const { catchMessageToEdit, handleDelete } = useBook();
+
+  const handleUpdate = async (message: any) => {
+    catchMessageToEdit(message);
+  };
+
+  if (loading) return <Spinner />;
+  return (
+    <div className="flex justify-between p-2 border-b">
+      <div className="w-4/5">
+        <p className="text-slate-800">
+          {own && message.user && auth.id == message.user.id
+            ? 'You'
+            : message.user && message.user.username}
+          :
+        </p>
+        <p className="px-3 text-sm text-ellipsis overflow-hidden">
+          {message.message}
+        </p>
+      </div>
+      {own && message.user && auth.id == message.user.id && (
+        <div>
+          <button onClick={() => handleUpdate(message)}>
+            <RiPencilFill
+              size={20}
+              className="text-orange-700 hover:text-orange-900"
+            />
+          </button>
+          <button onClick={() => handleDelete(message.id!)}>
+            <AiFillDelete
+              size={20}
+              className="text-red-700 hover:text-red-900"
+            />
+          </button>
         </div>
-      </form>
+      )}
     </div>
   );
 };

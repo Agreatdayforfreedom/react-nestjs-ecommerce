@@ -6,10 +6,6 @@ export const OrderMenu = () => {
   const [getNameOrder, setGetNameOrder] = useState<string>('Order by');
 
   const { search, toggleActions, hidden } = useBook();
-  useEffect(() => {
-    console.log('reload');
-    console.log(getNameOrder);
-  }, []);
   return (
     <div className="md:relative flex justify-end my-1 mx-3">
       <div className="mx-2 p-1 px-8 bg-slate-900 font-bold text-white">

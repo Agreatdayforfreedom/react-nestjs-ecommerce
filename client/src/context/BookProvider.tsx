@@ -6,7 +6,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { FormGen } from '../components/FormBook';
-import { Book, Category, Loading, Metadata } from '../interfaces';
+import { Book, Category, Loading, Message, Metadata } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 
 interface Props {
@@ -45,6 +45,14 @@ export interface BookContextProps {
   deleteBook: (id: string) => void;
   handleSubmitMetadata: (metadata: Metadata, id: string) => void;
   deleteMetadata: (id: string) => void;
+  messageEditMode: Message;
+  messages: Message[];
+  ownMessages: Message[];
+  getMessages: (bookId: number) => void;
+  getOwnMessages: (bookId: number) => void;
+  handleSubmitMessage: (message: Message, bookId?: number) => void;
+  catchMessageToEdit: (message: Message) => void;
+  handleDelete: (messageId: number) => void;
 }
 
 export const BookContext = createContext<BookContextProps>(
@@ -70,6 +78,12 @@ export const BookProvider = ({ children }: Props) => {
   const [file, setFile] = useState<any>();
   const [catId, setCatId] = useState<number[]>([]);
   const [book, setBook] = useState<Book>({} as Book);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [ownMessages, setOwnMessages] = useState<Message[]>([]);
+
+  const [messageEditMode, setMessageEditMode] = useState<Message>(
+    {} as Message
+  );
 
   const navigate = useNavigate();
 
@@ -112,7 +126,7 @@ export const BookProvider = ({ children }: Props) => {
       { ...book, categories: catId },
       config
     );
-    console.log(data);
+
     if (data.response) {
       throw new Error('Error trying to create the book');
     }
@@ -133,13 +147,11 @@ export const BookProvider = ({ children }: Props) => {
 
   const updateBook = async (book: FormGen) => {
     const { id, ...rest } = book;
-    console.log(rest, catId);
     const { data } = await axios.put(
       `${import.meta.env.VITE_URL_BACK}/book/${id}`,
       { ...rest, categories: catId },
       config
     );
-    console.log(data);
   };
 
   const deleteBook = async (id: string) => {
@@ -150,12 +162,9 @@ export const BookProvider = ({ children }: Props) => {
   const handleSubmitMetadata = (metadata: Metadata, id: string) => {
     if (metadata.id) {
       //update
-      console.log(metadata, 'UPDATE');
       updateMetadata(metadata);
     } else {
       //create
-      console.log(metadata, 'CREATE');
-
       addMetadata(metadata, id);
     }
   };
@@ -166,7 +175,6 @@ export const BookProvider = ({ children }: Props) => {
       { ...metadata, book: id },
       config
     );
-    console.log(data);
     navigate(`/book/${data.book.id}`);
   };
 
@@ -187,6 +195,99 @@ export const BookProvider = ({ children }: Props) => {
       config
     );
   };
+
+  /*
+   *messages
+   *questions
+   */
+
+  const getMessages = async (bookId: number) => {
+    if (bookId) {
+      // setLoading(true);
+      const { data } = await axios(
+        `${import.meta.env.VITE_URL_BACK}/messages/${bookId}?limit=5`
+      );
+      setMessages(data);
+    }
+  };
+
+  //own questions
+  const getOwnMessages = async (bookId: number) => {
+    if (bookId) {
+      const { data } = await axios(
+        `${import.meta.env.VITE_URL_BACK}/messages/own/${bookId}`,
+        config
+      );
+      setOwnMessages(data);
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitMessage = (message: Message, bookId?: number) => {
+    if (message.id) {
+      updateMessage(message);
+    } else if (bookId) {
+      createMessage(message, bookId);
+    }
+  };
+
+  // to get the message object and send it to the form component
+  const catchMessageToEdit = (message?: Message) => {
+    //set the object in to state, then pass the state to the form
+    if (message && message.message) {
+      setMessageEditMode(message);
+    } else {
+      setMessageEditMode({ message: '' });
+    }
+  };
+  // CREATE
+  const createMessage = async (message: Message, bookId: number) => {
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_URL_BACK}/messages/${bookId}`,
+        message,
+        config
+      );
+      setMessages([...messages, data]);
+      setOwnMessages([...ownMessages, data]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //TODO: EDIT
+  const updateMessage = async (message: Message) => {
+    try {
+      const { data } = await axios.put(
+        `${import.meta.env.VITE_URL_BACK}/messages/${message.id}`,
+        message,
+        config
+      );
+      setMessages(messages.map((m) => (m.id === data.id ? data : messages)));
+      setOwnMessages(
+        ownMessages.map((m) => (m.id === data.id ? data : ownMessages))
+      );
+
+      setMessageEditMode({ message: '' });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //TODO: DELETE
+  const handleDelete = async (messageId: number) => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_URL_BACK}/messages/${messageId}`,
+        config
+      );
+      setMessages(messages.filter((m) => m.id !== messageId));
+      setOwnMessages(ownMessages.filter((m) => m.id !== messageId));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //TODO: SOME
+  //TODO: MESSAGE
 
   const search = async (query: {
     search?: string;
@@ -301,6 +402,15 @@ export const BookProvider = ({ children }: Props) => {
         deleteBook,
         handleSubmitMetadata,
         deleteMetadata,
+        messageEditMode,
+        // editMessageModeFn,
+        getMessages,
+        getOwnMessages,
+        messages,
+        ownMessages,
+        handleSubmitMessage,
+        catchMessageToEdit,
+        handleDelete,
       }}
     >
       {children}

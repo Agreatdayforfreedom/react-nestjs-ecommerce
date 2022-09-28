@@ -38,7 +38,7 @@ export class BookService {
     @InjectRepository(User) private userRepo: Repository<User>,
   ) {}
 
-  qbFilters(qb: SelectQueryBuilder<Book>, query: Query): void {
+  private qbFilters(qb: SelectQueryBuilder<Book>, query: Query): void {
     if (query.search) {
       qb.where(
         new Brackets((qb) => {
@@ -156,7 +156,6 @@ export class BookService {
   }
 
   async update(id: number, payload: UpdateBookDto, userReq: PayloadAuth) {
-    console.log(id, payload);
     const [book] = await this.bookRepo.find({
       relations: ['user'],
       where: { id: id },

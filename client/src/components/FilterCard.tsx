@@ -17,7 +17,6 @@ export const FilterCard = () => {
 
   const delFilter = () => {
     if (minPrice && maxPrice) {
-      console.log('hello');
       params.delete('minPrice');
       params.delete('maxPrice');
       setParams(params);
