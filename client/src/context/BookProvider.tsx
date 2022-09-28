@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import {
   URLSearchParamsInit,
@@ -6,7 +6,14 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { FormGen } from '../components/FormBook';
-import { Book, Category, Loading, Message, Metadata } from '../interfaces';
+import {
+  Alert,
+  Book,
+  Category,
+  Loading,
+  Message,
+  Metadata,
+} from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 
 interface Props {
@@ -53,6 +60,7 @@ export interface BookContextProps {
   handleSubmitMessage: (message: Message, bookId?: number) => void;
   catchMessageToEdit: (message: Message) => void;
   handleDelete: (messageId: number) => void;
+  alert: Alert;
 }
 
 export const BookContext = createContext<BookContextProps>(
@@ -80,7 +88,7 @@ export const BookProvider = ({ children }: Props) => {
   const [book, setBook] = useState<Book>({} as Book);
   const [messages, setMessages] = useState<Message[]>([]);
   const [ownMessages, setOwnMessages] = useState<Message[]>([]);
-
+  const [alert, setAlert] = useState<Alert>({} as Alert);
   const [messageEditMode, setMessageEditMode] = useState<Message>(
     {} as Message
   );
@@ -255,8 +263,23 @@ export const BookProvider = ({ children }: Props) => {
       );
       setMessages([...messages, data]);
       setOwnMessages([...ownMessages, data]);
+      setAlert({ message: 'Question sent successfully ', err: false });
+      setTimeout(() => {
+        setAlert({
+          message: '',
+          err: false,
+        });
+      }, 4000);
     } catch (error) {
-      console.log(error);
+      if (error instanceof AxiosError) {
+        setAlert({ message: error.response?.data.message, err: true });
+        setTimeout(() => {
+          setAlert({
+            message: '',
+            err: false,
+          });
+        }, 4000);
+      }
     }
   };
 
@@ -415,6 +438,7 @@ export const BookProvider = ({ children }: Props) => {
         handleSubmitMessage,
         catchMessageToEdit,
         handleDelete,
+        alert,
       }}
     >
       {children}

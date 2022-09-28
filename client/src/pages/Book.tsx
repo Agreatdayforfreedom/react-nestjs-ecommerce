@@ -10,6 +10,7 @@ import useBook from '../context/hooks/useBook';
 import useCart from '../context/hooks/useCart';
 import { useForm } from '../hooks/useForm';
 import { Message, Metadata } from '../interfaces';
+import { Alert } from '../components/Alert';
 
 interface PropsMetadata {
   metadata: Metadata;
@@ -257,7 +258,7 @@ const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
 };
 
 const Questions = ({ bookId }: PropsMessages) => {
-  const [limitAll, setLimitAll] = useState<string>('5');
+  const [limitAll, setLimitAll] = useState<string>('4');
   const [limitOwn, seLimitOwn] = useState<string>('2');
   const [params, setParams] = useSearchParams();
   const [alertNoReviews, setAlertNoReviews] = useState<{
@@ -284,7 +285,7 @@ const Questions = ({ bookId }: PropsMessages) => {
   const appendLimit = (limit: 'all' | 'own') => {
     const limitAllCheck = params.get('limitAll');
     const limitOwnCheck = params.get('limitOwn');
-    const a = parseInt(limitAll, 10) + 5;
+    const a = parseInt(limitAll, 10) + 4;
     const b = parseInt(limitOwn, 10) + 2;
     if (limit === 'all') {
       if (limitAllCheck && parseInt(limitAllCheck) > messages.length) {
@@ -307,7 +308,7 @@ const Questions = ({ bookId }: PropsMessages) => {
   return (
     <div className="mx-2 mt-10 border-t-2 border-t-gray-500 pt-5">
       <div className="border p-3">
-        <h3>
+        <h3 className="border-b py-1 font-bold text-slate-600">
           Questions: <span>{messages && messages.length}</span>
         </h3>
         {messages &&
@@ -330,7 +331,9 @@ const Questions = ({ bookId }: PropsMessages) => {
       </div>
       <FormMessage bookId={bookId} messages={messages} />
       <div>
-        <h3 className="border-b">Your Quesions</h3>
+        <h3 className="border-b py-1 font-bold text-slate-600">
+          Your Quesions
+        </h3>
         {ownMessages &&
           ownMessages.map((m: any) => (
             <OwnMessageCard ownMessages={m} key={m.id} />
@@ -355,7 +358,7 @@ const Questions = ({ bookId }: PropsMessages) => {
 
 const FormMessage = ({ bookId }: PropsMessagesForm) => {
   const { handleChange, form, setForm } = useForm<Message>();
-  const { handleSubmitMessage, messageEditMode, catchMessageToEdit } =
+  const { handleSubmitMessage, messageEditMode, catchMessageToEdit, alert } =
     useBook();
 
   useEffect(() => {
@@ -371,36 +374,57 @@ const FormMessage = ({ bookId }: PropsMessagesForm) => {
     handleSubmitMessage(form, bookId);
     setForm({ message: '' });
   };
+
+  const { message } = alert;
+  console.log(alert);
   return (
-    <form className="mt-2" onSubmit={handleSubmit}>
-      <textarea
-        name="message"
-        id="message"
+    <section>
+      <form
         className={
           messageEditMode.message
-            ? 'border-2 border-red-500 p-2 w-full'
-            : 'border border-orange-500 p-2 w-full'
+            ? 'mt-2 p-1 bg-orange-400/20 rounded'
+            : 'mt-2 p-1'
         }
-        value={form.message && form.message}
-        placeholder="Your review here"
-        onChange={handleChange}
-      ></textarea>
-      <div className="text-end">
-        {messageEditMode.message && (
-          <button
-            type="button"
-            className="rounded bg-blue-800 p-2 font-bold text-white hover:bg-blue-900 transition-all"
-            onClick={() => {
-              catchMessageToEdit({ message: '' }), setForm({ message: '' });
-            }}
-          >
-            Cancel
-          </button>
-        )}
+        onSubmit={handleSubmit}
+      >
+        <textarea
+          name="message"
+          id="message"
+          className={
+            messageEditMode.message
+              ? 'border-2 border-orange-500 p-2 focus-within:outline-none w-full'
+              : 'border border-orange-500 p-2 focus-within:outline-none w-full'
+          }
+          value={form.message && form.message}
+          placeholder="Your review here"
+          onChange={handleChange}
+        ></textarea>
+        <div className="flex justify-between">
+          {message ? (
+            <Alert alert={alert} />
+          ) : (
+            <p className="text-slate-600 text-sm font-bold">
+              You just can send 3 questions
+            </p>
+          )}
+          <div>
+            {messageEditMode.message && (
+              <button
+                type="button"
+                className="rounded bg-gray-800 p-2 font-bold text-white hover:bg-gray-900 transition-all"
+                onClick={() => {
+                  catchMessageToEdit({ message: '' }), setForm({ message: '' });
+                }}
+              >
+                Cancel
+              </button>
+            )}
 
-        <Button bName={messageEditMode.message ? 'Save' : 'Send'} />
-      </div>
-    </form>
+            <Button bName={messageEditMode.message ? 'Save' : 'Send'} />
+          </div>
+        </div>
+      </form>
+    </section>
   );
 };
 
@@ -409,6 +433,7 @@ const OwnMessageCard = ({ ownMessages }: PropsOwnMessageCard) => {
 };
 
 const MessageCard = ({ message, own }: PropsMessageCard) => {
+  const [showCompleteQuestion, setShowCompleteQuestion] = useState(false);
   const { auth, loading } = useAuth();
   const { catchMessageToEdit, handleDelete } = useBook();
 
@@ -416,18 +441,39 @@ const MessageCard = ({ message, own }: PropsMessageCard) => {
     catchMessageToEdit(message);
   };
 
+  const ShowCompleteQuestion = () => {
+    setShowCompleteQuestion(!showCompleteQuestion);
+    console.log(showCompleteQuestion);
+  };
+
   if (loading) return <Spinner />;
   return (
     <div className="flex justify-between p-2 border-b">
       <div className="w-4/5">
-        <p className="text-slate-800">
+        <p className="flex text-slate-800 font-bold">
           {own && message.user && auth.id == message.user.id
             ? 'You'
             : message.user && message.user.username}
           :
         </p>
-        <p className="px-3 text-sm text-ellipsis overflow-hidden">
+        <p
+          className={`${
+            showCompleteQuestion
+              ? 'overflow-visible break-words'
+              : 'overflow-hidden'
+          } pl-3 text-sm text-slate-800 w-96 `}
+        >
           {message.message}
+          {message.message.length > 53 && (
+            <span>
+              <button
+                className="text-xs pl-2 text-slate-600 hover:underline"
+                onClick={ShowCompleteQuestion}
+              >
+                {showCompleteQuestion ? 'Hide...' : 'Read More...'}
+              </button>
+            </span>
+          )}
         </p>
       </div>
       {own && message.user && auth.id == message.user.id && (

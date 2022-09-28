@@ -22,6 +22,7 @@ export class MessagesService {
       .leftJoinAndSelect('message.user', 'user')
       .where('message.book = :bookId', { bookId: id })
       .limit(query.limitAll)
+      .orderBy('message.createdAt', 'DESC')
       .getMany();
   }
 
@@ -40,6 +41,9 @@ export class MessagesService {
         user: { id: userReq.id },
       },
       take: query.limitOwn,
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
@@ -49,6 +53,26 @@ export class MessagesService {
     userReq: PayloadAuth,
   ): Promise<Message> {
     const message = this.messageRepo.create(payload);
+
+    const limitToThreePerUser = await this.messageRepo.find({
+      relations: {
+        user: true,
+        book: true,
+      },
+      where: {
+        user: {
+          id: userReq.id,
+        },
+        book: {
+          id: bookId,
+        },
+      },
+    });
+
+    if (limitToThreePerUser.length === 3) {
+      throw new HttpException('You have already send 3 questions!', 400);
+    }
+
     const [findUser] = await this.userRepo.find({
       where: { id: userReq.id },
     });
