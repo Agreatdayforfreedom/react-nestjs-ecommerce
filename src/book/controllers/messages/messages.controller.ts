@@ -29,8 +29,9 @@ export class MessagesController {
   findOwnReviews(
     @Param('id', ParseIntPipe) id: number,
     @User() userReq: PayloadAuth,
+    @Query() query: any,
   ) {
-    return this.messageService.findOwnReviews(id, userReq);
+    return this.messageService.findOwnReviews(id, userReq, query);
   }
 
   @Post(':id')

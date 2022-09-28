@@ -257,32 +257,50 @@ const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
 };
 
 const Questions = ({ bookId }: PropsMessages) => {
-  const [limit, setLimit] = useState<string>('5');
+  const [limitAll, setLimitAll] = useState<string>('5');
+  const [limitOwn, seLimitOwn] = useState<string>('2');
   const [params, setParams] = useSearchParams();
-  const [alert, setAlert] = useState<string>('');
+  const [alertNoReviews, setAlertNoReviews] = useState<{
+    all: string;
+    own: string;
+  }>({
+    all: '',
+    own: '',
+  });
 
   const { getMessages, messages, ownMessages, getOwnMessages, loading } =
     useBook();
   useEffect(() => {
+    params.set('limitAll', limitAll);
+    params.set('limitOwn', limitOwn);
+    setParams(params);
+    console.log(params);
     if (bookId) {
-      // setParams({ limit });
-      console.log('lomit');
-
       getMessages(bookId);
       getOwnMessages(bookId);
     }
-  }, []);
+  }, [limitAll, limitOwn]);
 
-  const appendLimit = () => {
-    const limit = params.get('limit');
-    if (limit) {
-      const limitPlus5 = parseInt(limit, 10) + 5;
-      if (parseInt(limit, 10) > messages.length) {
-        setAlert('No more reviews');
+  const appendLimit = (limit: 'all' | 'own') => {
+    const limitAllCheck = params.get('limitAll');
+    const limitOwnCheck = params.get('limitOwn');
+    const a = parseInt(limitAll, 10) + 5;
+    const b = parseInt(limitOwn, 10) + 2;
+    if (limit === 'all') {
+      if (limitAllCheck && parseInt(limitAllCheck) > messages.length) {
+        return setAlertNoReviews({ all: 'No more reviews', own: '' });
       }
-      setParams({ limit: limitPlus5.toString() });
-      setLimit(limitPlus5.toString());
+      setLimitAll(a.toString());
+      params.set('limitAll', a.toString());
     }
+    if (limit === 'own') {
+      if (limitOwnCheck && parseInt(limitOwnCheck) > messages.length) {
+        return setAlertNoReviews({ all: '', own: 'No more reviews' });
+      }
+      seLimitOwn(b.toString());
+      params.set('limitOwn', b.toString());
+    }
+    setParams(params);
   };
 
   if (loading) return <Spinner />;
@@ -301,11 +319,13 @@ const Questions = ({ bookId }: PropsMessages) => {
                 ? 'hidden'
                 : 'text-sm text-orange-600 hover:underline'
             }
-            onClick={appendLimit}
+            onClick={() => appendLimit('all')}
           >
             Show more
           </button>
-          {alert && <p className="text-sm text-red-500">{alert}</p>}
+          {alertNoReviews.all && (
+            <p className="text-sm text-red-500">{alertNoReviews.all}</p>
+          )}
         </div>
       </div>
       <FormMessage bookId={bookId} messages={messages} />
@@ -315,6 +335,19 @@ const Questions = ({ bookId }: PropsMessages) => {
           ownMessages.map((m: any) => (
             <OwnMessageCard ownMessages={m} key={m.id} />
           ))}
+        <button
+          className={
+            messages.length === 0
+              ? 'hidden'
+              : 'text-sm text-orange-600 hover:underline'
+          }
+          onClick={() => appendLimit('own')}
+        >
+          Show more
+        </button>
+        {alertNoReviews.own && (
+          <p className="text-sm text-red-500">{alertNoReviews.own}</p>
+        )}
       </div>
     </div>
   );

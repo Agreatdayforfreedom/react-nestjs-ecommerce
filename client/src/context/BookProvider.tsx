@@ -204,8 +204,11 @@ export const BookProvider = ({ children }: Props) => {
   const getMessages = async (bookId: number) => {
     if (bookId) {
       // setLoading(true);
+      console.log(params.get('limitAll'), 'dakw');
       const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/messages/${bookId}?limit=5`
+        `${
+          import.meta.env.VITE_URL_BACK
+        }/messages/${bookId}?limitAll=${params.get('limitAll')}`
       );
       setMessages(data);
     }
@@ -215,7 +218,9 @@ export const BookProvider = ({ children }: Props) => {
   const getOwnMessages = async (bookId: number) => {
     if (bookId) {
       const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/messages/own/${bookId}`,
+        `${
+          import.meta.env.VITE_URL_BACK
+        }/messages/own/${bookId}?limitOwn=${params.get('limitOwn')}`,
         config
       );
       setOwnMessages(data);
@@ -403,7 +408,6 @@ export const BookProvider = ({ children }: Props) => {
         handleSubmitMetadata,
         deleteMetadata,
         messageEditMode,
-        // editMessageModeFn,
         getMessages,
         getOwnMessages,
         messages,

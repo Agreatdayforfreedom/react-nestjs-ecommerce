@@ -21,11 +21,15 @@ export class MessagesService {
       .leftJoinAndSelect('message.book', 'book')
       .leftJoinAndSelect('message.user', 'user')
       .where('message.book = :bookId', { bookId: id })
-      .limit(query.limit)
+      .limit(query.limitAll)
       .getMany();
   }
 
-  async findOwnReviews(id: number, userReq: PayloadAuth): Promise<Message[]> {
+  async findOwnReviews(
+    id: number,
+    userReq: PayloadAuth,
+    query: any,
+  ): Promise<Message[]> {
     return await this.messageRepo.find({
       relations: {
         book: true,
@@ -35,6 +39,7 @@ export class MessagesService {
         book: { id: id },
         user: { id: userReq.id },
       },
+      take: query.limitOwn,
     });
   }
 
