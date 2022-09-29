@@ -20,6 +20,7 @@ export const Categories = () => {
   const { categories, loading: loadingBook } = useBook();
 
   useEffect(() => {
+    setCategoriesBooks({} as CatBooks);
     const fetch = async () => {
       const { data } = await axios(
         `${import.meta.env.VITE_URL_BACK}/book/category${loc.search}

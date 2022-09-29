@@ -22,7 +22,7 @@ export class MessagesService {
       .leftJoinAndSelect('message.user', 'user')
       .where('message.book = :bookId', { bookId: id })
       .limit(query.limitAll)
-      .orderBy('message.createdAt', 'DESC')
+      .orderBy('message.createdAt', 'ASC')
       .getMany();
   }
 
@@ -31,6 +31,7 @@ export class MessagesService {
     userReq: PayloadAuth,
     query: any,
   ): Promise<Message[]> {
+    console.log(query);
     return await this.messageRepo.find({
       relations: {
         book: true,
@@ -53,6 +54,10 @@ export class MessagesService {
     userReq: PayloadAuth,
   ): Promise<Message> {
     const message = this.messageRepo.create(payload);
+
+    if (!payload.message || payload.message.length < 6) {
+      throw new HttpException('You must write at least 6 characters', 400);
+    }
 
     const limitToThreePerUser = await this.messageRepo.find({
       relations: {

@@ -52,15 +52,6 @@ export interface BookContextProps {
   deleteBook: (id: string) => void;
   handleSubmitMetadata: (metadata: Metadata, id: string) => void;
   deleteMetadata: (id: string) => void;
-  messageEditMode: Message;
-  messages: Message[];
-  ownMessages: Message[];
-  getMessages: (bookId: number) => void;
-  getOwnMessages: (bookId: number) => void;
-  handleSubmitMessage: (message: Message, bookId?: number) => void;
-  catchMessageToEdit: (message: Message) => void;
-  handleDelete: (messageId: number) => void;
-  alert: Alert;
 }
 
 export const BookContext = createContext<BookContextProps>(
@@ -86,12 +77,6 @@ export const BookProvider = ({ children }: Props) => {
   const [file, setFile] = useState<any>();
   const [catId, setCatId] = useState<number[]>([]);
   const [book, setBook] = useState<Book>({} as Book);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [ownMessages, setOwnMessages] = useState<Message[]>([]);
-  const [alert, setAlert] = useState<Alert>({} as Alert);
-  const [messageEditMode, setMessageEditMode] = useState<Message>(
-    {} as Message
-  );
 
   const navigate = useNavigate();
 
@@ -107,10 +92,16 @@ export const BookProvider = ({ children }: Props) => {
 
   //get book
   const getBook = async (id: string) => {
-    setLoading(true);
-    const { data } = await axios(`${import.meta.env.VITE_URL_BACK}/book/${id}`);
-    setBook(data);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const { data } = await axios(
+        `${import.meta.env.VITE_URL_BACK}/book/${id}`
+      );
+      setBook(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //send create book or udpate one
@@ -208,114 +199,6 @@ export const BookProvider = ({ children }: Props) => {
    *messages
    *questions
    */
-
-  const getMessages = async (bookId: number) => {
-    if (bookId) {
-      // setLoading(true);
-      console.log(params.get('limitAll'), 'dakw');
-      const { data } = await axios(
-        `${
-          import.meta.env.VITE_URL_BACK
-        }/messages/${bookId}?limitAll=${params.get('limitAll')}`
-      );
-      setMessages(data);
-    }
-  };
-
-  //own questions
-  const getOwnMessages = async (bookId: number) => {
-    if (bookId) {
-      const { data } = await axios(
-        `${
-          import.meta.env.VITE_URL_BACK
-        }/messages/own/${bookId}?limitOwn=${params.get('limitOwn')}`,
-        config
-      );
-      setOwnMessages(data);
-      setLoading(false);
-    }
-  };
-
-  const handleSubmitMessage = (message: Message, bookId?: number) => {
-    if (message.id) {
-      updateMessage(message);
-    } else if (bookId) {
-      createMessage(message, bookId);
-    }
-  };
-
-  // to get the message object and send it to the form component
-  const catchMessageToEdit = (message?: Message) => {
-    //set the object in to state, then pass the state to the form
-    if (message && message.message) {
-      setMessageEditMode(message);
-    } else {
-      setMessageEditMode({ message: '' });
-    }
-  };
-  // CREATE
-  const createMessage = async (message: Message, bookId: number) => {
-    try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_URL_BACK}/messages/${bookId}`,
-        message,
-        config
-      );
-      setMessages([...messages, data]);
-      setOwnMessages([...ownMessages, data]);
-      setAlert({ message: 'Question sent successfully ', err: false });
-      setTimeout(() => {
-        setAlert({
-          message: '',
-          err: false,
-        });
-      }, 4000);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setAlert({ message: error.response?.data.message, err: true });
-        setTimeout(() => {
-          setAlert({
-            message: '',
-            err: false,
-          });
-        }, 4000);
-      }
-    }
-  };
-
-  //TODO: EDIT
-  const updateMessage = async (message: Message) => {
-    try {
-      const { data } = await axios.put(
-        `${import.meta.env.VITE_URL_BACK}/messages/${message.id}`,
-        message,
-        config
-      );
-      setMessages(messages.map((m) => (m.id === data.id ? data : messages)));
-      setOwnMessages(
-        ownMessages.map((m) => (m.id === data.id ? data : ownMessages))
-      );
-
-      setMessageEditMode({ message: '' });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  //TODO: DELETE
-  const handleDelete = async (messageId: number) => {
-    try {
-      await axios.delete(
-        `${import.meta.env.VITE_URL_BACK}/messages/${messageId}`,
-        config
-      );
-      setMessages(messages.filter((m) => m.id !== messageId));
-      setOwnMessages(ownMessages.filter((m) => m.id !== messageId));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  //TODO: SOME
-  //TODO: MESSAGE
 
   const search = async (query: {
     search?: string;
@@ -430,15 +313,6 @@ export const BookProvider = ({ children }: Props) => {
         deleteBook,
         handleSubmitMetadata,
         deleteMetadata,
-        messageEditMode,
-        getMessages,
-        getOwnMessages,
-        messages,
-        ownMessages,
-        handleSubmitMessage,
-        catchMessageToEdit,
-        handleDelete,
-        alert,
       }}
     >
       {children}
