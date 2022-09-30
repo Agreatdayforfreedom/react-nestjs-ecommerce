@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useBook from '../context/hooks/useBook';
 import { Book } from '../interfaces';
 import { FilterMenu } from './FilterMenu';
-import { Spinner } from './Loading';
+import { Spinner } from './Spinner';
 import { OrderMenu } from './OrderMenu';
 
 export const DDFiltersAndOrders = () => {

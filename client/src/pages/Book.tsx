@@ -1,58 +1,36 @@
-import axios from 'axios';
 import { FormEvent, useEffect, useState } from 'react';
 import { RiArrowLeftSLine, RiPencilFill } from 'react-icons/ri';
-import { AiFillDelete } from 'react-icons/ai';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { Button } from '../components/Button';
-import { Spinner } from '../components/Loading';
+
+import { Spinner } from '../components/Spinner';
+import { Questions } from '../components/Questions';
 import useAuth from '../context/hooks/useAuth';
 import useBook from '../context/hooks/useBook';
 import useCart from '../context/hooks/useCart';
-import { useForm } from '../hooks/useForm';
 import { Message, Metadata } from '../interfaces';
-import { Alert } from '../components/Alert';
 
 interface PropsMetadata {
   metadata: Metadata;
   bookId: number;
 }
 
-interface PropsMessages {
-  bookId: number;
-}
-
-interface PropsMessagesForm {
-  bookId: number;
-  messages: Message[];
-}
-
-interface PropsMessageCard {
-  message: Message;
-  own?: boolean;
-}
-
-interface PropsOwnMessageCard {
-  ownMessages: Message;
-}
-
-// export interface MessageForm {
-//   id?: number;
-//   message: string;
-// }
-
 export const Book = () => {
   const { auth, loading: loadingAuth } = useAuth();
   const { addToCart, alert } = useCart();
+  const [loading, setLoading] = useState(true);
   const { book, getBook, loading: loadingBook, deleteBook } = useBook();
 
   const params = useParams();
 
   useEffect(() => {
-    if (params && params.id) {
-      getBook(params.id);
-    }
+    setTimeout(() => {
+      //spinner to make it look better on page load
+      if (params && params.id) {
+        getBook(params.id);
+        setLoading(false);
+      }
+    }, 500);
   }, []);
-
   const handleDelete = () => {
     if (params.id) {
       deleteBook(params.id);
@@ -60,7 +38,7 @@ export const Book = () => {
   };
 
   const { message, err } = alert;
-  if (loadingAuth || loadingBook) return <Spinner />;
+  if (loadingAuth || loadingBook || loading) return <Spinner />;
   return (
     <>
       <div className="flex flex-col md:border-b md:mx-2 lg:p-20 transition-all">
@@ -163,9 +141,6 @@ const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
       deleteMetadata(metadata.id);
     }
   };
-  useEffect(() => {
-    console.log('dwo');
-  }, []);
   if (loadingAuth || loadingBook) return <Spinner />;
   if (metadata && metadata.pages) {
     return (
@@ -255,243 +230,4 @@ const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
       <p className="text-blue-900 font-bold px-2">There is no metadata yet</p>
     );
   }
-};
-
-const Questions = ({ bookId }: PropsMessages) => {
-  const [limitAll, setLimitAll] = useState<string>('4');
-  const [limitOwn, seLimitOwn] = useState<string>('2');
-  const [params, setParams] = useSearchParams();
-  const [alertNoReviews, setAlertNoReviews] = useState<{
-    all: string;
-    own: string;
-  }>({
-    all: '',
-    own: '',
-  });
-
-  const { getMessages, messages, ownMessages, getOwnMessages, loading } =
-    useBook();
-  useEffect(() => {
-    params.set('limitAll', limitAll);
-    params.set('limitOwn', limitOwn);
-    setParams(params);
-    console.log(params);
-    if (bookId) {
-      getMessages(bookId);
-      getOwnMessages(bookId);
-    }
-  }, [limitAll, limitOwn]);
-
-  const appendLimit = (limit: 'all' | 'own') => {
-    const limitAllCheck = params.get('limitAll');
-    const limitOwnCheck = params.get('limitOwn');
-    const a = parseInt(limitAll, 10) + 4;
-    const b = parseInt(limitOwn, 10) + 2;
-    if (limit === 'all') {
-      if (limitAllCheck && parseInt(limitAllCheck) > messages.length) {
-        return setAlertNoReviews({ all: 'No more reviews', own: '' });
-      }
-      setLimitAll(a.toString());
-      params.set('limitAll', a.toString());
-    }
-    if (limit === 'own') {
-      if (limitOwnCheck && parseInt(limitOwnCheck) > messages.length) {
-        return setAlertNoReviews({ all: '', own: 'No more reviews' });
-      }
-      seLimitOwn(b.toString());
-      params.set('limitOwn', b.toString());
-    }
-    setParams(params);
-  };
-
-  if (loading) return <Spinner />;
-  return (
-    <div className="mx-2 mt-10 border-t-2 border-t-gray-500 pt-5">
-      <div className="border p-3">
-        <h3 className="border-b py-1 font-bold text-slate-600">
-          Questions: <span>{messages && messages.length}</span>
-        </h3>
-        {messages &&
-          messages.map((m) => <MessageCard message={m} key={m.id} />)}
-        <div className="text-end">
-          <button
-            className={
-              messages.length === 0
-                ? 'hidden'
-                : 'text-sm text-orange-600 hover:underline'
-            }
-            onClick={() => appendLimit('all')}
-          >
-            Show more
-          </button>
-          {alertNoReviews.all && (
-            <p className="text-sm text-red-500">{alertNoReviews.all}</p>
-          )}
-        </div>
-      </div>
-      <FormMessage bookId={bookId} messages={messages} />
-      <div>
-        <h3 className="border-b py-1 font-bold text-slate-600">
-          Your Quesions
-        </h3>
-        {ownMessages &&
-          ownMessages.map((m: any) => (
-            <OwnMessageCard ownMessages={m} key={m.id} />
-          ))}
-        <button
-          className={
-            messages.length === 0
-              ? 'hidden'
-              : 'text-sm text-orange-600 hover:underline'
-          }
-          onClick={() => appendLimit('own')}
-        >
-          Show more
-        </button>
-        {alertNoReviews.own && (
-          <p className="text-sm text-red-500">{alertNoReviews.own}</p>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const FormMessage = ({ bookId }: PropsMessagesForm) => {
-  const { handleChange, form, setForm } = useForm<Message>();
-  const { handleSubmitMessage, messageEditMode, catchMessageToEdit, alert } =
-    useBook();
-
-  useEffect(() => {
-    if (messageEditMode.message) {
-      setForm(messageEditMode);
-    }
-  }, [messageEditMode]);
-  // receiving the messaje object and setting in the textarea value if it exists
-
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-
-    handleSubmitMessage(form, bookId);
-    setForm({ message: '' });
-  };
-
-  const { message } = alert;
-  console.log(alert);
-  return (
-    <section>
-      <form
-        className={
-          messageEditMode.message
-            ? 'mt-2 p-1 bg-orange-400/20 rounded'
-            : 'mt-2 p-1'
-        }
-        onSubmit={handleSubmit}
-      >
-        <textarea
-          name="message"
-          id="message"
-          className={
-            messageEditMode.message
-              ? 'border-2 border-orange-500 p-2 focus-within:outline-none w-full'
-              : 'border border-orange-500 p-2 focus-within:outline-none w-full'
-          }
-          value={form.message && form.message}
-          placeholder="Your review here"
-          onChange={handleChange}
-        ></textarea>
-        <div className="flex justify-between">
-          {message ? (
-            <Alert alert={alert} />
-          ) : (
-            <p className="text-slate-600 text-sm font-bold">
-              You just can send 3 questions
-            </p>
-          )}
-          <div>
-            {messageEditMode.message && (
-              <button
-                type="button"
-                className="rounded bg-gray-800 p-2 font-bold text-white hover:bg-gray-900 transition-all"
-                onClick={() => {
-                  catchMessageToEdit({ message: '' }), setForm({ message: '' });
-                }}
-              >
-                Cancel
-              </button>
-            )}
-
-            <Button bName={messageEditMode.message ? 'Save' : 'Send'} />
-          </div>
-        </div>
-      </form>
-    </section>
-  );
-};
-
-const OwnMessageCard = ({ ownMessages }: PropsOwnMessageCard) => {
-  return <MessageCard message={ownMessages} own={true} />;
-};
-
-const MessageCard = ({ message, own }: PropsMessageCard) => {
-  const [showCompleteQuestion, setShowCompleteQuestion] = useState(false);
-  const { auth, loading } = useAuth();
-  const { catchMessageToEdit, handleDelete } = useBook();
-
-  const handleUpdate = async (message: any) => {
-    catchMessageToEdit(message);
-  };
-
-  const ShowCompleteQuestion = () => {
-    setShowCompleteQuestion(!showCompleteQuestion);
-    console.log(showCompleteQuestion);
-  };
-
-  if (loading) return <Spinner />;
-  return (
-    <div className="flex justify-between p-2 border-b">
-      <div className="w-4/5">
-        <p className="flex text-slate-800 font-bold">
-          {own && message.user && auth.id == message.user.id
-            ? 'You'
-            : message.user && message.user.username}
-          :
-        </p>
-        <p
-          className={`${
-            showCompleteQuestion
-              ? 'overflow-visible break-words'
-              : 'overflow-hidden'
-          } pl-3 text-sm text-slate-800 w-96 `}
-        >
-          {message.message}
-          {message.message.length > 53 && (
-            <span>
-              <button
-                className="text-xs pl-2 text-slate-600 hover:underline"
-                onClick={ShowCompleteQuestion}
-              >
-                {showCompleteQuestion ? 'Hide...' : 'Read More...'}
-              </button>
-            </span>
-          )}
-        </p>
-      </div>
-      {own && message.user && auth.id == message.user.id && (
-        <div>
-          <button onClick={() => handleUpdate(message)}>
-            <RiPencilFill
-              size={20}
-              className="text-orange-700 hover:text-orange-900"
-            />
-          </button>
-          <button onClick={() => handleDelete(message.id!)}>
-            <AiFillDelete
-              size={20}
-              className="text-red-700 hover:text-red-900"
-            />
-          </button>
-        </div>
-      )}
-    </div>
-  );
 };

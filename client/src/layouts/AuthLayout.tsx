@@ -1,7 +1,7 @@
 import { RiShoppingCartFill } from 'react-icons/ri';
 import { Link, Outlet } from 'react-router-dom';
 import Footer from '../components/Footer';
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 import { MenuNav } from '../components/MenuNav';
 import { PrivateHeader } from '../components/PrivateHeader';
 import { Search } from '../components/Search';

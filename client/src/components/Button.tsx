@@ -7,8 +7,7 @@ export const Button = ({ bName }: Props) => {
   return (
     <button
       type="submit"
-      className="border px-4 py-2 bg-orange-400 
-rounded-md font-bold text-white hover:bg-orange-500 transition-all"
+      className="px-4 py-2 mx-2 rounded bg-orange-400 font-bold text-white hover:bg-orange-500 transition-all"
     >
       {bName}
     </button>

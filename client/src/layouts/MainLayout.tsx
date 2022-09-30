@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link, Outlet, Navigate } from 'react-router-dom';
 import Footer from '../components/Footer';
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 import { PrivateHeader } from '../components/PrivateHeader';
 import useAuth from '../context/hooks/useAuth';
 

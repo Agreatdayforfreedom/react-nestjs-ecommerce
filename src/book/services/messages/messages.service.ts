@@ -22,11 +22,11 @@ export class MessagesService {
       .leftJoinAndSelect('message.user', 'user')
       .where('message.book = :bookId', { bookId: id })
       .limit(query.limitAll)
-      .orderBy('message.createdAt', 'DESC')
+      .orderBy('message.createdAt', 'ASC')
       .getMany();
   }
 
-  async findOwnReviews(
+  async findOwnQuestions(
     id: number,
     userReq: PayloadAuth,
     query: any,
@@ -53,6 +53,10 @@ export class MessagesService {
     userReq: PayloadAuth,
   ): Promise<Message> {
     const message = this.messageRepo.create(payload);
+
+    if (!payload.message || payload.message.length < 6) {
+      throw new HttpException('You must write at least 6 characters', 400);
+    }
 
     const limitToThreePerUser = await this.messageRepo.find({
       relations: {
@@ -93,6 +97,10 @@ export class MessagesService {
     messageId: number,
     userReq: PayloadAuth,
   ): Promise<Message> {
+    if (!payload.message || payload.message.length < 6) {
+      throw new HttpException('You must write at least 6 characters', 400);
+    }
+
     const [message] = await this.messageRepo.find({
       relations: ['user'],
       where: { id: messageId },

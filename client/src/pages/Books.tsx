@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 import useBook from '../context/hooks/useBook';
 import axios from 'axios';
 import { Book, Loading as ILoading } from '../interfaces';

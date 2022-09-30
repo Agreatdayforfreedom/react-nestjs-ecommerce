@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 import useBook from '../context/hooks/useBook';
 import { Book } from '../interfaces';
 import { SpawnBooksSection } from '../components/SpawnBooksSection';
@@ -20,6 +20,7 @@ export const Categories = () => {
   const { categories, loading: loadingBook } = useBook();
 
   useEffect(() => {
+    setCategoriesBooks({} as CatBooks);
     const fetch = async () => {
       const { data } = await axios(
         `${import.meta.env.VITE_URL_BACK}/book/category${loc.search}
