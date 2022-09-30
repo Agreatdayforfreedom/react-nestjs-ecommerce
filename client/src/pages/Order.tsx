@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 import { OrderDetail } from '../components/OrderDetail';
 import { Order as IOrder } from '../interfaces';
 import { configAxios } from '../utils/configAxios';

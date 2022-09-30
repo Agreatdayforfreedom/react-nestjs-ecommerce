@@ -94,11 +94,13 @@ export const BookProvider = ({ children }: Props) => {
   const getBook = async (id: string) => {
     try {
       setLoading(true);
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/book/${id}`
-      );
-      setBook(data);
-      setLoading(false);
+      setTimeout(async () => {
+        const { data } = await axios(
+          `${import.meta.env.VITE_URL_BACK}/book/${id}`
+        );
+        setBook(data);
+        setLoading(false);
+      }, 300);
     } catch (error) {
       console.log(error);
     }
@@ -194,11 +196,6 @@ export const BookProvider = ({ children }: Props) => {
       config
     );
   };
-
-  /*
-   *messages
-   *questions
-   */
 
   const search = async (query: {
     search?: string;

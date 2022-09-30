@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 import { Auth } from '../context/AuthProvider';
 import useAuth from '../context/hooks/useAuth';
 import { useForm } from '../hooks/useForm';

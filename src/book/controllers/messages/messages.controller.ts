@@ -26,12 +26,12 @@ export class MessagesController {
   }
 
   @Get('own/:id')
-  findOwnReviews(
+  findOwnQuestions(
     @Param('id', ParseIntPipe) id: number,
     @User() userReq: PayloadAuth,
     @Query() query: any,
   ) {
-    return this.messageService.findOwnReviews(id, userReq, query);
+    return this.messageService.findOwnQuestions(id, userReq, query);
   }
 
   @Post(':id')

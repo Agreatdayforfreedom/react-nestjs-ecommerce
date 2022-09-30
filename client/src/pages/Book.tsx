@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { RiArrowLeftSLine, RiPencilFill } from 'react-icons/ri';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 import { Questions } from '../components/Questions';
 import useAuth from '../context/hooks/useAuth';
 import useBook from '../context/hooks/useBook';
@@ -17,14 +17,19 @@ interface PropsMetadata {
 export const Book = () => {
   const { auth, loading: loadingAuth } = useAuth();
   const { addToCart, alert } = useCart();
+  const [loading, setLoading] = useState(true);
   const { book, getBook, loading: loadingBook, deleteBook } = useBook();
 
   const params = useParams();
 
   useEffect(() => {
-    if (params && params.id) {
-      getBook(params.id);
-    }
+    setTimeout(() => {
+      //spinner to make it look better on page load
+      if (params && params.id) {
+        getBook(params.id);
+        setLoading(false);
+      }
+    }, 500);
   }, []);
   const handleDelete = () => {
     if (params.id) {
@@ -33,7 +38,7 @@ export const Book = () => {
   };
 
   const { message, err } = alert;
-  if (loadingAuth || loadingBook) return <Spinner />;
+  if (loadingAuth || loadingBook || loading) return <Spinner />;
   return (
     <>
       <div className="flex flex-col md:border-b md:mx-2 lg:p-20 transition-all">

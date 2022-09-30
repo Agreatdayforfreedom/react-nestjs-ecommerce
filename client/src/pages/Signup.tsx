@@ -5,7 +5,7 @@ import useAuth from '../context/hooks/useAuth';
 import { useForm } from '../hooks/useForm';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Auth } from '../context/AuthProvider';
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 
 interface SignUpForm {
   username: string;

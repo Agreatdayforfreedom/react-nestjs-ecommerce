@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { IoMdArrowDropright } from 'react-icons/io';
 import { Link, useLocation } from 'react-router-dom';
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 import { PreviewBook } from '../components/PreviewBook';
 import useBook from '../context/hooks/useBook';
 import { Book, Loading as ILoading } from '../interfaces';

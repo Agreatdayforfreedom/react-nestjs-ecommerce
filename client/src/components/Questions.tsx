@@ -1,15 +1,13 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import useBook from '../context/hooks/useBook';
 import { useForm } from '../hooks/useForm';
 import { Message } from '../interfaces';
 import { Alert } from './Alert';
 import { Button } from './Button';
-import axios from 'axios';
 import { AiFillDelete } from 'react-icons/ai';
-import { Spinner } from './Loading';
+import { Spinner } from './Spinner';
 import useAuth from '../context/hooks/useAuth';
-import { RiPencilFill, RiXingLine } from 'react-icons/ri';
+import { RiPencilFill } from 'react-icons/ri';
 import useQuestions from '../context/hooks/useQuestions';
 
 interface PropsMessages {
@@ -42,17 +40,21 @@ export const Questions = ({ bookId }: PropsMessages) => {
     own: '',
   });
 
-  const { getMessages, messages, ownMessages, getOwnMessages, loading } =
-    useQuestions();
+  const {
+    getMessages,
+    messages,
+    ownMessages,
+    messagesLength,
+    getOwnMessages,
+    getMessagesLength,
+    loading,
+  } = useQuestions();
 
   useEffect(() => {
-    params.set('limitAll', limitAll);
-    params.set('limitOwn', limitOwn);
-    setParams(params);
-    console.log(params.get('limitAll'), params.get('limitOwn'));
-    if (bookId && params.get('limitAll') && params.get('limitOwn')) {
+    if (bookId) {
       getMessages(bookId);
       getOwnMessages(bookId);
+      getMessagesLength(bookId);
     }
   }, [limitAll, limitOwn]);
 
@@ -83,18 +85,14 @@ export const Questions = ({ bookId }: PropsMessages) => {
     <div className="mx-2 mt-10 border-t-2 border-t-gray-500 pt-5">
       <div className="border p-3">
         <h3 className="border-b py-1 font-bold text-slate-600">
-          Questions: <span>{messages && messages.length}</span>
+          Questions: <span>{messagesLength && messagesLength}</span>
         </h3>
         {messages &&
-          messages.map(
-            (m) => (
-              console.log('hello'), (<MessageCard message={m} key={m.id} />)
-            )
-          )}
+          messages.map((m: Message) => <MessageCard message={m} key={m.id} />)}
         <div className="text-end">
           <button
             className={
-              messages.length === 0
+              messagesLength === 0
                 ? 'hidden'
                 : 'text-sm text-orange-600 hover:underline'
             }
@@ -112,13 +110,13 @@ export const Questions = ({ bookId }: PropsMessages) => {
         <h3 className="border-b py-1 font-bold text-slate-600">
           Your Quesions
         </h3>
-        {/* {ownMessages &&
-          ownMessages.map((m: any) => (
+        {ownMessages &&
+          ownMessages.map((m: Message) => (
             <OwnMessageCard ownMessages={m} key={m.id} />
-          ))} */}
+          ))}
         <button
           className={
-            messages.length === 0
+            messagesLength === 0
               ? 'hidden'
               : 'text-sm text-orange-600 hover:underline'
           }
@@ -136,8 +134,13 @@ export const Questions = ({ bookId }: PropsMessages) => {
 
 const FormMessage = ({ bookId }: PropsMessagesForm) => {
   const { handleChange, form, setForm } = useForm<Message>();
+
   const { handleSubmitMessage, messageEditMode, catchMessageToEdit, alert } =
     useQuestions();
+
+  useEffect(() => {
+    catchMessageToEdit({ message: '' }), setForm({ message: '' });
+  }, []);
 
   useEffect(() => {
     if (messageEditMode.message) {
@@ -148,7 +151,6 @@ const FormMessage = ({ bookId }: PropsMessagesForm) => {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    console.log(form);
     handleSubmitMessage(form, bookId);
     setForm({ message: '' });
   };
@@ -159,9 +161,7 @@ const FormMessage = ({ bookId }: PropsMessagesForm) => {
     <section>
       <form
         className={
-          messageEditMode.message
-            ? 'mt-2 p-1 bg-orange-400/20 rounded'
-            : 'mt-2 p-1'
+          messageEditMode.message ? 'mt-2 p-1 bg-slate-700/80' : 'mt-2 p-1'
         }
         onSubmit={handleSubmit}
       >
@@ -181,7 +181,10 @@ const FormMessage = ({ bookId }: PropsMessagesForm) => {
           {message ? (
             <Alert alert={alert} />
           ) : (
-            <p className="text-slate-600 text-sm font-bold">
+            <p
+              className={`text-sm font-bold
+                ${messageEditMode.message ? 'text-white' : 'text-slate-600'}`}
+            >
               You just can send 3 questions
             </p>
           )}
@@ -189,7 +192,7 @@ const FormMessage = ({ bookId }: PropsMessagesForm) => {
             {messageEditMode.message && (
               <button
                 type="button"
-                className="rounded bg-gray-800 p-2 font-bold text-white hover:bg-gray-900 transition-all"
+                className="p-2 font-bold text-white"
                 onClick={() => {
                   catchMessageToEdit({ message: '' }), setForm({ message: '' });
                 }}
@@ -206,25 +209,23 @@ const FormMessage = ({ bookId }: PropsMessagesForm) => {
   );
 };
 
-// const OwnMessageCard = ({ ownMessages }: PropsOwnMessageCard) => {
-//   return <MessageCard message={ownMessages} own={true} />;
-// };
+const OwnMessageCard = ({ ownMessages }: PropsOwnMessageCard) => {
+  return <MessageCard message={ownMessages} own={true} />;
+};
 
 const MessageCard = ({ message, own }: PropsMessageCard) => {
   const [showCompleteQuestion, setShowCompleteQuestion] = useState(false);
   const { auth, loading } = useAuth();
   const { catchMessageToEdit, deleteMessage } = useQuestions();
-  console.log(message, 2);
-  const handleUpdate = async (message: any) => {
+  const handleUpdate = async (message: Message) => {
     catchMessageToEdit(message);
   };
-
   const ShowCompleteQuestion = () => {
     setShowCompleteQuestion(!showCompleteQuestion);
-    console.log(showCompleteQuestion);
   };
 
   if (loading) return <Spinner />;
+
   return (
     <div className="flex justify-between p-2 border-b">
       <div className="w-4/5">

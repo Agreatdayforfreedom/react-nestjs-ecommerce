@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import useBook from '../context/hooks/useBook';
 import { Book, Category } from '../interfaces';
 import { FilterCard } from './FilterCard';
-import { Spinner } from './Loading';
+import { Spinner } from './Spinner';
 
 export const AsideFilter = () => {
   const { search, booksLength, loading, getBooksLength } = useBook();

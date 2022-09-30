@@ -12,8 +12,10 @@ export interface QuestionContextProps {
   messageEditMode: Message;
   messages: Message[];
   ownMessages: Message[];
+  messagesLength: number;
   getMessages: (bookId: number) => void;
   getOwnMessages: (bookId: number) => void;
+  getMessagesLength: (bookId: number) => void;
   handleSubmitMessage: (message: Message, bookId?: number) => void;
   catchMessageToEdit: (message: Message) => void;
   deleteMessage: (messageId: number) => void;
@@ -27,6 +29,7 @@ export const QuestionsContext = createContext<QuestionContextProps>(
 
 export const QuestionsProvider = ({ children }: Props) => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [messagesLength, setMessagesLength] = useState<number>(0);
   const [ownMessages, setOwnMessages] = useState<Message[]>([]);
   const [messageEditMode, setMessageEditMode] = useState<Message>(
     {} as Message
@@ -40,15 +43,37 @@ export const QuestionsProvider = ({ children }: Props) => {
   const config = configAxios(token);
 
   const [params, setParams] = useSearchParams();
+  useEffect(() => {
+    setParams({});
+  }, []);
+
+  const showAlert = (alert: Alert, timeout: number = 3000) => {
+    setAlert(alert);
+
+    setTimeout(() => {
+      setAlert({} as Alert);
+    }, timeout);
+  };
+
+  const getMessagesLength = async (bookId: number) => {
+    if (bookId) {
+      setLoading(true);
+      const { data } = await axios(
+        `${import.meta.env.VITE_URL_BACK}/messages/${bookId}`
+      );
+      setMessagesLength(data.length);
+      setLoading(false);
+    }
+  };
 
   const getMessages = async (bookId: number) => {
     const limitAll = params.get('limitAll');
-    if (bookId && limitAll) {
+    if (bookId) {
       setLoading(true);
       const { data } = await axios(
-        `${
-          import.meta.env.VITE_URL_BACK
-        }/messages/${bookId}?limitAll=${limitAll}`
+        `${import.meta.env.VITE_URL_BACK}/messages/${bookId}?limitAll=${
+          limitAll || '4'
+        }`
       );
       setMessages(data);
       setLoading(false);
@@ -58,12 +83,12 @@ export const QuestionsProvider = ({ children }: Props) => {
   //own questions
   const getOwnMessages = async (bookId: number) => {
     const limitOwn = params.get('limitOwn');
-    if (bookId && limitOwn) {
+    if (bookId) {
       setLoading(true);
       const { data } = await axios(
-        `${
-          import.meta.env.VITE_URL_BACK
-        }/messages/own/${bookId}?limitOwn=${limitOwn}`,
+        `${import.meta.env.VITE_URL_BACK}/messages/own/${bookId}?limitOwn=${
+          limitOwn || '2'
+        }`,
         config
       );
       setOwnMessages(data);
@@ -80,7 +105,7 @@ export const QuestionsProvider = ({ children }: Props) => {
   };
 
   // to get the message object and send it to the form component
-  const catchMessageToEdit = (message?: Message) => {
+  const catchMessageToEdit = (message: Message) => {
     //set the object in to state, then pass the state to the form
     if (message && message.message) {
       setMessageEditMode(message);
@@ -91,6 +116,7 @@ export const QuestionsProvider = ({ children }: Props) => {
   // CREATE
   const createMessage = async (message: Message, bookId: number) => {
     try {
+      setLoading(true);
       const { data } = await axios.post(
         `${import.meta.env.VITE_URL_BACK}/messages/${bookId}`,
         message,
@@ -98,42 +124,43 @@ export const QuestionsProvider = ({ children }: Props) => {
       );
       setMessages([...messages, data]);
       setOwnMessages([...ownMessages, data]);
-      setAlert({ message: 'Question sent successfully ', err: false });
+      showAlert({ message: 'Question sent successfully ', err: false });
       setTimeout(() => {
-        setAlert({
-          message: '',
-          err: false,
-        });
-      }, 4000);
+        setLoading(false);
+      }, 1000);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        setAlert({ message: error.response?.data.message, err: true });
-        setTimeout(() => {
-          setAlert({
-            message: '',
-            err: false,
-          });
-        }, 4000);
-      }
+      setTimeout(() => {
+        if (error instanceof AxiosError) {
+          setLoading(false);
+          showAlert({ message: error.response?.data.message, err: true });
+        }
+      }, 1000);
     }
   };
 
   //EDIT
   const updateMessage = async (message: Message) => {
     try {
+      setLoading(true);
       const { data } = await axios.put(
         `${import.meta.env.VITE_URL_BACK}/messages/${message.id}`,
         message,
         config
       );
-      setMessages(messages.map((m) => (m.id === data.id ? data : messages)));
-      setOwnMessages(
-        ownMessages.map((m) => (m.id === data.id ? data : ownMessages))
-      );
-
+      setMessages(messages.map((m) => (m.id === data.id ? data : m)));
+      setOwnMessages(ownMessages.map((m) => (m.id === data.id ? data : m)));
+      showAlert({ message: 'Update successfully!', err: false });
       setMessageEditMode({ message: '' });
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     } catch (error) {
-      console.log(error);
+      setTimeout(() => {
+        if (error instanceof AxiosError) {
+          setLoading(false);
+          showAlert({ message: error.response?.data.message, err: true });
+        }
+      }, 1000);
     }
   };
   //DELETE
@@ -158,9 +185,11 @@ export const QuestionsProvider = ({ children }: Props) => {
         ownMessages,
         getMessages,
         getOwnMessages,
+        getMessagesLength,
         handleSubmitMessage,
         catchMessageToEdit,
         deleteMessage,
+        messagesLength,
         alert,
         loading,
       }}

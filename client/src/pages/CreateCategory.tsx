@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { FormEvent } from 'react';
 import { Button } from '../components/Button';
-import { Spinner } from '../components/Loading';
+import { Spinner } from '../components/Spinner';
 import { useForm } from '../hooks/useForm';
 import { configAxios } from '../utils/configAxios';
 
