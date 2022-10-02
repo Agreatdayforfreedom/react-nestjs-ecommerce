@@ -38,6 +38,9 @@ export class Book extends Base {
   @Column({ default: true })
   isNew: boolean;
 
+  @Column({ default: 0 })
+  totalSold: number;
+
   @OneToOne(() => Metadata, (metadata) => metadata.book)
   metadata: Metadata;
 

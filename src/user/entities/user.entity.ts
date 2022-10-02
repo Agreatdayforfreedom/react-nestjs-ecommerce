@@ -24,6 +24,9 @@ export class User extends Base {
   @Column({ default: Role_Enum.USER, enum: Role_Enum })
   role?: string;
 
+  @Column()
+  LIBScredits: number;
+
   @OneToOne(() => Customers, (customer) => customer.user)
   customer: Customers;
 

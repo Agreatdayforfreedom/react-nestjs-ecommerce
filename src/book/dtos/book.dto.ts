@@ -32,6 +32,10 @@ export class CreateBookDto {
   @IsBoolean()
   readonly isNew: boolean;
 
+  @IsNumber()
+  @IsPositive()
+  readonly totalSold: number;
+
   @IsArray()
   @IsNotEmpty()
   readonly categories: any[];

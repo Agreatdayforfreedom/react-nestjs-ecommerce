@@ -27,6 +27,7 @@ export class AuthService {
         id: userCreated.user.id,
         username: userCreated.user.username,
         role: userCreated.user.role,
+        LIBScredits: userCreated.user.LIBScredits,
         cart: userCreated.cart,
       }),
     };
@@ -45,6 +46,7 @@ export class AuthService {
         id: user.id,
         username: user.username,
         role: user.role,
+        LIBScredits: user.LIBScredits,
         cart: user.cart,
       }),
     };

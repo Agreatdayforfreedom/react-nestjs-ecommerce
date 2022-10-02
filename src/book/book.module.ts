@@ -15,7 +15,8 @@ import { Metadata } from './entities/metadata.entity';
 import { Message } from './entities/message.entity';
 import { MessagesController } from './controllers/messages/messages.controller';
 import { MessagesService } from './services/messages/messages.service';
-import cloudinary from 'cloudinary';
+import { BuyService } from './services/book/buy.service';
+import { BuyController } from './controllers/book/buy.controller';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import cloudinary from 'cloudinary';
     CategoriesController,
     MetadataController,
     MessagesController,
+    BuyController,
   ],
   providers: [
     BookService,
@@ -34,6 +36,7 @@ import cloudinary from 'cloudinary';
     CategoriesService,
     MetadataService,
     MessagesService,
+    BuyService,
   ],
   exports: [MessagesService, TypeOrmModule],
 })

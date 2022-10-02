@@ -27,9 +27,10 @@ export class UserService {
 
   async create(body: CreateUserDto) {
     const user = this.userRepo.create(body);
+    //remove this line
+    user.LIBScredits = 2000;
     const cart = new Cart();
     cart.user = user;
-
     const [userSaved, { user: userCart, cItem, ...remainder }] =
       await Promise.all([
         await this.userRepo.save(user),

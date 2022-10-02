@@ -38,9 +38,9 @@ export const QuestionsProvider = ({ children }: Props) => {
   const [alert, setAlert] = useState<Alert>({} as Alert);
 
   const token = localStorage.getItem('token');
-  if (!token) return <p>loading</p>;
+  // if (!token) return <p>qqqqqqqqqq</p>;
 
-  const config = configAxios(token);
+  const config = configAxios(token!);
 
   const [params, setParams] = useSearchParams();
   useEffect(() => {
