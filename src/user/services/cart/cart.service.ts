@@ -16,6 +16,7 @@ export class CartService {
   ) {}
 
   async getCart(userReq: PayloadAuth): Promise<Cart> {
+    console.log(userReq);
     const [cart] = await this.cartRepo.find({
       relations: {
         cItem: {
@@ -42,10 +43,13 @@ export class CartService {
   }
 
   async addToCart(payload: any, userReq: PayloadAuth): Promise<Cart_item> {
+    console.log(userReq, 'addcart');
     const [cart] = await this.cartRepo.find({
       relations: ['user'],
       where: { user: { id: userReq.id } },
     });
+
+    if (!cart) throw new HttpException('Internal server error', 500);
 
     const [item] = await this.bookRepo.find({ where: { id: payload.bookId } });
 

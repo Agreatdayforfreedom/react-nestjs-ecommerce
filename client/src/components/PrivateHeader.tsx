@@ -6,13 +6,13 @@ import { useEffect, useState } from 'react';
 import useCart from '../context/hooks/useCart';
 import { Search } from './Search';
 import { MenuNav } from './MenuNav';
-import { IoMdArrowDropright } from 'react-icons/io';
 
 export const PrivateHeader = () => {
   const { auth, logout } = useAuth();
   const { cartItems } = useCart();
   const [lengthCart, setLengthCart] = useState<number>(0);
 
+  console.log(auth);
   useEffect(() => {
     setLengthCart(cartItems.length);
   }, [cartItems]);
@@ -68,13 +68,17 @@ export const PrivateHeader = () => {
               Log Out
             </button>
           </div>
-          <div className="flex justify-end">
-            <div className="z-50 flex items-end mr-4">
-              <Link to="/cart">
+          <div className="flex justify-end md:mt-10">
+            <div className="z-50 flex items-center mr-4 mt-4">
+              {auth.LIBScredits && (
+                <p className="font-bold px-2 text-slate-600 text-xl">
+                  ${auth.LIBScredits}
+                </p>
+              )}
+              <Link to="/cart" className="flex items-center">
                 <RiShoppingCartFill
                   size="35"
-                  className=" mt-4 text-orange-800 hover:cursor-pointer 
-                md:mt-8 hover:text-orange-900 transition-all"
+                  className=" text-orange-800 hover:cursor-pointer hover:text-orange-900 transition-all"
                 />
               </Link>
               <p className="px-1 text-2xl font-bold text-gray-700 transition-all">

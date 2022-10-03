@@ -14,6 +14,9 @@ import { CartService } from './services/cart/cart.service';
 import { Cart } from './entities/cart.entity';
 import { Cart_item } from './entities/cart_item.entity';
 import { BookModule } from '../book/book.module';
+import { Payment } from './entities/payment.entity';
+import { PaymentService } from './services/payment/payment.service';
+import { PaymentController } from './controllers/payment/payment.controller';
 
 @Module({
   imports: [
@@ -24,11 +27,12 @@ import { BookModule } from '../book/book.module';
       Orders,
       Cart,
       Cart_item,
+      Payment,
     ]),
     forwardRef(() => BookModule),
   ],
-  providers: [UserService, CustomersService, OrderService, CartService],
+  providers: [UserService, CustomersService, OrderService, CartService, PaymentService],
   exports: [UserService, TypeOrmModule],
-  controllers: [CustomersController, OrderController, CartController],
+  controllers: [CustomersController, OrderController, CartController, PaymentController],
 })
 export class UserModule {}

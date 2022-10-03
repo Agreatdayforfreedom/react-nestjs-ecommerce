@@ -19,8 +19,9 @@ export class UserService {
     });
   }
 
-  async findOneU(id: number): Promise<User[]> {
+  async findOneId(id: number): Promise<User[]> {
     return await this.userRepo.find({
+      relations: { cart: true },
       where: { id: id },
     });
   }

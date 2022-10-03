@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { createContext, ReactNode, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Enum_PaymentType } from '../enums';
 import { Alert, cItem, Loading, Order } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 
@@ -18,6 +19,7 @@ interface CartContextProps {
   setAlert: (state: Alert) => void;
   removeFromCart: (id: number) => void;
   newOrder: () => void;
+  implPayment: (orderId: number, paymentMethod: Enum_PaymentType) => void;
 }
 
 export const CartContext = createContext<CartContextProps>(
@@ -94,6 +96,21 @@ export const CartProvider = ({ children }: Props) => {
       }
     }
   };
+
+  const implPayment = async (
+    orderId: number,
+    paymentMethod: Enum_PaymentType
+  ) => {
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_URL_BACK}/payment/${orderId}`,
+        { paymentMethod },
+        config
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <CartContext.Provider
       value={{
@@ -106,6 +123,7 @@ export const CartProvider = ({ children }: Props) => {
         setAlert,
         removeFromCart,
         newOrder,
+        implPayment,
       }}
     >
       {children}

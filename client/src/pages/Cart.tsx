@@ -19,7 +19,7 @@ export const Cart = () => {
     <section>
       {cartItems.length === 0 && (
         <div className="text-center">
-          <p className="text-slate-600">The cart is empty</p>
+          <p className="text-slate-600 text-2xl py-2">The cart is empty</p>
         </div>
       )}
       {cartItems.map((c) => (

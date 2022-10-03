@@ -20,6 +20,7 @@ import MyData from './pages/MyData';
 import MyOrders from './pages/MyOrders';
 import { New } from './pages/News';
 import { Order } from './pages/Order';
+import { PaymentMethod } from './pages/PaymentMethod';
 import { Signup } from './pages/Signup';
 import { UpdateBook } from './pages/UpdateBook';
 import { UpdateMetadata } from './pages/UpdateMetadata';
@@ -46,6 +47,10 @@ function App() {
                   <Route path="my-data" element={<MyData />} />
                   <Route path="order/:id" element={<Order />} />
                   <Route path="orders" element={<MyOrders />} />
+                  <Route
+                    path="order/:orderId/payment"
+                    element={<PaymentMethod />}
+                  />
                 </Route>
                 <Route path="/" element={<AdminLayout />}>
                   <Route path="/admin" element={<Admin />} />

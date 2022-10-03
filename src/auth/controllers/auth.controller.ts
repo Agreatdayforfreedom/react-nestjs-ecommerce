@@ -20,6 +20,11 @@ export class AuthController {
     return this.authService.login(body.username, body.password);
   }
 
+  @Get('refresh')
+  refreshToken(@User() userReq: PayloadAuth) {
+    return this.authService.refreshToken(userReq);
+  }
+
   @Get('profile')
   profile(@User() user: PayloadAuth) {
     return user;

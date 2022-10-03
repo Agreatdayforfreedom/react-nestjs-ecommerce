@@ -4,7 +4,10 @@ import { PayloadAuth } from '../../../auth/models/token.model';
 import { User } from '../../../user/entities/user.entity';
 import { DataSource, In, Repository } from 'typeorm';
 import { Book } from '../../entities/book.entity';
-import { Orders } from '../../../user/entities/orders.entity';
+import {
+  Enum_PurchaseStatus,
+  Orders,
+} from '../../../user/entities/orders.entity';
 
 @Injectable()
 export class BuyService {
@@ -85,6 +88,8 @@ export class BuyService {
         }
       }
     }
+    //order purchase
+    order.purchase_status = Enum_PurchaseStatus.PURCHASE;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -100,7 +105,7 @@ export class BuyService {
             .where('id = :id', { id: book.id })
             .execute();
         }),
-        await queryRunner.manager.delete(Orders, orderId),
+        await queryRunner.manager.save(order),
       ]);
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -109,6 +114,5 @@ export class BuyService {
     } finally {
       await queryRunner.release();
     }
-    //add 1 (or whatever quantity) to sold
   }
 }
