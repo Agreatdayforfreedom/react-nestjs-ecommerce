@@ -21,7 +21,6 @@ export class PaymentService {
     payload: PaymentType,
     userReq: PayloadAuth,
   ) {
-    console.log(payload);
     const payment = new Payment();
 
     if (!payload.paymentType) {

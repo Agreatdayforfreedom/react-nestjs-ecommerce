@@ -16,7 +16,6 @@ export class CartService {
   ) {}
 
   async getCart(userReq: PayloadAuth): Promise<Cart> {
-    console.log(userReq);
     const [cart] = await this.cartRepo.find({
       relations: {
         cItem: {
@@ -43,7 +42,6 @@ export class CartService {
   }
 
   async addToCart(payload: any, userReq: PayloadAuth): Promise<Cart_item> {
-    console.log(userReq, 'addcart');
     const [cart] = await this.cartRepo.find({
       relations: ['user'],
       where: { user: { id: userReq.id } },
@@ -54,6 +52,8 @@ export class CartService {
     const [item] = await this.bookRepo.find({ where: { id: payload.bookId } });
 
     if (!item) throw new HttpException('Book not found', 404);
+    if (item.stock === 0)
+      throw new HttpException('There is not enough stock', 400);
 
     const [cart_item] = await this.cart_itemRepo.find({
       relations: ['book'],

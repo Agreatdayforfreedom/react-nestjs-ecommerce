@@ -2,14 +2,18 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { PaymentGateway, Step } from '../components/PaymentGateway';
+import { Spinner } from '../components/Spinner';
 import useCart from '../context/hooks/useCart';
 import { Enum_PaymentType } from '../enums';
 import { useForm } from '../hooks/useForm';
+import { Alert } from '../interfaces';
 
 export const PaymentMethod = () => {
   const [loading, setLoading] = useState(true);
   const [checked, setChecked] = useState<boolean>(false);
   const [checkValue, setCheckedValue] = useState<Enum_PaymentType | ''>('');
+  const [alert, setAlert] = useState<Alert>({} as Alert);
+
   const params = useParams();
 
   const { implPayment, getOrder, order } = useCart();
@@ -23,10 +27,6 @@ export const PaymentMethod = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(order, 'ORDER');
-  }, [order]);
-
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setChecked(!checked);
     if (checked == false) {
@@ -38,11 +38,20 @@ export const PaymentMethod = () => {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+    if (!checkValue) {
+      setAlert({ message: 'You must choose a payment method!', err: true });
+      setTimeout(() => {
+        setAlert({} as Alert);
+      }, 3000);
+    }
     if (params.orderId && checkValue) {
       implPayment(parseInt(params.orderId, 10), checkValue);
     }
   };
 
+  const { message } = alert;
+
+  if (loading) return <Spinner />;
   return (
     <div>
       <PaymentGateway
@@ -51,7 +60,7 @@ export const PaymentMethod = () => {
       />
 
       <form
-        className="w-3/4 mx-auto mt-5 flex justify-center"
+        className="w-3/4 mx-auto border p-2 mt-5 flex flex-col items-center justify-center"
         onSubmit={handleSubmit}
       >
         <div className="p-5 border rounded w-fit flex items-center">
@@ -71,8 +80,10 @@ export const PaymentMethod = () => {
             onChange={handleChange}
           />
         </div>
-
-        <Button bName="Continue" />
+        <p className="text-red-500">{message && message}</p>
+        <div className="mt-4 w-full text-center md:text-end">
+          <Button bName="Continue" />
+        </div>
       </form>
     </div>
   );

@@ -12,7 +12,6 @@ export const PrivateHeader = () => {
   const { cartItems } = useCart();
   const [lengthCart, setLengthCart] = useState<number>(0);
 
-  console.log(auth);
   useEffect(() => {
     setLengthCart(cartItems.length);
   }, [cartItems]);

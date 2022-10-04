@@ -126,7 +126,6 @@ export const CartProvider = ({ children }: Props) => {
         { paymentType },
         config
       );
-      console.log(data);
 
       navigate(`/order/${orderId}/fpayment`);
     } catch (error) {
@@ -142,7 +141,6 @@ export const CartProvider = ({ children }: Props) => {
         {},
         config
       );
-      console.log(data);
       refreshToken();
       setTimeout(() => {
         navigate(`/order/${orderId}`);

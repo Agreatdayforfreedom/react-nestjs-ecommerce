@@ -20,13 +20,11 @@ export class CartController {
 
   @Get()
   getCart(@User() userReq: PayloadAuth) {
-    console.log(userReq);
     return this.cartService.getCart(userReq);
   }
 
   @Get('/gz')
   getCartItem(@User() userReq: PayloadAuth) {
-    console.log(userReq);
     return this.cartService.getCartItem(userReq);
   }
 

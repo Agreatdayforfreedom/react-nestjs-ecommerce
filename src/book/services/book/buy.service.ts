@@ -46,7 +46,6 @@ export class BuyService {
       id: o.book.id,
       qty: o.quantity,
     }));
-    console.log(bookIds);
 
     const books = await this.bookRepo
       .createQueryBuilder('book')
