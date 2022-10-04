@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Enum_PaymentType } from '../enums';
 import { Alert, cItem, Loading, Order } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
+import useAuth from './hooks/useAuth';
 
 interface Props {
   children: ReactNode;
@@ -20,6 +21,9 @@ interface CartContextProps {
   removeFromCart: (id: number) => void;
   newOrder: () => void;
   implPayment: (orderId: number, paymentMethod: Enum_PaymentType) => void;
+  handleBuy: (orderId: number) => void;
+  getOrder: (id: number) => void;
+  order: Order;
 }
 
 export const CartContext = createContext<CartContextProps>(
@@ -30,8 +34,11 @@ export const CartProvider = ({ children }: Props) => {
   const [cartItems, setCartItems] = useState<cItem[]>([]);
   const [loading, setLoading] = useState<Loading>(true);
   const [alert, setAlert] = useState<Alert>({} as Alert);
+  const [order, setOrder] = useState<Order>({} as Order);
 
   const navigate = useNavigate();
+
+  const { refreshToken } = useAuth();
 
   const token: string | null = localStorage.getItem('token');
 
@@ -97,16 +104,50 @@ export const CartProvider = ({ children }: Props) => {
     }
   };
 
+  const getOrder = async (id: number) => {
+    try {
+      const { data } = await axios(
+        `${import.meta.env.VITE_URL_BACK}/order/${id}`,
+        config
+      );
+      setOrder(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const implPayment = async (
     orderId: number,
-    paymentMethod: Enum_PaymentType
+    paymentType: Enum_PaymentType
   ) => {
     try {
       const { data } = await axios.post(
         `${import.meta.env.VITE_URL_BACK}/payment/${orderId}`,
-        { paymentMethod },
+        { paymentType },
         config
       );
+      console.log(data);
+
+      navigate(`/order/${orderId}/fpayment`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleBuy = async (orderId: number) => {
+    try {
+      setLoading(true);
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_URL_BACK}/buy/${orderId}`,
+        {},
+        config
+      );
+      console.log(data);
+      refreshToken();
+      setTimeout(() => {
+        navigate(`/order/${orderId}`);
+        setLoading(false);
+      }, 2000);
     } catch (error) {
       console.log(error);
     }
@@ -124,6 +165,9 @@ export const CartProvider = ({ children }: Props) => {
         removeFromCart,
         newOrder,
         implPayment,
+        handleBuy,
+        getOrder,
+        order,
       }}
     >
       {children}

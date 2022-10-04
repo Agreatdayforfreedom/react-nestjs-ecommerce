@@ -5,7 +5,7 @@ import { FilterMenu } from './FilterMenu';
 import { Spinner } from './Spinner';
 import { OrderMenu } from './OrderMenu';
 
-export const DDFiltersAndOrders = () => {
+export const DDFiltersAndOrder = () => {
   const [hidden, setHidden] = useState<{ filter: boolean; order: boolean }>({
     filter: false,
     order: false,

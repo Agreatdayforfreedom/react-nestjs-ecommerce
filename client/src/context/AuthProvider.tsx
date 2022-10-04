@@ -71,7 +71,6 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
         const { access_token, ...remainder } = data;
         setAuth(remainder);
         setLoading(false);
-        navigate('/cart');
       }, 2000);
     } catch (error) {
       console.log(error);

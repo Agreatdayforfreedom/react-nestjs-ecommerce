@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
+import { Enum_PurchaseStatus } from '../enums';
 import { Order } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 
@@ -33,6 +34,16 @@ const MyOrders = () => {
           <div>
             <p>{o.order_details.length} Products</p>
             <p>Num Order {o.num_order}</p>
+            {o.purchase_status === Enum_PurchaseStatus.PENDING_PAYMENT ? (
+              <p className="font-bold text-slate-600">PENDING PAYMENT</p>
+            ) : o.purchase_status ===
+              Enum_PurchaseStatus.PENDING_PAYMENT_METHOD ? (
+              <p className="font-bold text-orange-700">
+                PENDING PAYMENT METHOD
+              </p>
+            ) : (
+              <p className="font-bold text-green-600">{o.purchase_status}</p>
+            )}
           </div>
           <Link
             to={`/order/${o.id}`}

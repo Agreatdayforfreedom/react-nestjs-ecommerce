@@ -1,3 +1,5 @@
+import { Enum_PaymentType, Enum_PurchaseStatus } from './enums';
+
 export interface Category {
   id: number;
   name: string;
@@ -76,11 +78,18 @@ export interface OrderDetails {
   book: Book;
 }
 
+interface Payment {
+  id: number;
+  paymentType: Enum_PaymentType;
+}
+
 export interface Order {
   id: number;
   customer: Customer;
   order_details: OrderDetails[];
   num_order: string;
+  payment: Payment;
+  purchase_status: Enum_PurchaseStatus;
   createdAt: Date;
   updatedAt: Date;
 }

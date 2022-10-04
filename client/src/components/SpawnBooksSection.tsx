@@ -1,6 +1,6 @@
 import React from 'react';
 import { AsideFilter } from './AsideFilter';
-import { DDFiltersAndOrders } from './DDFiltersAndOrders';
+import { DDFiltersAndOrder } from './DDFiltersAndOrder';
 import { FilterCard } from './FilterCard';
 import { OrderMenu } from './OrderMenu';
 import { PreviewBook } from './PreviewBook';
@@ -19,7 +19,7 @@ export const SpawnBooksSection = ({ books, text }: any) => {
       <div className="md:flex">
         <AsideFilter />
         <div className="md:hidden">
-          <DDFiltersAndOrders />
+          <DDFiltersAndOrder />
           <FilterCard />
         </div>
         <section className="w-full">

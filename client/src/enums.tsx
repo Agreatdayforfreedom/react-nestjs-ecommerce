@@ -5,6 +5,12 @@ export enum Order {
   news = 'news',
 }
 
+export enum Enum_PurchaseStatus {
+  PENDING_PAYMENT_METHOD = 'PENDING_PAYMENT_METHOD',
+  PENDING_PAYMENT = 'PENDING_PAYMENT',
+  PURCHASE = 'PURCHASE',
+}
+
 export enum Enum_PaymentType {
   LIBSCREDITS = 'LIBSCREDITS',
   //paypal, strapi, etc

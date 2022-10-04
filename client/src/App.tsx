@@ -14,6 +14,7 @@ import { Cart } from './pages/Cart';
 import { Categories } from './pages/Categories';
 import { CreateBook } from './pages/CreateBook';
 import { CreateCategory } from './pages/CreateCategory';
+import { FPayment } from './pages/FPayment';
 import Home from './pages/Home';
 import { Login } from './pages/Login';
 import MyData from './pages/MyData';
@@ -50,6 +51,10 @@ function App() {
                   <Route
                     path="order/:orderId/payment"
                     element={<PaymentMethod />}
+                  />
+                  <Route
+                    path="order/:orderId/fpayment"
+                    element={<FPayment />}
                   />
                 </Route>
                 <Route path="/" element={<AdminLayout />}>

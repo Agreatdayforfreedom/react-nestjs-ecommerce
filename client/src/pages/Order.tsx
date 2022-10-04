@@ -1,83 +1,74 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 import { OrderDetail } from '../components/OrderDetail';
 import { Order as IOrder } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 import useAuth from '../context/hooks/useAuth';
+import { Enum_PurchaseStatus } from '../enums';
+import { PaymentGateway, Step } from '../components/PaymentGateway';
+import useCart from '../context/hooks/useCart';
 
 export const Order = () => {
-  const [order, setOrder] = useState<IOrder>({} as IOrder);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   let total;
 
-  const { refreshToken, loading: loadingAuth } = useAuth();
-  const token = localStorage.getItem('token');
-  if (!token) return <Spinner />;
-
-  const config = configAxios(token);
+  const { getOrder, order } = useCart();
 
   useEffect(() => {
-    const getOrder = async () => {
-      try {
-        const { data } = await axios(
-          `${import.meta.env.VITE_URL_BACK}/order/${id}`,
-          config
-        );
-        setOrder(data);
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    };
-    getOrder();
+    if (id) {
+      getOrder(parseInt(id, 10));
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
   }, []);
+
+  if (loading) return <Spinner />;
+
   if (order.order_details) {
     total = order.order_details.reduce(
       (p, c) => p + c.book.price * c.quantity,
       0
     );
   }
-
-  const handleBuy = async () => {
-    try {
-      setLoading(true);
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_URL_BACK}/buy/${id}`,
-        {},
-        config
-      );
-      console.log(data);
-      refreshToken();
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  if (loading || loadingAuth) return <Spinner />;
   return (
-    <div className="md:flex md:justify-between">
-      {order.order_details.map((od) => (
-        <OrderDetail key={od.id} od={od} />
-      ))}
-      <div className="md:w-3/4 m-5 border-2 border-dashed rounded border-green-900 p-2">
-        <p className="font-bold text-lg">Total: ${total}</p>
+    <section>
+      <PaymentGateway
+        locationStatus={Step.order}
+        purchaseStatus={order.purchase_status}
+      />
 
-        <div className="flex justify-end">
-          <button
-            onClick={handleBuy}
-            className="mx-2 bg-orange-400  text-white font-bold rounded py-2 px-3"
-          >
-            Buy
-          </button>
+      <div className="md:flex md:justify-between">
+        {order.order_details.map((od) => (
+          <OrderDetail key={od.id} od={od} />
+        ))}
+        <div className="md:w-3/4 m-5 border-2 border-dashed rounded border-green-900 p-2">
+          <p className="font-bold text-lg">Total: ${total}</p>
+
+          <div className="flex justify-end">
+            {order.purchase_status === Enum_PurchaseStatus.PURCHASE ? (
+              <button className="mx-2 bg-red-600 text-white font-bold p-2 rounded hover:bg-red-800 transition-all">
+                Cancel
+              </button>
+            ) : (
+              <Link
+                to={
+                  order.payment === null
+                    ? `/order/${order.id}/payment`
+                    : `/order/${order.id}/fpayment`
+                }
+                className="mx-2 bg-orange-400  text-white font-bold rounded py-2 px-3"
+              >
+                Continue
+              </Link>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
