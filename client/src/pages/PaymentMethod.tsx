@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { ArrowBack } from '../components/ArrowBack';
 import { Button } from '../components/Button';
 import { PaymentGateway, Step } from '../components/PaymentGateway';
 import { Spinner } from '../components/Spinner';
@@ -53,38 +54,44 @@ export const PaymentMethod = () => {
 
   if (loading) return <Spinner />;
   return (
-    <div>
-      <PaymentGateway
-        locationStatus={Step.payment}
-        purchaseStatus={order.purchase_status}
-      />
+    <section className="flex flex-col">
+      <div className="relative h-6">
+        <ArrowBack to={`/order/${params.orderId}`} />
+      </div>
 
-      <form
-        className="w-3/4 mx-auto border p-2 mt-5 flex flex-col items-center justify-center"
-        onSubmit={handleSubmit}
-      >
-        <div className="p-5 border rounded w-fit flex items-center">
-          <label
-            htmlFor="paymentType"
-            className="text-xl font-bold text-slate-500 mx-2"
-          >
-            LIBSCredits
-          </label>
-          <input
-            type="checkbox"
-            name="paymentType"
-            id="paymentType"
-            value="LIBSCREDITS"
-            className="w-5 h-5"
-            checked={checked}
-            onChange={handleChange}
-          />
-        </div>
-        <p className="text-red-500">{message && message}</p>
-        <div className="mt-4 w-full text-center md:text-end">
-          <Button bName="Continue" />
-        </div>
-      </form>
-    </div>
+      <div>
+        <PaymentGateway
+          locationStatus={Step.payment}
+          purchaseStatus={order.purchase_status}
+        />
+
+        <form
+          className="w-3/4 mx-auto border p-2 mt-5 flex flex-col items-center justify-center"
+          onSubmit={handleSubmit}
+        >
+          <div className="p-5 border rounded w-fit flex items-center">
+            <label
+              htmlFor="paymentType"
+              className="text-xl font-bold text-slate-500 mx-2"
+            >
+              LIBSCredits
+            </label>
+            <input
+              type="checkbox"
+              name="paymentType"
+              id="paymentType"
+              value="LIBSCREDITS"
+              className="w-5 h-5"
+              checked={checked}
+              onChange={handleChange}
+            />
+          </div>
+          <p className="text-red-500">{message && message}</p>
+          <div className="mt-4 w-full text-center md:text-end">
+            <Button bName="Continue" />
+          </div>
+        </form>
+      </div>
+    </section>
   );
 };

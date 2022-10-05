@@ -86,6 +86,7 @@ export class OrderService {
 
     const { id } = await this.orderRepo.save(order);
 
+    //is it necessary?
     const [orderBrought] = await this.orderRepo.find({
       relations: {
         customer: {
@@ -107,6 +108,7 @@ export class OrderService {
       await this.cart_itemRepo.delete(item.id);
       await this.order_detailsRepo.save(order_details);
     });
+
     return orderBrought;
   }
 

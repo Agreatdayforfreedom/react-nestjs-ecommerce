@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
@@ -6,6 +5,8 @@ import { OrderDetail } from '../components/OrderDetail';
 import { Enum_PurchaseStatus } from '../enums';
 import { PaymentGateway, Step } from '../components/PaymentGateway';
 import useCart from '../context/hooks/useCart';
+import { ArrowBack } from '../components/ArrowBack';
+import { HiOutlineLocationMarker } from 'react-icons/hi';
 
 export const Order = () => {
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,9 @@ export const Order = () => {
   }
   return (
     <section>
+      <div className="relative h-8">
+        <ArrowBack to="/orders" />
+      </div>
       <PaymentGateway
         locationStatus={Step.order}
         purchaseStatus={order.purchase_status}
@@ -44,13 +48,13 @@ export const Order = () => {
           Thanks for your purchase!
         </h3>
       )}
-      <div className="md:flex">
-        <div className="w-1/3">
+      <div className="flex flex-col md:flex-row">
+        <div className="order-last md:order-none md:w-1/3">
           {order.order_details.map((od) => (
             <OrderDetail key={od.id} od={od} />
           ))}
         </div>
-        <section className="p-2 w-2/3 h-96 border mx-1">
+        <section className="p-2 md:w-2/3 h-96 border mx-1">
           <div className="flex flex-col justify-between h-full">
             {/* details order */}
             <div className="border-b">
@@ -61,25 +65,19 @@ export const Order = () => {
                 Total: ${total}
               </p>
               <p>Items: {totalItems}</p>
-              <p
-                className={
-                  order.payment === null
-                    ? 'text-red-500 text-end flex items-end'
-                    : 'text-slate-500 flex items-end'
-                }
-              >
-                {order.payment === null
-                  ? 'Add a payment method!'
-                  : `You have selected ${order.payment.paymentType}!`}
-              </p>
+              {order.payment && (
+                <p className="text-slate-500 flex items-end">
+                  You have selected {order.payment.paymentType}!
+                </p>
+              )}
               <p className="text-slate-600 text-end">
                 Emitted: {order.createdAt.toString().substring(0, 10)}
               </p>
             </div>
             {/* info */}
-            <div className="border-b">
-              <h3 className="text-slate-600 underline">Personal info:</h3>
-              <ul className="px-2">
+            <div className="border-b flex">
+              <HiOutlineLocationMarker size={30} className="text-blue-500" />
+              <ul className="px-2 w-full">
                 <li>
                   <p className="text-slate-600">
                     For:{' '}
@@ -103,6 +101,18 @@ export const Order = () => {
                     <span className="font-bold">{order.customer.phone}</span>
                   </p>
                 </li>
+                <li className="text-end">
+                  <Link
+                    to="/my-data"
+                    className="bg-blue-600 rounded p-1 text-white hover:bg-blue-700"
+                  >
+                    Update
+                  </Link>
+                  <p className="text-xs flex items-end justify-end mt-1 text-slate-600">
+                    If you update your personal data, all orders will be
+                    affected{' '}
+                  </p>
+                </li>
               </ul>
             </div>
             <div>shipping</div>
@@ -120,6 +130,11 @@ export const Order = () => {
                 </>
               ) : (
                 <>
+                  {order.payment === null && (
+                    <p className={'text-red-500 text-end flex items-end'}>
+                      Add a payment method!
+                    </p>
+                  )}
                   <Link
                     to={
                       order.payment === null

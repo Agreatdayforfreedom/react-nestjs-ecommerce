@@ -11,6 +11,7 @@ import { Customers } from './customers.entity';
 import { Order_details } from './order_details.entity';
 import { fakeid } from '../../common/fakeid';
 import { Payment } from './payment.entity';
+import { Shipper } from './shipper.entity';
 
 export enum Enum_PurchaseStatus {
   PENDING_PAYMENT_METHOD = 'PENDING_PAYMENT_METHOD',
@@ -32,6 +33,12 @@ export class Orders extends Base {
 
   @OneToMany(() => Order_details, (order_details) => order_details.orders)
   order_details: Order_details[];
+
+  @ManyToOne(() => Shipper, (shipper) => shipper.order, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  shipper: Shipper;
 
   @ManyToOne(() => Customers, (customer) => customer.orders, {
     onDelete: 'CASCADE',
