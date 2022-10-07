@@ -36,9 +36,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
   const navigate = useNavigate();
 
-  const token: string | null = localStorage.getItem('token');
-
-  const config = configAxios(token!);
+  const config = configAxios();
   useEffect(() => {
     const auth = async () => {
       try {

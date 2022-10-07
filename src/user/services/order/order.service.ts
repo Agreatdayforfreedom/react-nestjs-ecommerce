@@ -124,7 +124,14 @@ export class OrderService {
   }
 
   async cancelOrder(orderId: number, userReq: PayloadAuth) {
-    console.log(orderId, userReq);
+    const order = await this.findOne(orderId, userReq);
+
+    if (order.purchase_status === Enum_PurchaseStatus.CANCELLED) {
+      throw new HttpException('This order has already been cancelled ', 401);
+    }
+
+    order.purchase_status = Enum_PurchaseStatus.CANCELLED;
+    await this.orderRepo.save(order);
   }
 
   async updatePayment(
@@ -139,6 +146,10 @@ export class OrderService {
         id: paymentId,
       },
     });
+
+    if (order.purchase_status === Enum_PurchaseStatus.CANCELLED) {
+      throw new HttpException('This order has been cancelled ', 401);
+    }
 
     order.payment = payment;
     order.purchase_status = Enum_PurchaseStatus.PENDING_PAYMENT;
@@ -159,6 +170,11 @@ export class OrderService {
     if (!order || !shipper) {
       throw new HttpException('There was an error!', 400);
     }
+
+    if (order.purchase_status === Enum_PurchaseStatus.CANCELLED) {
+      throw new HttpException('This order has been cancelled ', 401);
+    }
+
     order.shipper = shipper;
     return await this.orderRepo.save(order);
   }

@@ -1,11 +1,11 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowBack } from '../components/ArrowBack';
 import { Button } from '../components/Button';
 import { PaymentGateway, Step } from '../components/PaymentGateway';
 import { Spinner } from '../components/Spinner';
 import useCart from '../context/hooks/useCart';
-import { Enum_PaymentType } from '../enums';
+import { Enum_PaymentType, Enum_PurchaseStatus } from '../enums';
 import { useForm } from '../hooks/useForm';
 import { Alert } from '../interfaces';
 
@@ -16,6 +16,7 @@ export const PaymentMethod = () => {
   const [alert, setAlert] = useState<Alert>({} as Alert);
 
   const params = useParams();
+  const navigate = useNavigate();
 
   const { implPayment, getOrder, order } = useCart();
 
@@ -27,6 +28,13 @@ export const PaymentMethod = () => {
       }, 1000);
     }
   }, []);
+
+  if (
+    params.orderId &&
+    order.purchase_status === Enum_PurchaseStatus.CANCELLED
+  ) {
+    navigate(`/order/${params.orderId}`);
+  }
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setChecked(!checked);

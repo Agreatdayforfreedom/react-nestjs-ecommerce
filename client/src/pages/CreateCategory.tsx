@@ -11,9 +11,7 @@ interface Category {
 export const CreateCategory = () => {
   const { form, handleChange } = useForm<Category>();
 
-  const token = localStorage.getItem('token');
-  if (!token) return <Spinner />;
-  const config = configAxios(token);
+  const config = configAxios();
 
   const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();

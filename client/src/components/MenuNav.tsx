@@ -37,18 +37,18 @@ export const MenuNav = () => {
           Some
         </Link>
         <Link
-          to="#"
+          to="/tophundred"
           className="font-bold text-white p-1 hover:bg-slate-900/90 w-full text-center"
           onClick={() => toggleActions('menunav')}
         >
           Top 100
         </Link>
         <Link
-          to="/news?order_news=DESC"
+          to="/new?order_news=DESC"
           className="font-bold text-white p-1 hover:bg-slate-900/90 w-full text-center"
           onClick={() => toggleActions('menunav')}
         >
-          News
+          New
         </Link>
         {auth.role === 'admin' && (
           <Link

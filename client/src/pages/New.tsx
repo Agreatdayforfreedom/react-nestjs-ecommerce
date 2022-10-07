@@ -47,7 +47,10 @@ export const New = () => {
             } absolute z-50 bg-slate-900/95 border border-gray-600 left-0 top-full w-full shadow-2xl`}
           >
             {categories.map((c) => (
-              <li className="w-full py-1 text-center hover:bg-slate-900/90">
+              <li
+                className="w-full py-1 text-center hover:bg-slate-900/90"
+                key={c.id}
+              >
                 <Link
                   to={`/categories?cat=${c.name}${c.id}`}
                   className="px-2 text-white b"
@@ -66,7 +69,10 @@ export const New = () => {
         </h2>
         <div className="flex flex-col mt-5">
           {categories.map((c) => (
-            <div className="flex items-center text-slate-600 hover:text-black">
+            <div
+              className="flex items-center text-slate-600 hover:text-black"
+              key={c.id}
+            >
               <IoMdArrowDropright size="17" />
               <Link
                 className="pr-2 text-sm "

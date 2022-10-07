@@ -17,7 +17,7 @@ export const Order = () => {
   const { id } = useParams();
   let total;
   let totalItems;
-  const { getOrder, order } = useCart();
+  const { getOrder, order, cancelOrder } = useCart();
 
   useEffect(() => {
     if (id) {
@@ -130,11 +130,14 @@ export const Order = () => {
                     You can cancel the purchase whenever you want.
                   </p>
 
-                  <button className="mx-2 bg-red-600 text-white font-bold p-2 rounded hover:bg-red-800 transition-all">
+                  <button
+                    className="mx-2 bg-red-600 text-white font-bold p-2 rounded hover:bg-red-800 transition-all"
+                    onClick={() => cancelOrder(order.id)}
+                  >
                     Cancel
                   </button>
                 </>
-              ) : (
+              ) : order.purchase_status !== Enum_PurchaseStatus.CANCELLED ? (
                 <>
                   {order.payment === null && (
                     <p className={'text-red-500 text-end flex items-end'}>
@@ -152,6 +155,8 @@ export const Order = () => {
                     Continue
                   </Link>
                 </>
+              ) : (
+                <p className="font-bold text-lg text-red-600">CANCELLED</p>
               )}
             </div>
           </div>

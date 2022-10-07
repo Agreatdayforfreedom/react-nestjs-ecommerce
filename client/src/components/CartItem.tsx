@@ -11,8 +11,7 @@ interface Props {
 }
 
 export const CartItem = ({ c }: Props) => {
-  const token = localStorage.getItem('token');
-  const config = configAxios(token!);
+  const config = configAxios();
 
   const { removeFromCart, cartItems, setCartItems } = useCart();
 

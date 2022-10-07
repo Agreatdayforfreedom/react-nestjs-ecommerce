@@ -25,6 +25,7 @@ interface CartContextProps {
   getOrder: (id: number) => void;
   order: Order;
   selectShipperOrder: (orderId: number, shipperValue: number) => void;
+  cancelOrder: (orderId: number) => void;
 }
 
 export const CartContext = createContext<CartContextProps>(
@@ -41,9 +42,7 @@ export const CartProvider = ({ children }: Props) => {
 
   const { refreshToken } = useAuth();
 
-  const token: string | null = localStorage.getItem('token');
-
-  const config = configAxios(token!);
+  const config = configAxios();
 
   useEffect(() => {
     const getCartItem = async () => {
@@ -150,10 +149,12 @@ export const CartProvider = ({ children }: Props) => {
   };
 
   const cancelOrder = async (orderId: number) => {
+    console.log(orderId);
     try {
       setLoading(true);
       const { data } = await axios.put(
         `${import.meta.env.VITE_URL_BACK}/order/cancel/${orderId}`,
+        {},
         config
       );
       setLoading(false);
@@ -196,6 +197,7 @@ export const CartProvider = ({ children }: Props) => {
         getOrder,
         order,
         selectShipperOrder,
+        cancelOrder,
       }}
     >
       {children}

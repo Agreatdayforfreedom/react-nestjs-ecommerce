@@ -3,16 +3,20 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowBack } from '../components/ArrowBack';
 import { PaymentGateway, Step } from '../components/PaymentGateway';
 import { Spinner } from '../components/Spinner';
 import useCart from '../context/hooks/useCart';
+import { Enum_PurchaseStatus } from '../enums';
 
 export const FPayment = () => {
   const [loading, setLoading] = useState(true);
   const { handleBuy, getOrder, order, loading: loadingCart } = useCart();
+
   const params = useParams();
+  const navigate = useNavigate();
+
   let total;
   useEffect(() => {
     if (params.orderId) {
@@ -28,6 +32,12 @@ export const FPayment = () => {
       handleBuy(parseInt(params.orderId, 10));
     }
   };
+  if (
+    params.orderId &&
+    order.purchase_status === Enum_PurchaseStatus.CANCELLED
+  ) {
+    navigate(`/order/${params.orderId}`);
+  }
   if (order.order_details) {
     total = order.order_details.reduce(
       (p, c) => p + c.book.price * c.quantity,

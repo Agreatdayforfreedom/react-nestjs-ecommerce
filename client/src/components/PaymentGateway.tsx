@@ -18,6 +18,7 @@ export const PaymentGateway: FC<Props> = ({
   locationStatus,
   purchaseStatus,
 }) => {
+  console.log(purchaseStatus === Enum_PurchaseStatus.CANCELLED, 'aodwk');
   return (
     <div className="flex items-center justify-around w-5/6 mx-auto my-4">
       <div
@@ -31,7 +32,9 @@ export const PaymentGateway: FC<Props> = ({
           purchaseStatus === Enum_PurchaseStatus.PENDING_PAYMENT_METHOD ||
           purchaseStatus === Enum_PurchaseStatus.PENDING_PAYMENT ||
           purchaseStatus === Enum_PurchaseStatus.PURCHASE
-            ? 'relative step_purchase bg-orange-400 border-4 border-orange-400'
+            ? 'relative step_purchase'
+            : purchaseStatus === Enum_PurchaseStatus.CANCELLED
+            ? 'relative step_cancelled !bg-slate-400 border-4 !border-slate-400'
             : ''
         }`}
       >
@@ -45,7 +48,10 @@ export const PaymentGateway: FC<Props> = ({
           locationStatus === Step.purchase
             ? 'border border-orange-400'
             : 'border border-slate-400'
-        } `}
+        } ${
+          purchaseStatus === Enum_PurchaseStatus.CANCELLED &&
+          'border !border-slate-400'
+        }`}
       ></div>
       <div
         className={`flex justify-center items-center w-16 h-8 rounded-full ${
@@ -56,6 +62,8 @@ export const PaymentGateway: FC<Props> = ({
           purchaseStatus === Enum_PurchaseStatus.PENDING_PAYMENT ||
           purchaseStatus === Enum_PurchaseStatus.PURCHASE
             ? 'relative step_purchase !bg-orange-400 !border-4 !border-orange-400'
+            : purchaseStatus === Enum_PurchaseStatus.CANCELLED
+            ? 'relative step_cancelled !bg-slate-400 border-4 !border-slate-400'
             : ''
         }`}
       >
@@ -68,8 +76,11 @@ export const PaymentGateway: FC<Props> = ({
           ? 'border border-orange-400'
           : 'border border-slate-400'
       } ${
-          purchaseStatus === Enum_PurchaseStatus.PURCHASE &&
-          'border border-orange-400'
+          purchaseStatus === Enum_PurchaseStatus.PURCHASE
+            ? 'border border-orange-400'
+            : purchaseStatus === Enum_PurchaseStatus.CANCELLED
+            ? 'border border-slate-400'
+            : 'border border-slate-400'
         }`}
       ></div>
       <div
@@ -80,6 +91,8 @@ export const PaymentGateway: FC<Props> = ({
         } ${
           purchaseStatus === Enum_PurchaseStatus.PURCHASE
             ? 'relative step_purchase !bg-orange-400 !border-4 !border-orange-400'
+            : purchaseStatus === Enum_PurchaseStatus.CANCELLED
+            ? 'relative step_cancelled !bg-slate-400 border-4 !border-slate-400'
             : ''
         }`}
       >

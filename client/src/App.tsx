@@ -19,10 +19,11 @@ import Home from './pages/Home';
 import { Login } from './pages/Login';
 import MyData from './pages/MyData';
 import MyOrders from './pages/MyOrders';
-import { New } from './pages/News';
+import { New } from './pages/New';
 import { Order } from './pages/Order';
 import { PaymentMethod } from './pages/PaymentMethod';
 import { Signup } from './pages/Signup';
+import { TopHundred } from './pages/TopHundred';
 import { UpdateBook } from './pages/UpdateBook';
 import { UpdateMetadata } from './pages/UpdateMetadata';
 
@@ -42,7 +43,8 @@ function App() {
                   <Route path="cart" element={<Cart />} />
                   <Route path="categories" element={<Categories />} />
                   <Route path="books" element={<Books />} />
-                  <Route path="news" element={<New />} />
+                  <Route path="new" element={<New />} />
+                  <Route path="tophundred" element={<TopHundred />} />
                 </Route>
                 <Route path="/" element={<MainLayout />}>
                   <Route path="my-data" element={<MyData />} />

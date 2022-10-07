@@ -5,7 +5,9 @@ export interface Config {
   };
 }
 
-export const configAxios = (token: string): Config => {
+export const configAxios = (): Config => {
+  const token: string | null = localStorage.getItem('token');
+
   return {
     headers: {
       'Content-Type': 'application/json',

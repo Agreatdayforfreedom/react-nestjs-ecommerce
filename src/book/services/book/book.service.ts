@@ -101,6 +101,14 @@ export class BookService {
     };
   }
 
+  async findByTopHundred() {
+    return await this.bookRepo.find({
+      order: {
+        totalSold: 'DESC',
+      },
+    });
+  }
+
   async findOne(id: number): Promise<Book> {
     const [book] = await this.bookRepo.find({
       relations: {

@@ -42,6 +42,12 @@ export class BookController {
   }
 
   @Public()
+  @Get('tophundred')
+  findTopHundred() {
+    return this.bookService.findByTopHundred();
+  }
+
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.bookService.findOne(id);

@@ -9,6 +9,7 @@ export enum Enum_PurchaseStatus {
   PENDING_PAYMENT_METHOD = 'PENDING_PAYMENT_METHOD',
   PENDING_PAYMENT = 'PENDING_PAYMENT',
   PURCHASE = 'PURCHASE',
+  CANCELLED = 'CANCELLED',
 }
 
 export enum Enum_PaymentType {

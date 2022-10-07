@@ -36,6 +36,10 @@ export class BuyService {
       },
     });
 
+    if (order.purchase_status === Enum_PurchaseStatus.CANCELLED) {
+      throw new HttpException('This order has been cancelled ', 401);
+    }
+
     type BookOrderData = {
       id: number;
       qty: number;

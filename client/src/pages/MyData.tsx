@@ -33,8 +33,7 @@ export const FormCustomer = ({ isCart }: Props) => {
   //to remove form cart if cancel is clicked
   const { setAlert } = useCart();
 
-  const token = localStorage.getItem('token');
-  const config = configAxios(token!);
+  const config = configAxios();
 
   useEffect(() => {
     const fetch = async () => {
