@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 import { OrderDetail } from '../components/OrderDetail';
@@ -7,9 +7,13 @@ import { PaymentGateway, Step } from '../components/PaymentGateway';
 import useCart from '../context/hooks/useCart';
 import { ArrowBack } from '../components/ArrowBack';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
+import axios from 'axios';
+import { Shipper } from '../interfaces';
+import { configAxios } from '../utils/configAxios';
 
 export const Order = () => {
   const [loading, setLoading] = useState(true);
+
   const { id } = useParams();
   let total;
   let totalItems;
@@ -25,7 +29,6 @@ export const Order = () => {
   }, []);
 
   if (loading) return <Spinner />;
-
   if (order.order_details) {
     total = order.order_details.reduce(
       (p, c) => p + c.book.price * c.quantity,
@@ -48,21 +51,23 @@ export const Order = () => {
           Thanks for your purchase!
         </h3>
       )}
-      <div className="flex flex-col md:flex-row">
-        <div className="order-last md:order-none md:w-1/3">
+      <div className="flex flex-col md:flex-row border-y py-1">
+        <div className="order-last md:order-none md:w-1/3 pl-1">
           {order.order_details.map((od) => (
             <OrderDetail key={od.id} od={od} />
           ))}
         </div>
-        <section className="p-2 md:w-2/3 h-96 border mx-1">
+        <section className="p-2 md:w-2/3 border mx-1">
           <div className="flex flex-col justify-between h-full">
             {/* details order */}
             <div className="border-b">
               <p className="text-sm text-slate-600 text-end">
                 Num order{order.num_order}
               </p>
+              <p className="font-bold text-orange-400">Shipment: ${35}</p>
               <p className="font-bold text-orange-400 text-2xl">
-                Total: ${total}
+                Total: ${total && total + 35}
+                {/*  'sum 35 of the shipping' */}
               </p>
               <p>Items: {totalItems}</p>
               {order.payment && (
@@ -115,7 +120,8 @@ export const Order = () => {
                 </li>
               </ul>
             </div>
-            <div>shipping</div>
+            {/* shipper */}
+            <ShipperCard />
             {/* buttons */}
             <div className="flex justify-end">
               {order.purchase_status === Enum_PurchaseStatus.PURCHASE ? (
@@ -155,11 +161,136 @@ export const Order = () => {
   );
 };
 
-const LoadPage = () => {
-  //check
+export const ShipperCard = () => {
+  const [formShipperEditMode, setFormShipperEditMode] = useState(false);
+
+  const handleShipperChangeForm = () => {
+    setFormShipperEditMode(!formShipperEditMode);
+  };
+
+  const { order } = useCart();
+
   return (
-    <div className="absolute h-screen">
-      <Spinner />
+    <div className="flex items-center border-b pb-5 pt-3 my-3">
+      {order.shipper === null ? (
+        <SelectShipperForm orderId={order.id} />
+      ) : (
+        <div className="w-full">
+          <p className="text-xs">price and arrival time are ilustratives.</p>
+          <p className="text-gray-500 font-bold">
+            Shipper: <span className="text-black">{order.shipper.company}</span>
+          </p>
+          <p className="text-gray-500 font-bold">
+            price: <span className="text-black">35</span>
+          </p>
+          <p className="">
+            The package arrives in <span className="font-bold text-lg">3</span>{' '}
+            days
+          </p>
+
+          {order.purchase_status !== Enum_PurchaseStatus.PURCHASE && (
+            <div className="text-end">
+              {!formShipperEditMode && (
+                <button
+                  className="bg-green-700 text-white p-1 rounded hover:bg-green-800  transition-all"
+                  onClick={handleShipperChangeForm}
+                >
+                  Change shipper
+                </button>
+              )}
+              {formShipperEditMode && (
+                <div>
+                  <SelectShipperForm
+                    formShipperEditMode={formShipperEditMode}
+                    handleShipperChangeForm={handleShipperChangeForm}
+                    orderId={order.id}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
+  );
+};
+
+interface ShipperFormProps {
+  orderId: number;
+  formShipperEditMode?: boolean;
+  handleShipperChangeForm?: () => void;
+}
+
+export const SelectShipperForm = ({
+  orderId,
+  formShipperEditMode,
+  handleShipperChangeForm,
+}: ShipperFormProps) => {
+  const [shippers, setShippers] = useState<Shipper[]>([]);
+  const [shipperValue, setShipperValue] = useState<number | null>();
+
+  const { selectShipperOrder } = useCart();
+
+  useEffect(() => {
+    const getShipper = async () => {
+      try {
+        const { data } = await axios(
+          `${import.meta.env.VITE_URL_BACK}/shipper`
+        );
+        setShippers(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getShipper();
+  }, []);
+
+  const handleShipperValue = (evt: ChangeEvent<HTMLSelectElement>) => {
+    setShipperValue(parseInt(evt.target.value, 10));
+  };
+
+  const handleShipperSubmit = async (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    if (shipperValue && orderId) {
+      selectShipperOrder(orderId, shipperValue);
+      if (typeof handleShipperChangeForm == 'function')
+        handleShipperChangeForm();
+    }
+  };
+  return (
+    <form onSubmit={handleShipperSubmit} className="flex flex-col w-full mt-3">
+      <div className="flex flex-col md:flex-row">
+        <label className="font-bold text-start">Shipper: </label>
+        <select
+          className="bg-transparent border border-orange-500 rounded mx-2 p-2 hover:cursor-pointer"
+          onChange={handleShipperValue}
+        >
+          <option disabled selected>
+            --- Select ---
+          </option>
+          {shippers &&
+            shippers.map((shipper: Shipper) => (
+              <>
+                <option value={shipper.id} key={shipper.id}>
+                  {shipper.company}
+                </option>
+              </>
+            ))}
+        </select>
+      </div>
+      <div className="text-end py-1 px-2">
+        {formShipperEditMode && (
+          <button
+            className="text-white bg-gray-700 rounded px-1 mx-1"
+            onClick={handleShipperChangeForm}
+          >
+            Cancel
+          </button>
+        )}
+        <button className="text-white bg-green-700 rounded px-1 mx-1">
+          Save
+        </button>
+      </div>
+    </form>
   );
 };

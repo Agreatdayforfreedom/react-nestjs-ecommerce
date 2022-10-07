@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Request,
 } from '@nestjs/common';
 import { User } from '../../../auth/decorators/user.decorator';
@@ -27,5 +29,22 @@ export class OrderController {
   @Post()
   create(@User() userReq: PayloadAuth) {
     return this.orderService.create(userReq);
+  }
+
+  @Put('cancel/:orderId')
+  cancelOrder(
+    @Param('orderId', ParseIntPipe) orderId: number,
+    @User() userReq: PayloadAuth,
+  ) {
+    return this.orderService.cancelOrder(orderId, userReq);
+  }
+
+  @Post('/shipper/:orderId')
+  selectOrderShipper(
+    @Param('orderId', ParseIntPipe) orderId: number,
+    @Body() payload: { shipperValue: number },
+    @User() userReq: PayloadAuth,
+  ) {
+    return this.orderService.selectOrderShipper(orderId, payload, userReq);
   }
 }

@@ -83,12 +83,21 @@ interface Payment {
   paymentType: Enum_PaymentType;
 }
 
+export interface Shipper {
+  id: number;
+  company: string;
+  phone: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Order {
   id: number;
   customer: Customer;
   order_details: OrderDetails[];
   num_order: string;
   payment: Payment;
+  shipper: Shipper;
   purchase_status: Enum_PurchaseStatus;
   createdAt: Date;
   updatedAt: Date;

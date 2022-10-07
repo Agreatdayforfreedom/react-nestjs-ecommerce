@@ -24,6 +24,7 @@ interface CartContextProps {
   handleBuy: (orderId: number) => void;
   getOrder: (id: number) => void;
   order: Order;
+  selectShipperOrder: (orderId: number, shipperValue: number) => void;
 }
 
 export const CartContext = createContext<CartContextProps>(
@@ -133,6 +134,34 @@ export const CartProvider = ({ children }: Props) => {
     }
   };
 
+  const selectShipperOrder = async (orderId: number, shipperValue: number) => {
+    try {
+      setLoading(true);
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_URL_BACK}/order/shipper/${orderId}`,
+        { shipperValue },
+        config
+      );
+      setOrder(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const cancelOrder = async (orderId: number) => {
+    try {
+      setLoading(true);
+      const { data } = await axios.put(
+        `${import.meta.env.VITE_URL_BACK}/order/cancel/${orderId}`,
+        config
+      );
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleBuy = async (orderId: number) => {
     try {
       setLoading(true);
@@ -166,6 +195,7 @@ export const CartProvider = ({ children }: Props) => {
         handleBuy,
         getOrder,
         order,
+        selectShipperOrder,
       }}
     >
       {children}

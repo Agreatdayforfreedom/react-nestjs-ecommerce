@@ -48,8 +48,8 @@ export const FPayment = () => {
         Complete your purchase
       </h3>
       <div className="border flex flex-col justify-end">
-        <div className="flex justify-between w-1/3 mx-auto">
-          <div className="text-center">
+        <div className="flex flex-col my-3 justify-between md:w-1/3 md:mx-auto">
+          <div className="text-center w-full mb-4 border-b pb-2">
             <h3 className="text-orange-400 text-lg font-bold">
               {order.payment.paymentType}
             </h3>
@@ -63,7 +63,22 @@ export const FPayment = () => {
               Change Payment
             </Link>
           </div>
-          <div>shipping</div>
+          <div className="text-center border-b py-2">
+            <p className="text-xs text-slate-700">
+              price and arrival time are ilustratives.
+            </p>
+            <p className="text-gray-500 font-bold">
+              Shipper:{' '}
+              <span className="text-black">{order.shipper.company}</span>
+            </p>
+            <p className="text-gray-500 font-bold">
+              price: <span className="text-black">35</span>
+            </p>
+            <p className="">
+              The package arrives in{' '}
+              <span className="font-bold text-lg">3</span> days
+            </p>
+          </div>
         </div>
         <div className="w-2/3 mx-auto text-end mt-8 py-1">
           <button

@@ -8,6 +8,7 @@ import { Order_details } from '../../entities/order_details.entity';
 import { Cart_item } from '../../entities/cart_item.entity';
 import { PayloadAuth } from '../../../auth/models/token.model';
 import { Payment } from '../../entities/payment.entity';
+import { Shipper } from '../../entities/shipper.entity';
 
 @Injectable()
 export class OrderService {
@@ -17,6 +18,7 @@ export class OrderService {
     @InjectRepository(Cart) private cartRepo: Repository<Cart>,
     @InjectRepository(Cart_item) private cart_itemRepo: Repository<Cart_item>,
     @InjectRepository(Payment) private paymentRepo: Repository<Payment>,
+    @InjectRepository(Shipper) private shipperRepo: Repository<Shipper>,
     @InjectRepository(Order_details)
     private order_detailsRepo: Repository<Order_details>,
   ) {}
@@ -40,6 +42,7 @@ export class OrderService {
           user: true,
         },
         payment: true,
+        shipper: true,
         order_details: {
           book: true,
         },
@@ -84,6 +87,14 @@ export class OrderService {
 
     order.customer = customer;
 
+    const [shipper] = await this.shipperRepo.find({
+      where: {
+        company: 'Library',
+      },
+    });
+
+    order.shipper = shipper;
+
     const { id } = await this.orderRepo.save(order);
 
     //is it necessary?
@@ -112,6 +123,10 @@ export class OrderService {
     return orderBrought;
   }
 
+  async cancelOrder(orderId: number, userReq: PayloadAuth) {
+    console.log(orderId, userReq);
+  }
+
   async updatePayment(
     orderId: number,
     paymentId: number,
@@ -128,5 +143,23 @@ export class OrderService {
     order.payment = payment;
     order.purchase_status = Enum_PurchaseStatus.PENDING_PAYMENT;
     await this.orderRepo.save(order);
+  }
+
+  async selectOrderShipper(
+    orderId: number,
+    payload: { shipperValue: number },
+    userReq: PayloadAuth,
+  ): Promise<Orders> {
+    const order = await this.findOne(orderId, userReq);
+
+    const [shipper] = await this.shipperRepo.find({
+      where: { id: payload.shipperValue },
+    });
+
+    if (!order || !shipper) {
+      throw new HttpException('There was an error!', 400);
+    }
+    order.shipper = shipper;
+    return await this.orderRepo.save(order);
   }
 }

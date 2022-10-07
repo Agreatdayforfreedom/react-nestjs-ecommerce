@@ -16,8 +16,10 @@ import { Cart_item } from './entities/cart_item.entity';
 import { BookModule } from '../book/book.module';
 import { Payment } from './entities/payment.entity';
 import { PaymentService } from './services/payment/payment.service';
-import { PaymentController } from './controllers/payment/payment.controller';
+import { PaymentController } from './controller/payment/payment.controller';
 import { Shipper } from './entities/shipper.entity';
+import { ShipperController } from './controller/shipper/shipper.controller';
+import { ShipperService } from './services/shipper/shipper.service';
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { Shipper } from './entities/shipper.entity';
     OrderService,
     CartService,
     PaymentService,
+    ShipperService,
   ],
   exports: [UserService, TypeOrmModule],
   controllers: [
@@ -46,6 +49,7 @@ import { Shipper } from './entities/shipper.entity';
     OrderController,
     CartController,
     PaymentController,
+    ShipperController,
   ],
 })
 export class UserModule {}
