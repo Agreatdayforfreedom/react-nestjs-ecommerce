@@ -37,11 +37,11 @@ export const MenuNav = () => {
           Some
         </Link>
         <Link
-          to="/tophundred"
+          to="/bestsellers"
           className="font-bold text-white p-1 hover:bg-slate-900/90 w-full text-center"
           onClick={() => toggleActions('menunav')}
         >
-          Top 100
+          Best Sellers
         </Link>
         <Link
           to="/new?order_news=DESC"

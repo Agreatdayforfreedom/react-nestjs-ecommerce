@@ -23,7 +23,7 @@ import { New } from './pages/New';
 import { Order } from './pages/Order';
 import { PaymentMethod } from './pages/PaymentMethod';
 import { Signup } from './pages/Signup';
-import { TopHundred } from './pages/TopHundred';
+import { BestSellers } from './pages/BestSellers';
 import { UpdateBook } from './pages/UpdateBook';
 import { UpdateMetadata } from './pages/UpdateMetadata';
 
@@ -44,7 +44,7 @@ function App() {
                   <Route path="categories" element={<Categories />} />
                   <Route path="books" element={<Books />} />
                   <Route path="new" element={<New />} />
-                  <Route path="tophundred" element={<TopHundred />} />
+                  <Route path="bestsellers" element={<BestSellers />} />
                 </Route>
                 <Route path="/" element={<MainLayout />}>
                   <Route path="my-data" element={<MyData />} />

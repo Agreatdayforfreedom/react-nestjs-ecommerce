@@ -153,3 +153,17 @@
     opacity: 0;
   }
 }
+
+/* slider */
+
+/* .slider-container {
+  margin: 0 auto;
+  overflow-x: hidden;
+  width: 80%;
+  z-index: 1;
+} */
+
+.slider {
+  display: flex;
+  cursor: grab;
+}

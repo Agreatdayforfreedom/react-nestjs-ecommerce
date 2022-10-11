@@ -92,25 +92,29 @@ export const PrivateHeader = () => {
         <nav className="hidden md:flex justify-end">
           <div className="w-full border-t border-r border-slate-600 flex justify-center">
             <Link
+              to="/"
+              className="px-6 py-1 mx-2 bg-slate-600 text-white hover:bg-slate-700 transition-all"
+            >
+              Home
+            </Link>
+            <Link
               to="/categories"
-              className="px-6 py-1 mx-2 bg-slate-600 text-white"
+              className="px-6 py-1 mx-2 bg-slate-600 text-white hover:bg-slate-700 transition-all"
             >
               Categories
             </Link>
-            <Link to="#" className="px-6 py-1 mx-2 bg-slate-600 text-white ">
-              Some
+
+            <Link
+              to="bestsellers"
+              className="px-6 py-1 mx-2 bg-slate-600 text-white whitespace-nowrap hover:bg-slate-700 transition-all"
+            >
+              Best Sellers
             </Link>
             <Link
-              to="#"
-              className="px-6 py-1 mx-2 bg-slate-600 text-white whitespace-nowrap"
+              to="/new?order_news=DESC"
+              className="px-6 py-1 mx-2 bg-slate-600 text-white flex hover:bg-slate-700 transition-all"
             >
-              Top 100
-            </Link>
-            <Link
-              to="/news?order_news=DESC"
-              className="px-6 py-1 mx-2 bg-slate-600 text-white flex"
-            >
-              News
+              New
             </Link>
           </div>
           {auth.role === 'admin' && (

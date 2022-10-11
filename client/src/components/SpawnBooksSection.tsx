@@ -5,6 +5,7 @@ import { FilterCard } from './FilterCard';
 import { OrderMenu } from './OrderMenu';
 import { PreviewBook } from './PreviewBook';
 import useBook from '../context/hooks/useBook';
+import { Book } from '../interfaces';
 
 export const SpawnBooksSection = ({ books, text }: any) => {
   const { getBooksLength } = useBook();
@@ -28,7 +29,7 @@ export const SpawnBooksSection = ({ books, text }: any) => {
           </div>
           <div className="grid border p-1 mx-2 mt-2 gap-1 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {books &&
-              books.map((book: any) => (
+              books.map((book: Book) => (
                 <PreviewBook book={book} key={book.id} />
               ))}
           </div>
