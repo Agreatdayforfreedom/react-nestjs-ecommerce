@@ -1,20 +1,21 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { PreviewBook } from '../components/PreviewBook';
+import { Spinner } from '../components/Spinner';
+import useBook from '../context/hooks/useBook';
 import { Book } from '../interfaces';
 
 export const BestSellers = () => {
-  const [bestSellers, setBestSellers] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const { bestSellers, getTop } = useBook();
 
   useEffect(() => {
-    const getTop = async () => {
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/book/tophundred`
-      );
-      setBestSellers(data);
-    };
     getTop();
+    setLoading(false);
   }, []);
+
+  if (loading) return <Spinner />;
   return (
     <section className="w-full">
       <div>

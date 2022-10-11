@@ -7,7 +7,9 @@ import { Questions } from '../components/Questions';
 import useAuth from '../context/hooks/useAuth';
 import useBook from '../context/hooks/useBook';
 import useCart from '../context/hooks/useCart';
-import { Message, Metadata } from '../interfaces';
+import { Book as IBook, Metadata } from '../interfaces';
+import { Slider } from '../components/Slider';
+import axios from 'axios';
 
 interface PropsMetadata {
   metadata: Metadata;
@@ -15,22 +17,30 @@ interface PropsMetadata {
 }
 
 export const Book = () => {
-  const { auth, loading: loadingAuth } = useAuth();
-  const { addToCart, alert } = useCart();
+  const [booksSlider, setBooksSlider] = useState<IBook[]>([]);
   const [loading, setLoading] = useState(true);
   const { book, getBook, loading: loadingBook, deleteBook } = useBook();
 
+  const { auth, loading: loadingAuth } = useAuth();
+  const { addToCart, alert } = useCart();
+
   const params = useParams();
 
+  const getBooksSlider = async () => {
+    const { data } = await axios(`${import.meta.env.VITE_URL_BACK}/book`);
+    setBooksSlider(data);
+  };
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
       //spinner to make it look better on page load
       if (params && params.id) {
         getBook(params.id);
+        getBooksSlider();
         setLoading(false);
       }
     }, 500);
-  }, []);
+  }, [params]);
   const handleDelete = () => {
     if (params.id) {
       deleteBook(params.id);
@@ -123,6 +133,7 @@ export const Book = () => {
 
       <MetadataBook metadata={book.metadata!} bookId={book.id && book.id} />
       <Questions bookId={book.id && book.id} />
+      <Slider books={booksSlider} title="you migth be interested" />
     </>
   );
 };

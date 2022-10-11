@@ -52,6 +52,8 @@ export interface BookContextProps {
   deleteBook: (id: string) => void;
   handleSubmitMetadata: (metadata: Metadata, id: string) => void;
   deleteMetadata: (id: string) => void;
+  getTop: () => void;
+  bestSellers: Book[];
 }
 
 export const BookContext = createContext<BookContextProps>(
@@ -73,6 +75,7 @@ export const BookProvider = ({ children }: Props) => {
   });
   const [loading, setLoading] = useState<Loading>(true);
   const [booksLength, setBooksLength] = useState<Book[]>([]);
+  const [bestSellers, setBestSellers] = useState<Book[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [file, setFile] = useState<any>();
   const [catId, setCatId] = useState<number[]>([]);
@@ -98,6 +101,17 @@ export const BookProvider = ({ children }: Props) => {
         setBook(data);
         setLoading(false);
       }, 300);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getTop = async () => {
+    try {
+      const { data } = await axios(
+        `${import.meta.env.VITE_URL_BACK}/book/tophundred`
+      );
+      setBestSellers(data);
     } catch (error) {
       console.log(error);
     }
@@ -307,6 +321,8 @@ export const BookProvider = ({ children }: Props) => {
         deleteBook,
         handleSubmitMetadata,
         deleteMetadata,
+        bestSellers,
+        getTop,
       }}
     >
       {children}

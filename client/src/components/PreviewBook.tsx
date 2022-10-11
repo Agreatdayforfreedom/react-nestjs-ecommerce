@@ -7,13 +7,27 @@ interface Props {
   book: Book;
   best?: boolean;
   i?: number;
+  infoInvisible?: boolean;
 }
 
-export const PreviewBook = ({ book, best, i }: Props) => {
+export const PreviewBook = ({
+  book,
+  best,
+  i,
+  infoInvisible = false,
+}: Props) => {
   return (
     <>
-      <div className="relative w-full text-center border">
-        <div className="w-56 sm:w-36 m-auto">
+      <div
+        className={`relative w-full text-center border ${
+          infoInvisible && '!w-fit'
+        }`}
+      >
+        <div
+          className={`w-56 sm:w-36 mx-auto 
+                ${infoInvisible && '!w-20 !h-32 sm:!w-28 sm:!h-40'}
+                `}
+        >
           <div className="absolute h-12 -top-px right-0">
             {book.isNew && !best && (
               <div>
@@ -39,17 +53,27 @@ export const PreviewBook = ({ book, best, i }: Props) => {
             <img
               src={book.image}
               alt={book.name}
-              className="w-56 h-80 sm:w-36 sm:h-56 m-auto hover:shadow-xl hover:shadow-slate-300 transition-all"
+              className={`${
+                infoInvisible && '!w-20 !h-32 sm:!w-28 sm:!h-40'
+              } w-56 h-80 sm:w-36 sm:h-56 m-auto hover:shadow-xl hover:shadow-slate-300 transition-all`}
             />
-            <p className="text-orange-600 text-xl font-light hover:underline">
-              {book.name}
-            </p>
+            {infoInvisible ? (
+              <></>
+            ) : (
+              <p className="text-orange-600 text-xl font-light hover:underline">
+                {book.name}
+              </p>
+            )}
           </Link>
         </div>
-
-        <p>{book.author}</p>
-        <p className="font-bold text-green-600">${book.price} usd</p>
-        <button></button>
+        {infoInvisible ? (
+          <></>
+        ) : (
+          <>
+            <p>{book.author}</p>
+            <p className="font-bold text-green-600">${book.price} usd</p>
+          </>
+        )}
       </div>
     </>
   );

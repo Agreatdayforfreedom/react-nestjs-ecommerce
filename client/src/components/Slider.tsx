@@ -43,10 +43,7 @@ export const Slider = ({ books, title }: Props) => {
       }
       setCurrentItem((prev) => prev + 1);
       setCount((prev) => prev + 1);
-
-      console.log(count, currentItem);
       setTransformVal((-144 - 32) * count);
-      console.log(random);
     }, random);
 
     return () => clearInterval(interval);
