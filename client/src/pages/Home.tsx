@@ -37,7 +37,7 @@ const Home = () => {
           className="w-full max-w-full h-auto  opacity-80 border-2 border-neutral-800"
         />
         <div className="absolute flex justify-center items-center top-0 w-full h-full">
-          <p className="flex flex-col text-center z-50 sm:text-[3vw] font-serif text-white w-1/2 h-auto">
+          <p className="flex flex-col text-center z-40 sm:text-[3vw] font-serif text-white w-1/2 h-auto">
             “He who reads a lot and walks a lot, sees a lot and knows a lot.”
             <span className="text-start text-sm sm:text-[2vw]">
               - Miguel de Cervantes

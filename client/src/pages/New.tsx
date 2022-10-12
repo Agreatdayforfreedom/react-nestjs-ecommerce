@@ -63,8 +63,8 @@ export const New = () => {
           </ul>
         </div>
       </div>
-      <aside className="relative hidden md:block w-1/4 border border-slate-500 mx-2">
-        <h2 className="absolute w-4/5 m-auto -top-3 left-0 right-0 text-orange-600 text-center bg-white">
+      <aside className="relative hidden md:block w-1/4 h-96 border border-slate-500 mx-2">
+        <h2 className="absolute w-4/5 m-auto -top-4 left-0 right-0 text-orange-600 text-center text-lg bg-white">
           Select Category
         </h2>
         <div className="flex flex-col mt-5">

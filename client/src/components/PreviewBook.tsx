@@ -31,9 +31,9 @@ export const PreviewBook = ({
           <div className="absolute h-12 -top-px right-0">
             {book.isNew && !best && (
               <div>
-                <ImBookmark size="30" className="text-orange-600" />
-                <p className="absolute text-[10px] font-bold top-1 left-[5px]">
-                  new
+                <ImBookmark size={50} className="text-orange-600" />
+                <p className="absolute text-white font-bold top-2 left-0 right-0 ">
+                  New
                 </p>
               </div>
             )}

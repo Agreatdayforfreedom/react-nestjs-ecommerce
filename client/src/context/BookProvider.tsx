@@ -43,8 +43,8 @@ export interface BookContextProps {
   getBooksLength: (p1: number | 'all', p2?: number) => number;
   toggleActions: (val: keyof OpenOrCloseDropDownMenus) => void;
   hidden: OpenOrCloseDropDownMenus;
-  setCatId: (state: number[]) => void;
-  catId: number[];
+  setCatId: (state: Array<{ cid: number; name: string }>) => void;
+  catId: Array<{ cid: number; name: string }>;
   handleSubmit: (book: FormGen) => void;
   setFile: (state: any) => void;
   book: Book;
@@ -78,11 +78,10 @@ export const BookProvider = ({ children }: Props) => {
   const [bestSellers, setBestSellers] = useState<Book[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [file, setFile] = useState<any>();
-  const [catId, setCatId] = useState<number[]>([]);
+  const [catId, setCatId] = useState<Array<{ cid: number; name: string }>>([]);
   const [book, setBook] = useState<Book>({} as Book);
 
   const navigate = useNavigate();
-
   const config = configAxios();
 
   const toggleActions = (val: keyof OpenOrCloseDropDownMenus) => {
@@ -130,12 +129,13 @@ export const BookProvider = ({ children }: Props) => {
 
   //create book
   const createBook = async (book: FormGen): Promise<void> => {
+    setLoading(true);
     const { name, price, stock, author } = book;
     if ([name, price, stock, author].includes('')) return console.log('error');
 
     const { data } = await axios.post(
       `${import.meta.env.VITE_URL_BACK}/book`,
-      { ...book, categories: catId },
+      { ...book, categories: catId.map((c) => c.cid) },
       config
     );
 
@@ -153,17 +153,20 @@ export const BookProvider = ({ children }: Props) => {
         config
       );
     }
-
     navigate(`/admin/add-metadata/${data.id}`);
+    setLoading(false);
   };
 
   const updateBook = async (book: FormGen) => {
+    setLoading(true);
     const { id, ...rest } = book;
     const { data } = await axios.put(
       `${import.meta.env.VITE_URL_BACK}/book/${id}`,
-      { ...rest, categories: catId },
+      { ...rest, categories: catId.map((c) => c.cid) },
       config
     );
+    navigate(`/book/${data.id}`);
+    setLoading(false);
   };
 
   const deleteBook = async (id: string) => {

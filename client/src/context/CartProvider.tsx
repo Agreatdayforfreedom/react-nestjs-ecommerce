@@ -69,11 +69,12 @@ export const CartProvider = ({ children }: Props) => {
         err: false,
       });
     } catch (error) {
-      const err = error as any;
-      setAlert({
-        message: err.response.data.message,
-        err: true,
-      });
+      if (error instanceof AxiosError) {
+        setAlert({
+          message: error.response?.data.message,
+          err: true,
+        });
+      }
     }
     setTimeout(() => {
       setAlert({} as Alert);

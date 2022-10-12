@@ -121,6 +121,7 @@ export const QuestionsProvider = ({ children }: Props) => {
       );
       setMessages([...messages, data]);
       setOwnMessages([...ownMessages, data]);
+      setMessagesLength((prev) => prev + 1);
       showAlert({ message: 'Question sent successfully ', err: false });
       setTimeout(() => {
         setLoading(false);

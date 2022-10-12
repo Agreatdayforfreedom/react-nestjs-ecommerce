@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import { CartItem } from '../components/CartItem';
 import useCart from '../context/hooks/useCart';
+import { Alert } from '../interfaces';
 import { FormCustomer } from './MyData';
 
 export const Cart = () => {
   const [total, setTotal] = useState<number>(0);
-  const { cartItems, newOrder, alert } = useCart();
+  const { cartItems, newOrder, alert, setAlert } = useCart();
 
+  useEffect(() => {
+    setAlert({} as Alert);
+  }, []);
   const sum = cartItems.reduce((p, c) => p + c.book.price * c.quantity, 0);
   const qty = cartItems.reduce((p, c) => p + c.quantity, 0);
 
@@ -23,9 +27,7 @@ export const Cart = () => {
         </div>
       )}
       {cartItems.map((c) => (
-        <>
-          <CartItem key={c.id} c={c} />
-        </>
+        <CartItem key={c.id} c={c} />
       ))}
       <div>
         <div className="flex justify-between m-2 border rounded bg-lime-700">

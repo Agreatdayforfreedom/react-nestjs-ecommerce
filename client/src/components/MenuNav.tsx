@@ -10,7 +10,7 @@ export const MenuNav = () => {
   const { toggleActions, hidden } = useBook();
 
   return (
-    <div className="md:hidden">
+    <div className="md:hidden z-50">
       <button onClick={() => toggleActions('menunav')}>
         <HiOutlineMenuAlt2 size="40" />
       </button>

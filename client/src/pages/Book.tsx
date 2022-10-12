@@ -7,7 +7,7 @@ import { Questions } from '../components/Questions';
 import useAuth from '../context/hooks/useAuth';
 import useBook from '../context/hooks/useBook';
 import useCart from '../context/hooks/useCart';
-import { Book as IBook, Metadata } from '../interfaces';
+import { Alert, Book as IBook, Metadata } from '../interfaces';
 import { Slider } from '../components/Slider';
 import axios from 'axios';
 
@@ -22,7 +22,7 @@ export const Book = () => {
   const { book, getBook, loading: loadingBook, deleteBook } = useBook();
 
   const { auth, loading: loadingAuth } = useAuth();
-  const { addToCart, alert } = useCart();
+  const { addToCart, alert, setAlert } = useCart();
 
   const params = useParams();
 
@@ -31,6 +31,7 @@ export const Book = () => {
     setBooksSlider(data);
   };
   useEffect(() => {
+    setAlert({} as Alert);
     setLoading(true);
     setTimeout(() => {
       //spinner to make it look better on page load

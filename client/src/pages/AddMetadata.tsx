@@ -7,8 +7,10 @@ export const AddMetadata = () => {
   const params = useParams();
 
   return (
-    <div className="relative">
-      <ArrowBack to={`/book/${params.id}`} />
+    <div>
+      <div className="relative pb-10">
+        <ArrowBack to={`/book/${params.id}`} />
+      </div>
       <FormMetadata />;
     </div>
   );

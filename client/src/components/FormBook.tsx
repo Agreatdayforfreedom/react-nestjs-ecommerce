@@ -4,6 +4,7 @@ import useBook from '../context/hooks/useBook';
 import { useForm } from '../hooks/useForm';
 import { Book } from '../interfaces';
 import { Button } from './Button';
+import { Spinner } from './Spinner';
 
 export interface FormGen {
   id?: number;
@@ -40,7 +41,7 @@ export const FormBook = () => {
     if (params.id) {
       setForm(book);
       if (book.categories) {
-        setCatId(book.categories.map((c) => c.id));
+        setCatId(book.categories.map((c) => ({ cid: c.id, name: c.name })));
       }
       setLoading(false);
     }
@@ -51,6 +52,7 @@ export const FormBook = () => {
 
   //submit
   const submit = (evt: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     evt.preventDefault();
     const {
       isNew,
@@ -70,21 +72,31 @@ export const FormBook = () => {
     for (var i = 0, l = options.length; i < l; i++) {
       //if is selected then true
       if (options[i].selected) {
+        const name: string = options[i].value.slice(
+          0,
+          options[i].value.length - 1
+        );
+
+        const cid: number = parseInt(
+          options[i].value.slice(options[i].value.length - 1, 10)
+        );
         //and if exist in catId state then return
-        if (catId.find((v) => v.toString() === options[i].value)) {
+        if (catId.find((v) => v.cid === cid)) {
           return;
         }
+        // const splitValue = options[i].value.split(options[i].value.at(-1))
+
         //else add to the array
-        setCatId([...catId, parseInt(options[i].value)]);
+        setCatId([...catId, { cid, name }]);
       }
     }
   };
 
   const quitCategory = (cid: any) => {
-    setCatId(catId.filter((c) => c !== cid));
+    setCatId(catId.filter((c) => c.cid !== cid));
   };
 
-  if (loading && loadingBook) return <p>loading</p>;
+  if (loading && loadingBook) return <Spinner />;
   return (
     <div className="pt-10">
       <form
@@ -183,17 +195,17 @@ export const FormBook = () => {
             onChange={handleChangeSelect}
           >
             {categories.map((opt) => (
-              <option value={opt.id} key={opt.id}>
+              <option value={opt.name + opt.id.toString()} key={opt.id}>
                 {opt.name}
               </option>
             ))}
           </select>
           {catId &&
             catId.map((cid) => (
-              <div className="flex my-1" key={cid}>
-                <p className="font-bold">{cid}</p>
+              <div className="flex my-1" key={cid.cid}>
+                <p className="font-bold">{cid.name}</p>
                 <button
-                  onClick={() => quitCategory(cid)}
+                  onClick={() => quitCategory(cid.cid)}
                   className="flex text-sm rounded-full mx-2 px-2 bg-red-800"
                 >
                   x
