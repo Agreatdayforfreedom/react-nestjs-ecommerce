@@ -42,9 +42,9 @@ export class BookController {
   }
 
   @Public()
-  @Get('tophundred')
-  findTopHundred() {
-    return this.bookService.findByTopHundred();
+  @Get('bestSellers')
+  findBestSellers(@Query() query: { take: number }) {
+    return this.bookService.findBestSellers(query);
   }
 
   @Public()

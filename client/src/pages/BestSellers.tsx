@@ -11,7 +11,7 @@ export const BestSellers = () => {
   const { bestSellers, getTop } = useBook();
 
   useEffect(() => {
-    getTop();
+    getTop(100);
     setLoading(false);
   }, []);
 

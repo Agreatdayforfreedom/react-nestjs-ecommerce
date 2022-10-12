@@ -101,11 +101,12 @@ export class BookService {
     };
   }
 
-  async findByTopHundred() {
+  async findBestSellers(query: { take: number }) {
     return await this.bookRepo.find({
       order: {
         totalSold: 'DESC',
       },
+      take: query.take || 100,
     });
   }
 

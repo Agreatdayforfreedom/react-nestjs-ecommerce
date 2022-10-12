@@ -52,7 +52,7 @@ export interface BookContextProps {
   deleteBook: (id: string) => void;
   handleSubmitMetadata: (metadata: Metadata, id: string) => void;
   deleteMetadata: (id: string) => void;
-  getTop: () => void;
+  getTop: (take: number) => void;
   bestSellers: Book[];
 }
 
@@ -106,10 +106,10 @@ export const BookProvider = ({ children }: Props) => {
     }
   };
 
-  const getTop = async () => {
+  const getTop = async (take: number) => {
     try {
       const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/book/tophundred`
+        `${import.meta.env.VITE_URL_BACK}/book/bestsellers?take=${take}`
       );
       setBestSellers(data);
     } catch (error) {

@@ -24,7 +24,7 @@ const Home = () => {
 
   useEffect(() => {
     f();
-    getTop();
+    getTop(18);
     setLoading(false);
   }, []);
   if (loading) return <Spinner />;
@@ -37,9 +37,11 @@ const Home = () => {
           className="w-full max-w-full h-auto  opacity-80 border-2 border-neutral-800"
         />
         <div className="absolute flex justify-center items-center top-0 w-full h-full">
-          <p className="flex flex-col text-center z-50 text-3xl text-white w-1/2">
-            There are no beautiful surfaces without a terrible depth.
-            <span className="text-start text-sm">- Friedrich Nietzsche</span>
+          <p className="flex flex-col text-center z-50 sm:text-[3vw] font-serif text-white w-1/2 h-auto">
+            “He who reads a lot and walks a lot, sees a lot and knows a lot.”
+            <span className="text-start text-sm sm:text-[2vw]">
+              - Miguel de Cervantes
+            </span>
           </p>
         </div>
       </div>
@@ -63,9 +65,21 @@ const Home = () => {
             ))}
           </div>
         </div>
-        <aside className="w-1/6 border ml-1">some info</aside>
+        <aside className="hidden sm:block w-1/6 mx-2 border ml-4">
+          <ul>
+            <li className="bg-orange-400 text-white font-bold text-center">
+              Newest
+            </li>
+            {books.map((book: Book) => (
+              <li className="whitespace-nowrap overflow-hidden text-ellipsis text-orange-500 hover:underline hover:cursor-pointer">
+                <Link to={`/book/${book.id}`}>{book.name}</Link>
+              </li>
+            ))}
+          </ul>
+        </aside>
       </div>
       <Slider books={books} title="You might be interested" />
+      <Slider books={books} title="Fiction" />
     </section>
   );
 };

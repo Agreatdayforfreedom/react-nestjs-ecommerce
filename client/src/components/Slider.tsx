@@ -112,13 +112,13 @@ export const Slider = ({ books, title }: Props) => {
         </div>
         <button
           onClick={handleMousePrev}
-          className="absolute top-0 bottom-0 z-50 -left-8 text-slate-400 hover:-translate-x-2 transition-transform"
+          className="hidden sm:block absolute top-0 bottom-0 z-50 -left-8 text-slate-400 hover:-translate-x-2 transition-transform"
         >
           <IoIosArrowBack size={45} />
         </button>
         <button
           onClick={handleMouseProx}
-          className="absolute top-0 bottom-0 -right-8 text-slate-400 hover:translate-x-2 transition-transform"
+          className="hidden sm:block absolute top-0 bottom-0 -right-8 text-slate-400 hover:translate-x-2 transition-transform"
         >
           <IoIosArrowForward size={45} />
         </button>
