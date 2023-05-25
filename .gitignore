@@ -36,3 +36,6 @@ bugr.txt
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+#extras
+main_dataset.csv

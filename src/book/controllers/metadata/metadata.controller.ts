@@ -14,12 +14,13 @@ import { Roles } from '../../../auth/decorators/roles.decorator';
 import { RolesGuard } from '../../../auth/guards/roles.guard';
 import { Role } from '../../../auth/models/role.model';
 import { CreateMetadataDto, UpdateMetadataDto } from '../../dtos/metadata.dto';
-import { MetadataService } from '../../services/metadata/metadata.service';
+// import { MetadataService } from '../../services/metadata/metadata.service';
 
 @UseGuards(RolesGuard)
 @Controller('metadata')
 export class MetadataController {
-  constructor(private metadataService: MetadataService) {}
+  // constructor(private metadataService: MetadataService) {}
+  private metadataService: any = {};
 
   @Public()
   @Get(':id')

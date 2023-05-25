@@ -10,18 +10,29 @@ import {
 } from 'typeorm';
 import { Category } from './categories.entity';
 import { Base } from '../../common/base.entity';
-import { Metadata } from './metadata.entity';
+// import { Metadata } from './metadata.entity';
 import { Message } from './message.entity';
 import { Cart_item } from '../../user/entities/cart_item.entity';
+/*image,
+  name,
+  author,
+  format,
+  book_depository_stars,
+  price,
+  currency,
+  old_price,
+  isbn,
+  category,
+  img_paths;
+*/
 
-//book
 @Entity()
 export class Book extends Base {
-  @Column({ length: 100 })
+  @Column()
   name: string;
 
   @Column({ length: 255, default: 'Without review yet' })
-  review?: string;
+  review?: string; //todo:
 
   @Column()
   price: number;
@@ -29,8 +40,14 @@ export class Book extends Base {
   @Column()
   stock: number;
 
-  @Column({ length: 60 })
+  @Column()
   author: string;
+
+  @Column()
+  isbn: string;
+
+  @Column({ default: 'Unknown' })
+  format: string;
 
   @Column({ default: 'without image' })
   image?: string;
@@ -41,8 +58,11 @@ export class Book extends Base {
   @Column({ default: 0 })
   totalSold: number;
 
-  @OneToOne(() => Metadata, (metadata) => metadata.book)
-  metadata: Metadata;
+  @Column()
+  stars: number;
+
+  // @OneToOne(() => Metadata, (metadata) => metadata.book)
+  // metadata: Metadata;
 
   @ManyToOne(() => User, (user) => user.books, {
     onDelete: 'CASCADE',

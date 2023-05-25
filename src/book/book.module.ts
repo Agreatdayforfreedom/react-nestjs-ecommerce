@@ -10,8 +10,8 @@ import { CategoriesController } from './controllers/categories/categories.contro
 import { CategoriesService } from './services/categories/categories.service';
 import { Category } from './entities/categories.entity';
 import { MetadataController } from './controllers/metadata/metadata.controller';
-import { MetadataService } from './services/metadata/metadata.service';
-import { Metadata } from './entities/metadata.entity';
+// import { MetadataService } from './services/metadata/metadata.service';
+// import { Metadata } from './entities/metadata.entity';
 import { Message } from './entities/message.entity';
 import { MessagesController } from './controllers/messages/messages.controller';
 import { MessagesService } from './services/messages/messages.service';
@@ -20,7 +20,7 @@ import { BuyController } from './controllers/book/buy.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Book, Category, Metadata, Message]),
+    TypeOrmModule.forFeature([Book, Category, Message]),
     forwardRef(() => UserModule),
   ],
   controllers: [
@@ -34,7 +34,7 @@ import { BuyController } from './controllers/book/buy.controller';
     BookService,
     JwtStrategy,
     CategoriesService,
-    MetadataService,
+    // MetadataService,
     MessagesService,
     BuyService,
   ],

@@ -117,7 +117,7 @@ export class BookService {
         messages: {
           user: true,
         },
-        metadata: true,
+        // metadata: true,
       },
       where: { id: id },
     });
