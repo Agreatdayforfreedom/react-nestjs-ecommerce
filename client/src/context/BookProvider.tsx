@@ -15,6 +15,7 @@ import {
   Metadata,
 } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
+import { fetchAndCache } from '../utils/fetchAndCache';
 
 interface Props {
   children: ReactNode;
@@ -93,13 +94,16 @@ export const BookProvider = ({ children }: Props) => {
   const getBook = async (id: string) => {
     try {
       setLoading(true);
-      setTimeout(async () => {
-        const { data } = await axios(
-          `${import.meta.env.VITE_URL_BACK}/book/${id}`
-        );
-        setBook(data);
-        setLoading(false);
-      }, 300);
+      const cacheName: string = `books/book:${id}`;
+      const url: string = `${import.meta.env.VITE_URL_BACK}/book/${id}`;
+      const options: RequestInit = {
+        headers: {
+          'Cache-Control': `'max-age': ${1000 * 60 * 100}`,
+        },
+      };
+      const data = await fetchAndCache<Book>(cacheName, url, options);
+      setBook(data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -107,9 +111,13 @@ export const BookProvider = ({ children }: Props) => {
 
   const getTop = async (take: number) => {
     try {
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/book/bestsellers?take=${take}`
-      );
+      const url: string = `${
+        import.meta.env.VITE_URL_BACK
+      }/book/bestsellers?take=${take}`;
+      const cacheName: string = 'books:home:top';
+
+      const data = await fetchAndCache(cacheName, url);
+
       setBestSellers(data);
     } catch (error) {
       console.log(error);
@@ -298,7 +306,7 @@ export const BookProvider = ({ children }: Props) => {
       p2 = 10000;
     }
     const b: Array<Book> = booksLength.filter(
-      (b: Book) => b.price >= p1 && b.price <= p2!
+      (b: Book) => b.price >= (p1 as number) && b.price <= p2!
     );
     return b.length;
   };

@@ -3,6 +3,7 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Alert, Loading, Message } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
+import { fetchAndCache } from '../utils/fetchAndCache';
 
 interface Props {
   children: ReactNode;
@@ -65,13 +66,14 @@ export const QuestionsProvider = ({ children }: Props) => {
 
   const getMessages = async (bookId: number) => {
     const limitAll = params.get('limitAll');
+    const url: string = `${
+      import.meta.env.VITE_URL_BACK
+    }/messages/${bookId}?limitAll=${limitAll || '4'}`;
     if (bookId) {
       setLoading(true);
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/messages/${bookId}?limitAll=${
-          limitAll || '4'
-        }`
-      );
+      const { data } = await axios(url, {
+        headers: { ...config.headers, 'Cache-Control': 'no-cache' },
+      });
       setMessages(data);
       setLoading(false);
     }
@@ -80,14 +82,14 @@ export const QuestionsProvider = ({ children }: Props) => {
   //own questions
   const getOwnMessages = async (bookId: number) => {
     const limitOwn = params.get('limitOwn');
+    const url = `${
+      import.meta.env.VITE_URL_BACK
+    }/messages/own/${bookId}?limitOwn=${limitOwn || '2'}`;
     if (bookId) {
       setLoading(true);
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/messages/own/${bookId}?limitOwn=${
-          limitOwn || '2'
-        }`,
-        config
-      );
+      const { data } = await axios(url, {
+        headers: { ...config.headers, 'Cache-Control': 'no-cache' },
+      });
       setOwnMessages(data);
       setLoading(false);
     }
@@ -119,6 +121,7 @@ export const QuestionsProvider = ({ children }: Props) => {
         message,
         config
       );
+
       setMessages([...messages, data]);
       setOwnMessages([...ownMessages, data]);
       setMessagesLength((prev) => prev + 1);

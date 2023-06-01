@@ -30,6 +30,9 @@ export interface Book {
   image?: string;
   review: string;
   stock: number;
+  stars: number;
+  format: string;
+  isbn: string;
   metadata?: Metadata;
   messages: Message[];
   createdAt?: string;

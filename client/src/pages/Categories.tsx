@@ -39,14 +39,16 @@ export const Categories = () => {
     return (
       <div className="grid sm:grid-cols-3 md:grid-cols-5 text-center w-fit m-auto mt-10">
         {categories.map((c) => (
-          <Link
-            key={c.id}
-            to={`/categories?cat=${c.name}${c.id}`}
-            type="submit"
-            className="inline-block text-2xl px-4 py-2 text-amber-500 font-bold hover:cursor-pointer after:content-[''] after:w-0 after:block after:bg-amber-600 after:h-1 hover:after:w-full after:transition-all"
-          >
-            {c.name}
-          </Link>
+          <div className="w-full h-full border grid content-center">
+            <Link
+              key={c.id}
+              to={`/categories?cat=${c.name}${c.id}`}
+              type="submit"
+              className="inline-block break-all text-2xl  px-4 py-2 text-amber-500 font-bold hover:cursor-pointer after:content-[''] after:w-0 after:block after:bg-amber-600 after:h-1 hover:after:w-full after:transition-all"
+            >
+              {c.name}
+            </Link>
+          </div>
         ))}
       </div>
     );

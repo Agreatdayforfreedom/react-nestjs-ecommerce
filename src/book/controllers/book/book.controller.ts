@@ -33,6 +33,8 @@ export class BookController {
   @Public()
   @Get()
   findAllFilter(@Query() query: IQuery) {
+    // console.log(query);
+    console.log('here');
     return this.bookService.findAllFilter(query);
   }
   @Public()

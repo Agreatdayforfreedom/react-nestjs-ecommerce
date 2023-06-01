@@ -126,7 +126,8 @@ export class Populate {
       .getRepository(Book)
       .createQueryBuilder()
       .getOne();
-    if (!exists && !exists2) {
+    console.log({ exists, exists2 });
+    if (exists.length === 0 && !exists2) {
       console.log('Starting process...');
       pipeline(
         createReadStream(csv),

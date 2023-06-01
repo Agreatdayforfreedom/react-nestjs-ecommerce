@@ -7,7 +7,10 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  isNumber,
+  isString,
 } from 'class-validator';
+import { format } from 'path';
 
 export class CreateBookDto {
   @IsString()
@@ -20,6 +23,15 @@ export class CreateBookDto {
 
   @IsString()
   readonly author: string;
+
+  @IsString()
+  readonly format: string;
+
+  @IsString()
+  readonly isbn: string;
+
+  @IsNumber()
+  readonly stars: number;
 
   @IsNumber()
   @IsPositive()

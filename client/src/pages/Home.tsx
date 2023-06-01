@@ -6,6 +6,7 @@ import { Slider } from '../components/Slider';
 import useBook from '../context/hooks/useBook';
 import { Spinner } from '../components/Spinner';
 import { Link } from 'react-router-dom';
+import { fetchAndCache } from '../utils/fetchAndCache';
 
 const Home = () => {
   const [books, setBooks] = useState([]);
@@ -15,7 +16,9 @@ const Home = () => {
 
   const f = async () => {
     try {
-      const { data } = await axios(`${import.meta.env.VITE_URL_BACK}/book`);
+      const cacheName = 'books:home:slider';
+      const url = `${import.meta.env.VITE_URL_BACK}/book?limit=20`;
+      const data = await fetchAndCache(cacheName, url);
       setBooks(data);
     } catch (error) {
       console.log(error);

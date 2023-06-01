@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { RiArrowLeftSLine, RiPencilFill } from 'react-icons/ri';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ import { Slider } from '../components/Slider';
 import axios from 'axios';
 
 interface PropsMetadata {
-  metadata: Metadata;
+  metadata: any;
   bookId: number;
 }
 
@@ -33,14 +33,11 @@ export const Book = () => {
   useEffect(() => {
     setAlert({} as Alert);
     setLoading(true);
-    setTimeout(() => {
-      //spinner to make it look better on page load
-      if (params && params.id) {
-        getBook(params.id);
-        getBooksSlider();
-        setLoading(false);
-      }
-    }, 500);
+    if (params && params.id) {
+      getBook(params.id);
+      getBooksSlider();
+      setLoading(false);
+    }
   }, [params]);
   const handleDelete = () => {
     if (params.id) {
@@ -132,7 +129,10 @@ export const Book = () => {
         </section>
       </div>
 
-      <MetadataBook metadata={book.metadata!} bookId={book.id && book.id} />
+      <MetadataBook
+        metadata={{ format: book.format, isbn: book.isbn, stars: book.stars }}
+        bookId={book.id && book.id}
+      />
       <Questions bookId={book.id && book.id} />
       <Slider books={booksSlider} title="you migth be interested" />
     </>
@@ -154,7 +154,7 @@ const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
     }
   };
   if (loadingAuth || loadingBook) return <Spinner />;
-  if (metadata && metadata.pages) {
+  if (metadata) {
     return (
       <section className="mx-2">
         <div className="flex justify-between items-center mx-2">
@@ -199,26 +199,26 @@ const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
           <thead>
             <tr className="flex flex-col justify-between">
               <th className="border-r border-r-orange-400 border-b border-b-orange-400 px-2 py-1">
-                Pages
+                Isbn
               </th>
               <th className="border-r border-r-orange-400 border-b border-b-orange-400 px-2 py-1">
-                Publisher
+                Format
               </th>
               <th className="border-r border-r-orange-400 border-b border-b-orange-400 px-2 py-1">
-                Language
+                Stars
               </th>
             </tr>
           </thead>
           <tbody className="w-full">
             <tr className="flex flex-col ">
               <td className="border-r border-r-orange-400 border-b border-b-orange-400 px-2 py-1">
-                {metadata.pages}
+                {metadata.isbn}
               </td>
               <td className="border-r border-r-orange-400 border-b border-b-orange-400 px-2 py-1">
-                {metadata.publisher}
+                {metadata.format}
               </td>
               <td className="border-r border-r-orange-400 border-b border-b-orange-400 px-2 py-1">
-                {metadata.language}
+                {metadata.stars}
               </td>
             </tr>
           </tbody>

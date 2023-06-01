@@ -16,6 +16,7 @@ export class MessagesService {
   ) {}
 
   async findAll(id: number, query: any): Promise<Message[]> {
+    console.log('findAll', query, id);
     return await this.messageRepo
       .createQueryBuilder('message')
       .leftJoinAndSelect('message.book', 'book')
@@ -31,7 +32,8 @@ export class MessagesService {
     userReq: PayloadAuth,
     query: any,
   ): Promise<Message[]> {
-    return await this.messageRepo.find({
+    console.log({ id, userReq, query });
+    let da = await this.messageRepo.find({
       relations: {
         book: true,
         user: true,
@@ -45,6 +47,7 @@ export class MessagesService {
         createdAt: 'DESC',
       },
     });
+    return da;
   }
 
   async create(
@@ -116,7 +119,7 @@ export class MessagesService {
 
   async delete(messageId: number, userReq: PayloadAuth): Promise<void> {
     const [message] = await this.messageRepo.find({
-      relations: ['user'],
+      relations: { user: true },
       where: { id: messageId },
     });
 

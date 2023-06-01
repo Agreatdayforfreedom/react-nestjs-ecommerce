@@ -106,7 +106,7 @@ export const Slider = ({ books, title }: Props) => {
         >
           <div className="flex  transition-all" ref={dotRef}>
             {books.map((b) => (
-              <SliderCard b={b} />
+              <SliderCard key={b.id} b={b} />
             ))}
           </div>
         </div>

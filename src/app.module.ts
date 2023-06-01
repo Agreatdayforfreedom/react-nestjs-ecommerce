@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
@@ -12,6 +17,7 @@ import { Populate } from './populate';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './book/entities/book.entity';
 import { Repository } from 'typeorm';
+import { HeadersMiddleware } from './implHeaders.middleware';
 
 @Module({
   imports: [
@@ -28,4 +34,10 @@ import { Repository } from 'typeorm';
   controllers: [AppController],
   providers: [AppService, Populate],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(HeadersMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.GET });
+  }
+}

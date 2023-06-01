@@ -28,6 +28,7 @@ export interface Query {
   minPrice?: string;
   cat?: string;
   order?: Order;
+  limit?: number;
 }
 
 @Injectable()
@@ -64,6 +65,11 @@ export class BookService {
         }),
       );
     }
+    qb.limit(50);
+    if (query.limit) {
+      qb.limit(query.limit);
+    }
+
     if (query.order === Order.news || !query.order) {
       const order = 'DESC';
       qb.orderBy('book.createdAt', `${order as 'DESC' | 'ASC'}`);
@@ -111,6 +117,7 @@ export class BookService {
   }
 
   async findOne(id: number): Promise<Book> {
+    console.log('here2');
     const [book] = await this.bookRepo.find({
       relations: {
         categories: true,
