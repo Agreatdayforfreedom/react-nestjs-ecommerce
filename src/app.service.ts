@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { REDIS_CLIENT } from './database/redisFactory';
+import { Redis } from 'ioredis';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  async getHello() {
+    return "Work!";
   }
 }

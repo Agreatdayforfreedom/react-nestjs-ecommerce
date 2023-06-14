@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/cache-manager": "^1.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
@@ -29,6 +30,8 @@
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.1",
+    "cache-manager": "^5.2.1",
+    "cache-manager-ioredis": "^2.1.0",
     "class-validator": "^0.13.2",
     "cloudinary": "^1.31.0",
     "csv-parse": "^5.3.10",

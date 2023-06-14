@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 import useBook from '../context/hooks/useBook';
 import { Book } from '../interfaces';
@@ -11,21 +11,23 @@ interface CatBooks {
   books: Book[];
 }
 export const Categories = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [categoriesBooks, setCategoriesBooks] = useState<CatBooks>(
     {} as CatBooks
   );
   const [loading, setLoading] = useState(true);
-
+  const page = parseInt(searchParams.get("page") || '1');
+  const cat = searchParams.get("cat");
   const loc = useLocation();
   const { categories, loading: loadingBook } = useBook();
-
   useEffect(() => {
     setCategoriesBooks({} as CatBooks);
     const fetch = async () => {
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/book/category${loc.search}
+      const { data } = await axios(                                       
+        `${import.meta.env.VITE_URL_BACK}/book/category?cat=${cat}&skip=${(page - 1) * 50}&limit=50
         `
       );
+      console.log(data)
       setCategoriesBooks(data);
       setLoading(false);
     };

@@ -14,13 +14,10 @@ import { AuthModule } from './auth/auth.module';
 import { BookModule } from './book/book.module';
 import config from './config';
 import { Populate } from './populate';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Book } from './book/entities/book.entity';
-import { Repository } from 'typeorm';
 import { HeadersMiddleware } from './implHeaders.middleware';
-
 @Module({
   imports: [
+    
     ConfigModule.forRoot({
       envFilePath: '.env',
       load: [config],

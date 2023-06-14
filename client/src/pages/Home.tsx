@@ -27,7 +27,7 @@ const Home = () => {
 
   useEffect(() => {
     f();
-    getTop(18);
+    getTop(32);
     setLoading(false);
   }, []);
   if (loading) return <Spinner />;

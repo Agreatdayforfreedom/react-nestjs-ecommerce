@@ -115,9 +115,9 @@ export const BookProvider = ({ children }: Props) => {
         import.meta.env.VITE_URL_BACK
       }/book/bestsellers?take=${take}`;
       const cacheName: string = 'books:home:top';
-
-      const data = await fetchAndCache(cacheName, url);
-
+      console.log(url, cacheName)
+      const data = await fetchAndCache<Book[]>(cacheName, url);
+      console.log({data})
       setBestSellers(data);
     } catch (error) {
       console.log(error);
@@ -254,6 +254,7 @@ export const BookProvider = ({ children }: Props) => {
   };
   //categories
   useEffect(() => {
+    console.log("categ")
     const fetch = async () => {
       setLoading(true);
       const { data } = await axios(

@@ -37,6 +37,7 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   redis:
-    image: redis
+    image: 'redis:alpine'
+    command: redis-server
     ports:
       - 6379:6379

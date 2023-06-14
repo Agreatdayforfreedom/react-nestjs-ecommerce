@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 import useBook from '../context/hooks/useBook';
 import axios from 'axios';
@@ -7,11 +7,15 @@ import { Book, Loading as ILoading } from '../interfaces';
 import { SpawnBooksSection } from '../components/SpawnBooksSection';
 
 export const Books = () => {
+  
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<ILoading>(true);
   const loc = useLocation();
+  
+  
 
   const { params } = useBook();
+  useEffect(() => {
   const getBooksWithFilter = async () => {
     try {
       const { data } = await axios(
@@ -24,7 +28,6 @@ export const Books = () => {
     }
   };
 
-  useEffect(() => {
     getBooksWithFilter();
   }, [loc]);
 

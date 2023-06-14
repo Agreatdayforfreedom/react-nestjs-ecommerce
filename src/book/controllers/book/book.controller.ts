@@ -44,7 +44,7 @@ export class BookController {
   }
 
   @Public()
-  @Get('bestSellers')
+  @Get('bestsellers')
   findBestSellers(@Query() query: { take: number }) {
     return this.bookService.findBestSellers(query);
   }
