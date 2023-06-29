@@ -1,6 +1,12 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, In, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  Brackets,
+  DataSource,
+  In,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 
 import { CreateBookDto, UpdateBookDto } from '../../dtos/book.dto';
 import { Book } from '../../entities/book.entity';
@@ -30,9 +36,10 @@ export interface Query {
   maxPrice?: string;
   minPrice?: string;
   cat?: string; //?category
+  category?: string;
   order?: Order;
-  limit?: number;
-  skip?: number;
+  limit?: string;
+  skip?: string;
 }
 
 @Injectable()
@@ -41,10 +48,12 @@ export class BookService {
     @InjectRepository(Book) private bookRepo: Repository<Book>,
     @InjectRepository(Category) private categoryRepo: Repository<Category>,
     @InjectRepository(User) private userRepo: Repository<User>, // @Inject('REDIS_CLIENT') private readonly cache: Redis,
+    private dataSource: DataSource,
   ) {}
   private qbFilters(qb: SelectQueryBuilder<Book>, query: Query): void {
     if (query.search) {
-      qb.where( //todo: use full text search instead of like
+      qb.where(
+        //todo: use full text search instead of like
         new Brackets((qb) => {
           qb.where('LOWER(book.name) like :name', {
             name: `%${query.search.toLocaleLowerCase()}%`,
@@ -68,14 +77,15 @@ export class BookService {
         }),
       );
     }
-    qb.limit(50);
+    // qb.limit(50);
     if (query.limit) {
-      qb.limit(query.limit);
+      console.log(query.limit, typeof query.limit, 'limit');
+      qb.limit(parseInt(query.limit));
     }
 
-    if(query.skip || query.skip === 0) {
-      console.log("skipping:", query.skip)
-      qb.skip(query.skip);
+    if (query.skip) {
+      console.log('skipping:', query.skip, typeof query.skip);
+      qb.offset(parseInt(query.skip));
     }
 
     if (query.order === Order.news || !query.order) {
@@ -96,39 +106,54 @@ export class BookService {
     let qb = this.bookRepo.createQueryBuilder('book');
 
     this.qbFilters(qb, query);
-    
+
     return await qb.getMany();
   }
 
   async findByCategory(query: Query) {
-    console.log(query)
     let qb = this.bookRepo
       .createQueryBuilder('book')
       .innerJoinAndSelect('book.categories', 'categories');
-      console.log(query.cat.replace(/[^0-9\.]+/g, ""))
-    if (query.cat) {                          
-      qb.where('categories.id = :id', { id: query.cat.replace(/[^0-9\.]+/g, "")});
+    if (query.category) {
+      qb.where('categories.id = :id', {
+        id: query.category.replace(/[^0-9\.]+/g, ''),
+      });
     }
     this.qbFilters(qb, query);
-    const cat = query.cat.slice(0, -1);
-    const books = await qb.getMany()
-    console.log(books[1], "!!")
+    const cat = query.category.slice(0, -1);
+    const books = await qb.getManyAndCount();
+    //filter range of prices
+    const filter = `
+    SELECT
+    COUNT(*) FILTER(WHERE price >= 1 AND price <= 10 AND c.id = $1) AS "1-10",
+    COUNT(*) FILTER(WHERE price >= 11 AND price <= 25 AND c.id = $1) AS "11-25",
+    COUNT(*) FILTER(WHERE price >= 26 AND price <= 50 AND c.id = $1) AS "26-50",
+    COUNT(*) FILTER(WHERE price >= 51 AND price <= 100 AND c.id = $1) AS "51-100",
+    COUNT(*) FILTER(WHERE price >= 101 AND price <= 100000 AND c.id = $1) AS "101-100000",
+    COUNT(*) FILTER(WHERE c.id = $1) AS "all"
+    FROM book b
+      LEFT OUTER JOIN books_categories bc ON (b.id = bc.book_id) AND (bc.category_id = $1)
+      LEFT OUTER JOIN category c ON (c.id = bc.category_id);   
+    `;
+    const filterResult = await this.dataSource.query(filter, [
+      query.category.replace(/[^0-9\.]+/g, ''),
+    ]);
     return {
       cat,
-      books
+      books,
+      filter: filterResult,
     };
   }
 
   async findBestSellers(query: { take: number }) {
-    
-    console.log("here")
+    console.log('here');
     const best_sellers = await this.bookRepo.find({
       order: {
         totalSold: 'DESC',
       },
       take: query.take || 100,
     });
-    console.log(best_sellers)
+    console.log(best_sellers);
 
     return best_sellers;
   }

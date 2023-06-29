@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useSearchParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
 import { BookProvider } from './context/BookProvider';
 import { CartProvider } from './context/CartProvider';
@@ -26,8 +26,11 @@ import { Signup } from './pages/Signup';
 import { BestSellers } from './pages/BestSellers';
 import { UpdateBook } from './pages/UpdateBook';
 import { UpdateMetadata } from './pages/UpdateMetadata';
+import { useEffect } from 'react';
 
 function App() {
+
+  
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -37,6 +40,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<AuthLayout />}>
                   <Route index element={<Home />} />
+
                   <Route path="book/:id" element={<Book />} />
                   <Route path="signup" element={<Signup />} />
                   <Route path="login" element={<Login />} />
@@ -79,11 +83,13 @@ function App() {
                     element={<CreateCategory />}
                   />
                 </Route>
+
               </Routes>
             </QuestionsProvider>
           </BookProvider>
         </CartProvider>
       </AuthProvider>
+      
     </BrowserRouter>
   );
 }

@@ -2,7 +2,7 @@ import useBook from '../context/hooks/useBook';
 import { TiDelete } from 'react-icons/ti';
 
 export const FilterCard = () => {
-  const { params, setParams, getBooksLength } = useBook();
+  const { search, params, setParams, priceFilter } = useBook();
 
   const minPrice: string | null = params.get('minPrice');
   const maxPrice: string | null = params.get('maxPrice');
@@ -10,10 +10,8 @@ export const FilterCard = () => {
   if (!minPrice || !maxPrice) {
     return <></>;
   }
-  const booksLength: number = getBooksLength(
-    parseInt(minPrice, 10),
-    parseInt(maxPrice, 10)
-  );
+  const filter = `${minPrice}-${maxPrice}`;
+  console.log(priceFilter[filter]);
 
   const delFilter = () => {
     if (minPrice && maxPrice) {
@@ -22,7 +20,6 @@ export const FilterCard = () => {
       setParams(params);
     }
   };
-
   return (
     <div
       className={
@@ -34,14 +31,16 @@ export const FilterCard = () => {
       <h2 className="absolute -top-3 left-[15%] right-[15%] mx-auto text-center text-orange-600 font-bold bg-white z-1">
         Filtered by
       </h2>
-      {minPrice === '100' ? (
+      {minPrice === '101' ? (
         <>
           <p className={`my-3 text-center text-orange-400 font-bold`}>
             More than <span className="font-normal text-slate-800">$100</span>{' '}
             <span
-              className={booksLength === 0 ? 'text-red-500' : 'text-green-500'}
+              className={
+                priceFilter[filter] === 0 ? 'text-red-500' : 'text-green-500'
+              }
             >
-              ({booksLength})
+              ({priceFilter[filter]})
             </span>
           </p>
         </>
@@ -52,9 +51,11 @@ export const FilterCard = () => {
             <span className="font-normal text-slate-800">${minPrice}</span> and{' '}
             <span className="font-normal text-slate-800">${maxPrice}</span>{' '}
             <span
-              className={booksLength === 0 ? 'text-red-500' : 'text-green-500'}
+              className={
+                priceFilter[filter] === 0 ? 'text-red-500' : 'text-green-500'
+              }
             >
-              ({booksLength})
+              ({priceFilter[filter]})
             </span>
           </p>
         </>

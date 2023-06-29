@@ -41,9 +41,7 @@ export const QuestionsProvider = ({ children }: Props) => {
   const config = configAxios();
 
   const [params, setParams] = useSearchParams();
-  useEffect(() => {
-    setParams({});
-  }, []);
+
 
   const showAlert = (alert: Alert, timeout: number = 3000) => {
     setAlert(alert);

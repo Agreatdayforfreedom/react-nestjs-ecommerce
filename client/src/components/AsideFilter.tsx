@@ -1,17 +1,16 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoMdArrowDropright } from 'react-icons/io';
-import { useLocation } from 'react-router-dom';
 import useBook from '../context/hooks/useBook';
-import { Book, Category } from '../interfaces';
 import { FilterCard } from './FilterCard';
-import { Spinner } from './Spinner';
+import { useSearchParams } from 'react-router-dom';
+import { Enum_TotalPriceFilter } from '../enums';
 
 export const AsideFilter = () => {
-  const { search, booksLength, loading, getBooksLength } = useBook();
-
-  if (loading && !booksLength) return <Spinner />;
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { search, priceFilter, loading } = useBook();
+  const minPrice: string | null = searchParams.get('minPrice');
+  const maxPrice: string | null = searchParams.get('maxPrice');
+  // if (loading) return <p>loading</p>;
   return (
     <div className="hidden md:block md:w-1/4 lg:w-1/5 lg mx-2">
       <FilterCard />
@@ -25,67 +24,121 @@ export const AsideFilter = () => {
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ min_price: '0', max_price: '0' });
+              search({ minPrice: '0', maxPrice: '0' });
             }}
           >
             <IoMdArrowDropright size="17" />
             <p>
-              All <span>({getBooksLength(0, 1000)})</span>
+              All{' '}
+              <span>
+                (
+                {
+                  priceFilter[
+                    Enum_TotalPriceFilter[Enum_TotalPriceFilter['all']]
+                  ]
+                }
+                )
+              </span>
             </p>
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ min_price: '1', max_price: '10' });
+              search({ minPrice: '1', maxPrice: '10' });
             }}
           >
             <IoMdArrowDropright size="17" />
             <p>
-              $1 ~ $10 <span>({getBooksLength(1, 10)})</span>
+              $1 ~ $10{' '}
+              <span>
+                (
+                {
+                  priceFilter[
+                    Enum_TotalPriceFilter[Enum_TotalPriceFilter['1-10']]
+                  ]
+                }
+                )
+              </span>
             </p>
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ min_price: '10', max_price: '20' });
+              search({ minPrice: '11', maxPrice: '25' });
             }}
           >
             <IoMdArrowDropright size="17" />
             <p>
-              $10 ~ $20 <span>({getBooksLength(10, 20)})</span>
+              $11 ~ $25{' '}
+              <span>
+                (
+                {
+                  priceFilter[
+                    Enum_TotalPriceFilter[Enum_TotalPriceFilter['11-25']]
+                  ]
+                }
+                )
+              </span>
             </p>
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ min_price: '20', max_price: '50' });
+              search({ minPrice: '26', maxPrice: '50' });
             }}
           >
             <IoMdArrowDropright size="17" />
             <p>
-              $20 ~ $50 <span>({getBooksLength(20, 50)})</span>
+              $26 ~ $50{' '}
+              <span>
+                (
+                {
+                  priceFilter[
+                    Enum_TotalPriceFilter[Enum_TotalPriceFilter['26-50']]
+                  ]
+                }
+                )
+              </span>
             </p>
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ min_price: '50', max_price: '100' });
+              search({ minPrice: '51', maxPrice: '100' });
             }}
           >
             <IoMdArrowDropright size="17" />
             <p>
-              $50 ~ $100 <span>({getBooksLength(50, 100)})</span>
+              $51 ~ $100{' '}
+              <span>
+                (
+                {
+                  priceFilter[
+                    Enum_TotalPriceFilter[Enum_TotalPriceFilter['51-100']]
+                  ]
+                }
+                )
+              </span>
             </p>
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ min_price: '100', max_price: '10000' });
+              search({ minPrice: '101', maxPrice: '100000' });
             }}
           >
             <IoMdArrowDropright size="17" />
             <p>
-              more than $100 <span>({getBooksLength(100, 10000)})</span>
+              more than $100{' '}
+              <span>
+                (
+                {
+                  priceFilter[
+                    Enum_TotalPriceFilter[Enum_TotalPriceFilter['101-100000']]
+                  ]
+                }
+                )
+              </span>
             </p>
           </li>
         </ul>

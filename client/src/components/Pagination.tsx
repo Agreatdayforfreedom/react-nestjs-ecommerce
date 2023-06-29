@@ -2,18 +2,18 @@ import { useEffect, useState } from 'react';
 import { usePagination, DOTS } from '../hooks/usePagination';
 import { RiArrowLeftSFill, RiArrowRightSFill } from 'react-icons/ri';
 import { Navigate, useSearchParams } from 'react-router-dom';
+// import { nanoid } from 'nanoid';
 
 interface Props {
   totalCount: number;
   limit: number;
 }
 
-const Pagination = ({
-  totalCount,
-  limit,
-}: Props) => {
+const Pagination = ({ totalCount, limit }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page") || '1'));
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(searchParams.get('page') || '1')
+  );
   let siblingCount = 1;
   const paginationRange = usePagination({
     currentPage,
@@ -22,22 +22,20 @@ const Pagination = ({
     limit,
   });
 
-  const onPageChange=(p: number)=> setCurrentPage(p) ;
-  
+  const onPageChange = (p: number) => setCurrentPage(p);
 
   useEffect(() => {
     if (
       currentPage === 0 ||
-      currentPage ===
-        Math.ceil(totalCount / limit - 1)
+      currentPage === Math.ceil(totalCount / limit - 1)
     ) {
       return;
     }
-    console.log({currentPage})
+    console.log({ currentPage });
     searchParams.set('page', currentPage.toString());
-    searchParams.set('limit', limit.toString() || "50");
+    searchParams.set('limit', limit.toString() || '50');
     setSearchParams(searchParams);
-
+    window.scrollTo(0, 0);
     // refetch({
     //   limit,
     //   offset: limit * (currentPage - 1),
@@ -62,34 +60,30 @@ const Pagination = ({
       )}
       {paginationRange?.map((pageNumber, i) => {
         if (pageNumber === DOTS) {
-          return (
-            <li key={i} className="pagination-item dots">
-              &#8230;
-            </li>
-          );
+          return <li className="font-bold text-gray-600 mx-1">&#8230;</li>;
         }
 
         return (
           <li
-            key={pageNumber}
-            className={`px-1.5 ${
+            className={`px-3 py-1 mx-px border w-8 h-8 flex items-center justify-center border-gray-400 ${
               pageNumber === currentPage &&
-              'text-purple-400 font-semibold border border-violet-500 hover:border-purple-600 rounded'
-            } hover:cursor-pointer hover:text-purple-600`}
+              'text-orange-400 bg-orange-100 font-semibold hover:!bg-orange-100 !border-orange-500'
+            } hover:cursor-pointer hover:bg-gray-200  rounded-full transition-colors`}
             onClick={() => onPageChange(pageNumber as number)}
           >
-            {i}
+            <p className="w-3">{i + 1}</p>
           </li>
         );
       })}
-      {typeof paginationRange?.at(-1) === 'number' && currentPage < (paginationRange.at(-1) as number )&& (
-        <li onClick={onNext}>
-          <RiArrowRightSFill
-            size={28}
-            className="cursor-pointer fill-[#7644ff] hover:fill-[#490bf3]"
-          />
-        </li>
-      )}
+      {typeof paginationRange?.at(-1) === 'number' &&
+        currentPage < (paginationRange.at(-1) as number) && (
+          <li onClick={onNext}>
+            <RiArrowRightSFill
+              size={28}
+              className="cursor-pointer fill-[#7644ff] hover:fill-[#490bf3]"
+            />
+          </li>
+        )}
     </ul>
   );
 };

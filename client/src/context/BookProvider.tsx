@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import {
   URLSearchParamsInit,
+  useLocation,
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
@@ -16,6 +17,8 @@ import {
 } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 import { fetchAndCache } from '../utils/fetchAndCache';
+import { CatBooks } from '../pages/Categories';
+import { useSearchQuery } from '../hooks/useSearchQuery';
 
 interface Props {
   children: ReactNode;
@@ -23,13 +26,12 @@ interface Props {
 export interface BookContextProps {
   search: (query: {
     search?: string;
-    max_price?: string;
-    min_price?: string;
+    maxPrice?: string;
+    minPrice?: string;
     order?: string;
     cat?: string;
   }) => void;
   loading: Loading;
-  categories: Category[];
   params: URLSearchParams;
   setParams: (
     nextInit: URLSearchParamsInit,
@@ -41,20 +43,26 @@ export interface BookContextProps {
       | undefined
   ) => void;
   booksLength: Book[];
-  getBooksLength: (p1: number | 'all', p2?: number) => number;
   toggleActions: (val: keyof OpenOrCloseDropDownMenus) => void;
   hidden: OpenOrCloseDropDownMenus;
   setCatId: (state: Array<{ cid: number; name: string }>) => void;
   catId: Array<{ cid: number; name: string }>;
   handleSubmit: (book: FormGen) => void;
+  fetchBooksBy: (
+    cacheName: string,
+    url: string
+  ) => Promise<{ cat: string; books: Book[] }>;
   setFile: (state: any) => void;
   book: Book;
+  priceFilter: any;
   getBook: (id: string) => void;
   deleteBook: (id: string) => void;
   handleSubmitMetadata: (metadata: Metadata, id: string) => void;
   deleteMetadata: (id: string) => void;
   getTop: (take: number) => void;
   bestSellers: Book[];
+  booksFiltered: CatBooks;
+  setBooksFiltered: (state: CatBooks) => void;
 }
 
 export const BookContext = createContext<BookContextProps>(
@@ -77,12 +85,15 @@ export const BookProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState<Loading>(true);
   const [booksLength, setBooksLength] = useState<Book[]>([]);
   const [bestSellers, setBestSellers] = useState<Book[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [priceFilter, setPriceFilter] = useState<any>([]);
+  const [booksFiltered, setBooksFiltered] = useState<CatBooks>({} as CatBooks);
   const [file, setFile] = useState<any>();
   const [catId, setCatId] = useState<Array<{ cid: number; name: string }>>([]);
   const [book, setBook] = useState<Book>({} as Book);
 
   const navigate = useNavigate();
+  const location = useLocation();
+
   const config = configAxios();
 
   const toggleActions = (val: keyof OpenOrCloseDropDownMenus) => {
@@ -115,9 +126,9 @@ export const BookProvider = ({ children }: Props) => {
         import.meta.env.VITE_URL_BACK
       }/book/bestsellers?take=${take}`;
       const cacheName: string = 'books:home:top';
-      console.log(url, cacheName)
+      console.log(url, cacheName);
       const data = await fetchAndCache<Book[]>(cacheName, url);
-      console.log({data})
+      console.log({ data });
       setBestSellers(data);
     } catch (error) {
       console.log(error);
@@ -218,11 +229,12 @@ export const BookProvider = ({ children }: Props) => {
       config
     );
   };
+  const queryFormatFn = useSearchQuery();
 
   const search = async (query: {
     search?: string;
-    max_price?: string;
-    min_price?: string;
+    maxPrice?: string;
+    minPrice?: string;
     order?: string;
     cat?: string;
   }) => {
@@ -230,14 +242,14 @@ export const BookProvider = ({ children }: Props) => {
     if (query.search) {
       setParams({ search: query.search });
     }
-    if (query.max_price && query.min_price) {
-      if (query.max_price === '0' && query.min_price === '0') {
+    if (query.maxPrice && query.minPrice) {
+      if (query.maxPrice === '0' && query.minPrice === '0') {
         params.delete('minPrice');
         params.delete('maxPrice');
         return setParams(params);
       }
-      params.set('minPrice', query.min_price);
-      params.set('maxPrice', query.max_price);
+      params.set('minPrice', query.minPrice);
+      params.set('maxPrice', query.maxPrice);
       setParams(params);
     }
     if (query.order) {
@@ -251,65 +263,35 @@ export const BookProvider = ({ children }: Props) => {
       params.set('cat', query.cat);
       setParams(params);
     }
-  };
-  //categories
-  useEffect(() => {
-    console.log("categ")
-    const fetch = async () => {
-      setLoading(true);
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/categories`
-      );
-      setCategories(data);
+
+    if (location.search) {
+      // console.log(params);
       setLoading(false);
-    };
-    fetch();
-  }, []);
+      const res = queryFormatFn(query);
+      console.log({ res });
+      const cacheName = res;
+      const url = `${import.meta.env.VITE_URL_BACK}/book/category${res}`;
+      const data = await fetchBooksBy(cacheName, url);
+      console.log({ data, url });
+      setLoading(true);
 
-  const idCat = params.get('cat');
-  const searchParam = params.get('search');
-
-  useEffect(() => {
-    const getToGetLenght = async () => {
-      try {
-        setLoading(true);
-        const { data } = await axios(
-          `${import.meta.env.VITE_URL_BACK}/book?search=${searchParam}`
-        );
-        setBooksLength(data);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    searchParam && getToGetLenght();
-  }, [params]);
-
-  useEffect(() => {
-    const getByCat = async () => {
-      try {
-        setLoading(true);
-        const { data } = await axios(
-          `${import.meta.env.VITE_URL_BACK}/categories/${idCat && idCat.at(-1)}`
-        );
-        setBooksLength(data.books);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    idCat && getByCat();
-  }, [params]);
-
-  const getBooksLength = (p1: number | 'all', p2?: number): number => {
-    if (p1 === 'all') {
-      p1 = 0;
-      p2 = 10000;
+      setBooksFiltered(data);
     }
-    const b: Array<Book> = booksLength.filter(
-      (b: Book) => b.price >= (p1 as number) && b.price <= p2!
-    );
-    return b.length;
+    // console.log(location);
+  };
+  const fetchBooksBy = async (
+    cacheName: string,
+    url: string
+  ): Promise<{ cat: string; books: Book[] }> => {
+    setLoading(false);
+    const data = await fetchAndCache(cacheName, url);
+    setBooksLength(data.books[0]);
+    if (data.filter[0]) {
+      setPriceFilter(data.filter[0]);
+    }
+
+    setLoading(true);
+    return data;
   };
 
   return (
@@ -317,24 +299,26 @@ export const BookProvider = ({ children }: Props) => {
       value={{
         search,
         loading,
-        categories,
         params,
         setParams,
         booksLength,
-        getBooksLength,
         toggleActions,
         hidden,
         setCatId,
         catId,
         handleSubmit,
+        priceFilter,
         setFile,
         book,
         getBook,
+        fetchBooksBy,
         deleteBook,
         handleSubmitMetadata,
         deleteMetadata,
         bestSellers,
         getTop,
+        booksFiltered,
+        setBooksFiltered,
       }}
     >
       {children}

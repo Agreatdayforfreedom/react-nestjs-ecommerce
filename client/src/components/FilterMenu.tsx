@@ -1,7 +1,9 @@
 import useBook from '../context/hooks/useBook';
+import { Enum_TotalPriceFilter } from '../enums';
 
 export const FilterMenu = () => {
-  const { search, getBooksLength, toggleActions, hidden } = useBook();
+  const { search, toggleActions, priceFilter, hidden } = useBook();
+
   return (
     <div className="flex justify-end my-1 mx-3">
       <div className="mx-2 p-1 px-8 bg-slate-900 font-bold text-white">
@@ -26,7 +28,13 @@ export const FilterMenu = () => {
               <p>
                 All{' '}
                 <span className="text-slate-400">
-                  ({getBooksLength('all')})
+                  (
+                  {
+                    priceFilter[
+                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['all']]
+                    ]
+                  }
+                  )
                 </span>
               </p>
             </li>
@@ -40,63 +48,93 @@ export const FilterMenu = () => {
               <p>
                 $1 ~ $10{' '}
                 <span className="text-slate-400">
-                  ({getBooksLength(1, 10)})
+                  (
+                  {
+                    priceFilter[
+                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['1-10']]
+                    ]
+                  }
+                  )
                 </span>
               </p>
             </li>
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '10', max_price: '20' });
+                search({ min_price: '11', max_price: '25' });
                 toggleActions('filterby');
               }}
             >
               <p>
-                $10 ~ $20{' '}
+                $11 ~ $25{' '}
                 <span className="text-slate-400">
-                  ({getBooksLength(10, 20)})
+                  (
+                  {
+                    priceFilter[
+                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['11-25']]
+                    ]
+                  }
+                  )
                 </span>
               </p>
             </li>
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '20', max_price: '50' });
+                search({ min_price: '26', max_price: '50' });
                 toggleActions('filterby');
               }}
             >
               <p>
-                $20 ~ $50{' '}
+                $26 ~ $50{' '}
                 <span className="text-slate-400">
-                  ({getBooksLength(20, 50)})
+                  (
+                  {
+                    priceFilter[
+                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['26-50']]
+                    ]
+                  }
+                  )
                 </span>
               </p>
             </li>
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '50', max_price: '100' });
+                search({ min_price: '51', max_price: '100' });
                 toggleActions('filterby');
               }}
             >
               <p>
-                $50 ~ $100{' '}
+                $51 ~ $100{' '}
                 <span className="text-slate-400">
-                  ({getBooksLength(50, 100)})
+                  (
+                  {
+                    priceFilter[
+                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['51-100']]
+                    ]
+                  }
+                  )
                 </span>
               </p>
             </li>
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '100', max_price: '10000' });
+                search({ min_price: '101', max_price: '100000' });
                 toggleActions('filterby');
               }}
             >
               <p>
                 more than $100{' '}
                 <span className="text-slate-400">
-                  ({getBooksLength(100, 10000)})
+                  (
+                  {
+                    priceFilter[
+                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['101-100000']]
+                    ]
+                  }
+                  )
                 </span>
               </p>
             </li>

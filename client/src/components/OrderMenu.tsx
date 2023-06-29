@@ -23,9 +23,11 @@ export const OrderMenu = () => {
           <li
             className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
             onClick={() => {
-              search({ order: Order.priceDESC });
-              setGetNameOrder('Highest price');
               toggleActions('orderby');
+              if (getNameOrder === 'Highest price') return;
+              search({ order: Order.priceASC });
+
+              setGetNameOrder('Highest price');
             }}
           >
             Highest price
@@ -33,9 +35,11 @@ export const OrderMenu = () => {
           <li
             className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
             onClick={() => {
-              search({ order: Order.priceASC });
-              setGetNameOrder('Lowest price');
               toggleActions('orderby');
+              if (getNameOrder === 'Lowest price') return;
+              search({ order: Order.priceDESC });
+
+              setGetNameOrder('Lowest price');
             }}
           >
             Lowest price
@@ -43,9 +47,10 @@ export const OrderMenu = () => {
           <li
             className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
             onClick={() => {
+              toggleActions('orderby');
+              if (getNameOrder === 'Stock') return;
               search({ order: Order.stock });
               setGetNameOrder('Stock');
-              toggleActions('orderby');
             }}
           >
             Stock

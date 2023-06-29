@@ -16,3 +16,12 @@ export enum Enum_PaymentType {
   LIBSCREDITS = 'LIBSCREDITS',
   //paypal, strapi, etc
 }
+
+export enum Enum_TotalPriceFilter {
+  '1-10',
+  '11-25',
+  '26-50',
+  '51-100',
+  '101-100000',
+  'all',
+}
