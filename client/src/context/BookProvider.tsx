@@ -126,9 +126,7 @@ export const BookProvider = ({ children }: Props) => {
         import.meta.env.VITE_URL_BACK
       }/book/bestsellers?take=${take}`;
       const cacheName: string = 'books:home:top';
-      console.log(url, cacheName);
       const data = await fetchAndCache<Book[]>(cacheName, url);
-      console.log({ data });
       setBestSellers(data);
     } catch (error) {
       console.log(error);
@@ -238,6 +236,7 @@ export const BookProvider = ({ children }: Props) => {
     order?: string;
     cat?: string;
   }) => {
+    params.set('page', '1'); //se page to 1
     //setting name/author in the query
     if (query.search) {
       setParams({ search: query.search });
@@ -246,10 +245,10 @@ export const BookProvider = ({ children }: Props) => {
       if (query.maxPrice === '0' && query.minPrice === '0') {
         params.delete('minPrice');
         params.delete('maxPrice');
-        return setParams(params);
+      } else {
+        params.set('minPrice', query.minPrice);
+        params.set('maxPrice', query.maxPrice);
       }
-      params.set('minPrice', query.minPrice);
-      params.set('maxPrice', query.maxPrice);
       setParams(params);
     }
     if (query.order) {
@@ -263,12 +262,12 @@ export const BookProvider = ({ children }: Props) => {
       params.set('cat', query.cat);
       setParams(params);
     }
-
+    // console.log(query, '<- query');
     if (location.search) {
       // console.log(params);
       setLoading(false);
       const res = queryFormatFn(query);
-      console.log({ res });
+      console.log({ res }, '<- query formated');
       const cacheName = res;
       const url = `${import.meta.env.VITE_URL_BACK}/book/category${res}`;
       const data = await fetchBooksBy(cacheName, url);

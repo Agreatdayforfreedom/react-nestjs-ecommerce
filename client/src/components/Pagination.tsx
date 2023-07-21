@@ -7,13 +7,21 @@ import { Navigate, useSearchParams } from 'react-router-dom';
 interface Props {
   totalCount: number;
   limit: number;
+  currentPage: number;
+  setCurrentPage: (state: number) => void;
 }
 
-const Pagination = ({ totalCount, limit }: Props) => {
+const Pagination = ({
+  totalCount,
+  limit,
+  currentPage,
+  setCurrentPage,
+}: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get('page') || '1')
-  );
+  // const [currentPage, setCurrentPage] = useState<number>(
+  //   parseInt(searchParams.get('page') || '1')
+  // );
+
   let siblingCount = 1;
   const paginationRange = usePagination({
     currentPage,
@@ -25,21 +33,19 @@ const Pagination = ({ totalCount, limit }: Props) => {
   const onPageChange = (p: number) => setCurrentPage(p);
 
   useEffect(() => {
+    // setCurrentPage(parseInt(searchParams.get('page') || '1'));
+    // console.log(paginationRange);
+    // console.log('fired', currentPage);
     if (
-      currentPage === 0 ||
-      currentPage === Math.ceil(totalCount / limit - 1)
+      currentPage === 0
+      // ||currentPage === Math.ceil(totalCount / limit - 1)
     ) {
       return;
     }
-    console.log({ currentPage });
-    searchParams.set('page', currentPage.toString());
+    searchParams.set('page', currentPage.toString()); //todo repair pagination
     searchParams.set('limit', limit.toString() || '50');
     setSearchParams(searchParams);
     window.scrollTo(0, 0);
-    // refetch({
-    //   limit,
-    //   offset: limit * (currentPage - 1),
-    // });
   }, [currentPage]);
   const onNext = () => {
     onPageChange(currentPage + 1);
@@ -48,13 +54,14 @@ const Pagination = ({ totalCount, limit }: Props) => {
   const onPrevious = () => {
     onPageChange(currentPage - 1);
   };
+
   return (
-    <ul className="flex items-center mt-2 mx-2 justify-end">
+    <ul className="flex items-center mt-2 mx-2 justify-center">
       {currentPage > 1 && (
         <li onClick={onPrevious}>
           <RiArrowLeftSFill
-            size={28}
-            className="cursor-pointer fill-[#7644ff] hover:fill-[#490bf3]"
+            size={48}
+            className="cursor-pointer fill-[#9c9c9c] hover:fill-[#ef9714]"
           />
         </li>
       )}
@@ -65,13 +72,13 @@ const Pagination = ({ totalCount, limit }: Props) => {
 
         return (
           <li
-            className={`px-3 py-1 mx-px border w-8 h-8 flex items-center justify-center border-gray-400 ${
+            className={`px-3 py-1 mx-px text-gray-600 border w-8 h-8 flex items-center justify-center border-gray-400 ${
               pageNumber === currentPage &&
               'text-orange-400 bg-orange-100 font-semibold hover:!bg-orange-100 !border-orange-500'
             } hover:cursor-pointer hover:bg-gray-200  rounded-full transition-colors`}
             onClick={() => onPageChange(pageNumber as number)}
           >
-            <p className="w-3">{i + 1}</p>
+            {pageNumber}
           </li>
         );
       })}
@@ -79,8 +86,8 @@ const Pagination = ({ totalCount, limit }: Props) => {
         currentPage < (paginationRange.at(-1) as number) && (
           <li onClick={onNext}>
             <RiArrowRightSFill
-              size={28}
-              className="cursor-pointer fill-[#7644ff] hover:fill-[#490bf3]"
+              size={48}
+              className="cursor-pointer fill-[#9c9c9c] hover:fill-[#ef9714]"
             />
           </li>
         )}

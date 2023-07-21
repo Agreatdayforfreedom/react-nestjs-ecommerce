@@ -16,12 +16,14 @@ export interface CatBooks {
 export const Categories = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [categories, setCategories] = useState<Category[]>([]);
-  const query = useSearchQuery();
 
   const { fetchBooksBy, booksFiltered, setBooksFiltered } = useBook();
   const [loading, setLoading] = useState(true);
   const page = parseInt(searchParams.get('page') || '1');
   const cat = searchParams.get('category');
+
+  const loc = useLocation();
+
   useEffect(() => {
     const cacheName: string = 'categoryList';
     const url = `${import.meta.env.VITE_URL_BACK}/categories`;
@@ -40,12 +42,17 @@ export const Categories = () => {
 
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
-    let query = `?category=${cat}&skip=${(page - 1) * 50}&limit=50`;
+    let pagination = `&skip=${(page - 1) * 50}&limit=50`;
+    let query = `?category=${cat}`;
     // const limit = 50;
     // const skip = ((page - 1) * limit).toString();
     //persist the price filter if exists
     if (minPrice && maxPrice) {
       query += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+    }
+
+    if (loc.search !== '') {
+      query = loc.search.concat(pagination);
     }
     const url = `${import.meta.env.VITE_URL_BACK}/book/category${query}`;
     const fetch = async () => {

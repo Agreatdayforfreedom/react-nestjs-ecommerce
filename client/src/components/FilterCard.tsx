@@ -11,7 +11,6 @@ export const FilterCard = () => {
     return <></>;
   }
   const filter = `${minPrice}-${maxPrice}`;
-  console.log(priceFilter[filter]);
 
   const delFilter = () => {
     if (minPrice && maxPrice) {

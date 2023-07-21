@@ -68,7 +68,7 @@ export const Slider = ({ books, title }: Props) => {
     } else if (wRef.current.offsetWidth === 711) {
       //4 on screen
       setCurrentItem(4);
-      console.log(currentItem, 'item');
+      currentItem, 'item';
       setCount(1);
       dotRef.current.style.transform = `translateX(${0}px)`;
     } else {

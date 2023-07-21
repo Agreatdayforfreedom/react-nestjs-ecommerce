@@ -25,7 +25,7 @@ export const OrderMenu = () => {
             onClick={() => {
               toggleActions('orderby');
               if (getNameOrder === 'Highest price') return;
-              search({ order: Order.priceASC });
+              search({ order: Order.priceDESC });
 
               setGetNameOrder('Highest price');
             }}
@@ -37,7 +37,7 @@ export const OrderMenu = () => {
             onClick={() => {
               toggleActions('orderby');
               if (getNameOrder === 'Lowest price') return;
-              search({ order: Order.priceDESC });
+              search({ order: Order.priceASC });
 
               setGetNameOrder('Lowest price');
             }}

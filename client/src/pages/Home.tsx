@@ -25,26 +25,16 @@ const Home = () => {
       console.log(error);
     }
   };
-  const setParam = () => {
-    params.set('param', 'XDD');
-    setParams(params);
-  };
+
   useEffect(() => {
     f();
     getTop(32);
     setLoading(false);
   }, []);
 
-  const param = params.get('param');
-  useEffect(() => {
-    if (param) {
-      console.log('PARAM:', param);
-    }
-  }, []);
   if (loading) return <Spinner />;
   return (
     <section className="flex flex-col mx-1">
-      <p onClick={setParam}>Paraaaam: {param}</p>
       <div className="relative  w-full bg-black my-2 after:content-[''] after:absolute after:bg-neutral-900 after:top-0 after:w-full after:h-full after:opacity-50">
         <img
           src="/imgs/1.jpg"

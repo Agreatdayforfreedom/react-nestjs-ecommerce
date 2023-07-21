@@ -7,26 +7,23 @@ import { Book, Loading as ILoading } from '../interfaces';
 import { SpawnBooksSection } from '../components/SpawnBooksSection';
 
 export const Books = () => {
-  
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<ILoading>(true);
   const loc = useLocation();
-  
-  
 
   const { params } = useBook();
   useEffect(() => {
-  const getBooksWithFilter = async () => {
-    try {
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/book${loc.search}`
-      );
-      setBooks(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    const getBooksWithFilter = async () => {
+      try {
+        const { data } = await axios(
+          `${import.meta.env.VITE_URL_BACK}/book${loc.search}`
+        );
+        setBooks(data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     getBooksWithFilter();
   }, [loc]);

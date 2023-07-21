@@ -21,7 +21,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '0', max_price: '0' });
+                search({ minPrice: '0', maxPrice: '0' });
                 toggleActions('filterby');
               }}
             >
@@ -41,7 +41,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '1', max_price: '10' });
+                search({ minPrice: '1', maxPrice: '10' });
                 toggleActions('filterby');
               }}
             >
@@ -61,7 +61,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '11', max_price: '25' });
+                search({ minPrice: '11', maxPrice: '25' });
                 toggleActions('filterby');
               }}
             >
@@ -81,7 +81,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '26', max_price: '50' });
+                search({ minPrice: '26', maxPrice: '50' });
                 toggleActions('filterby');
               }}
             >
@@ -101,7 +101,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '51', max_price: '100' });
+                search({ minPrice: '51', maxPrice: '100' });
                 toggleActions('filterby');
               }}
             >
@@ -121,7 +121,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ min_price: '101', max_price: '100000' });
+                search({ minPrice: '101', maxPrice: '100000' });
                 toggleActions('filterby');
               }}
             >
