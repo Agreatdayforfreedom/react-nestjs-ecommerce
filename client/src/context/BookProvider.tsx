@@ -17,7 +17,7 @@ import {
 } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 import { fetchAndCache } from '../utils/fetchAndCache';
-import { CatBooks } from '../pages/Categories';
+import { CatBooks } from '../pages/SearchBooksByParams';
 import { useSearchQuery } from '../hooks/useSearchQuery';
 
 interface Props {
@@ -268,13 +268,16 @@ export const BookProvider = ({ children }: Props) => {
       setLoading(false);
       const res = queryFormatFn(query);
       console.log({ res }, '<- query formated');
-      const cacheName = res;
-      const url = `${import.meta.env.VITE_URL_BACK}/book/category${res}`;
-      const data = await fetchBooksBy(cacheName, url);
-      console.log({ data, url });
-      setLoading(true);
+      if (res) {
+        const cacheName = res;
 
-      setBooksFiltered(data);
+        const url = `${import.meta.env.VITE_URL_BACK}/book/category${res}`;
+        const data = await fetchBooksBy(cacheName, url);
+        // console.log({ data, url });
+        setLoading(true);
+
+        setBooksFiltered(data);
+      } else console.log('!! query formate error');
     }
     // console.log(location);
   };

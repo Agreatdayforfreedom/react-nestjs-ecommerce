@@ -13,12 +13,11 @@ export const SpawnBooksSection = ({ books, count, text }: any) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const page: number = parseInt(searchParams.get('page') || '1');
 
   useEffect(() => {
-    const page: number = parseInt(searchParams.get('page') || '1');
-
     handleCurrentPage(page);
-  }, []); //get current page from params
+  }, [page]); //get current page from params
 
   const handleCurrentPage = (page: number) => {
     setCurrentPage(page);

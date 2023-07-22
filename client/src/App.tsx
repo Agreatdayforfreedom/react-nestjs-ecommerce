@@ -1,4 +1,9 @@
-import { BrowserRouter, Route, Routes, useSearchParams } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useSearchParams,
+} from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
 import { BookProvider } from './context/BookProvider';
 import { CartProvider } from './context/CartProvider';
@@ -27,10 +32,9 @@ import { BestSellers } from './pages/BestSellers';
 import { UpdateBook } from './pages/UpdateBook';
 import { UpdateMetadata } from './pages/UpdateMetadata';
 import { useEffect } from 'react';
+import { SearchBooksByParams } from './pages/SearchBooksByParams';
 
 function App() {
-
-  
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -46,7 +50,7 @@ function App() {
                   <Route path="login" element={<Login />} />
                   <Route path="cart" element={<Cart />} />
                   <Route path="categories" element={<Categories />} />
-                  <Route path="books" element={<Books />} />
+                  <Route path="books" element={<SearchBooksByParams />} />
                   <Route path="new" element={<New />} />
                   <Route path="bestsellers" element={<BestSellers />} />
                 </Route>
@@ -83,13 +87,11 @@ function App() {
                     element={<CreateCategory />}
                   />
                 </Route>
-
               </Routes>
             </QuestionsProvider>
           </BookProvider>
         </CartProvider>
       </AuthProvider>
-      
     </BrowserRouter>
   );
 }
