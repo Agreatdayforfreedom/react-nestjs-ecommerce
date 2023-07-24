@@ -1,4 +1,10 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Orders } from './orders.entity';
 
 export enum Enum_PaymentType {
@@ -14,6 +20,6 @@ export class Payment {
   @Column()
   paymentType: Enum_PaymentType;
 
-  @OneToOne(() => Orders, (orders) => orders.payment)
-  order: Orders;
+  @OneToMany(() => Orders, (orders) => orders.payment)
+  order: Orders[];
 }

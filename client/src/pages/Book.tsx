@@ -10,6 +10,7 @@ import useCart from '../context/hooks/useCart';
 import { Alert, Book as IBook, Metadata } from '../interfaces';
 import { Slider } from '../components/Slider';
 import axios from 'axios';
+import { Role_Enum } from '../enums';
 
 interface PropsMetadata {
   metadata: any;
@@ -47,10 +48,11 @@ export const Book = () => {
 
   const { message, err } = alert;
   if (loadingAuth || loadingBook || loading) return <Spinner />;
+  console.log({ auth });
   return (
     <>
       <div className="flex flex-col md:border-b md:mx-2 lg:p-20 transition-all">
-        {auth.id && (
+        {auth.id && auth.role === Role_Enum.ADMIN && (
           <div className="flex justify-end">
             <Link
               to={`/admin/update-book/${book.id}`}
@@ -100,7 +102,7 @@ export const Book = () => {
                   ${book.price}
                 </h2>
                 {message && err ? (
-                  <p className="text-red-600">{message}, check your cart</p>
+                  <p className="text-red-600">Login to add to cart </p>
                 ) : book.stock > 0 ? (
                   <div>
                     <p className="text-green-600">There is stock!</p>
@@ -129,12 +131,12 @@ export const Book = () => {
         </section>
       </div>
 
-      <MetadataBook
+      {/* <MetadataBook
         metadata={{ format: book.format, isbn: book.isbn, stars: book.stars }}
         bookId={book.id && book.id}
-      />
+      /> */}
       <Questions bookId={book.id && book.id} />
-      <Slider books={booksSlider} title="you migth be interested" />
+      {/* <Slider books={booksSlider} title="you migth be interested" /> */}
     </>
   );
 };

@@ -18,7 +18,6 @@ export const PaymentGateway: FC<Props> = ({
   locationStatus,
   purchaseStatus,
 }) => {
-  console.log(purchaseStatus === Enum_PurchaseStatus.CANCELLED, 'aodwk');
   return (
     <div className="flex items-center justify-around w-5/6 mx-auto my-4">
       <div

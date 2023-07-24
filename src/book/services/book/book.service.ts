@@ -120,10 +120,14 @@ export class BookService {
       });
     }
     this.qbFilters(qb, query);
-    const cat = query.category.slice(0, -1);
+    let cat: string;
+    if (query.cat) cat = query.category.slice(0, -1);
     const books = await qb.getManyAndCount();
     //filter range of prices
-    const filter = `
+    let filter;
+
+    if (cat) {
+      filter = `
     SELECT
     COUNT(*) FILTER(WHERE price >= 1 AND price <= 10 AND c.id = $1) AS "1-10",
     COUNT(*) FILTER(WHERE price >= 11 AND price <= 25 AND c.id = $1) AS "11-25",
@@ -135,6 +139,21 @@ export class BookService {
       LEFT OUTER JOIN books_categories bc ON (b.id = bc.book_id) AND (bc.category_id = $1)
       LEFT OUTER JOIN category c ON (c.id = bc.category_id);   
     `;
+    } else {
+      // filter = `
+      // SELECT
+      // COUNT(*) FILTER(WHERE price >= 1 AND price <= 10 AND b.name = $1) AS "1-10",
+      // COUNT(*) FILTER(WHERE price >= 11 AND price <= 25 AND c.id = $1) AS "11-25",
+      // COUNT(*) FILTER(WHERE price >= 26 AND price <= 50 AND c.id = $1) AS "26-50",
+      // COUNT(*) FILTER(WHERE price >= 51 AND price <= 100 AND c.id = $1) AS "51-100",
+      // COUNT(*) FILTER(WHERE price >= 101 AND price <= 100000 AND c.id = $1) AS "101-100000",
+      // COUNT(*) FILTER(WHERE c.id = $1) AS "all"
+      // FROM book b
+      //   LEFT OUTER JOIN books_categories bc ON (b.id = bc.book_id) AND (bc.category_id = $1)
+      //   LEFT OUTER JOIN category c ON (c.id = bc.category_id);
+      // `;
+    }
+
     const filterResult = await this.dataSource.query(filter, [
       query.category.replace(/[^0-9\.]+/g, ''),
     ]);

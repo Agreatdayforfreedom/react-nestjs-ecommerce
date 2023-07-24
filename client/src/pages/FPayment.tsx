@@ -79,7 +79,9 @@ export const FPayment = () => {
             </p>
             <p className="text-gray-500 font-bold">
               Shipper:{' '}
-              <span className="text-black">{order.shipper.company}</span>
+              <span className="text-black">
+                {order.shipper ? order.shipper.company : 'Horse'}
+              </span>
             </p>
             <p className="text-gray-500 font-bold">
               price: <span className="text-black">35</span>

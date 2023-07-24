@@ -161,7 +161,7 @@ const FormMessage = ({ bookId }: PropsMessagesForm) => {
     <section>
       <form
         className={
-          messageEditMode.message ? 'mt-2 p-1 bg-slate-700/80' : 'mt-2 p-1'
+          messageEditMode.message ? 'mt-2 p-1 bg-orange-700/80' : 'mt-2 p-1'
         }
         onSubmit={handleSubmit}
       >

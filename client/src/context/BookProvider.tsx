@@ -236,6 +236,8 @@ export const BookProvider = ({ children }: Props) => {
     order?: string;
     cat?: string;
   }) => {
+    setLoading(true);
+
     params.set('page', '1'); //se page to 1
     //setting name/author in the query
     if (query.search) {
@@ -265,7 +267,6 @@ export const BookProvider = ({ children }: Props) => {
     // console.log(query, '<- query');
     if (location.search) {
       // console.log(params);
-      setLoading(false);
       const res = queryFormatFn(query);
       console.log({ res }, '<- query formated');
       if (res) {
@@ -274,10 +275,10 @@ export const BookProvider = ({ children }: Props) => {
         const url = `${import.meta.env.VITE_URL_BACK}/book/category${res}`;
         const data = await fetchBooksBy(cacheName, url);
         // console.log({ data, url });
-        setLoading(true);
 
         setBooksFiltered(data);
-      } else console.log('!! query formate error');
+        setLoading(false);
+      } else console.log('!! query format error');
     }
     // console.log(location);
   };
@@ -285,14 +286,14 @@ export const BookProvider = ({ children }: Props) => {
     cacheName: string,
     url: string
   ): Promise<{ cat: string; books: Book[] }> => {
-    setLoading(false);
+    setLoading(true);
     const data = await fetchAndCache(cacheName, url);
     setBooksLength(data.books[0]);
     if (data.filter[0]) {
       setPriceFilter(data.filter[0]);
     }
 
-    setLoading(true);
+    setLoading(false);
     return data;
   };
 

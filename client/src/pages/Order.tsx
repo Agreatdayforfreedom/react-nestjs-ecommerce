@@ -27,7 +27,7 @@ export const Order = () => {
       }, 1000);
     }
   }, []);
-
+  console.log(order);
   if (loading) return <Spinner />;
   if (order.order_details) {
     total = order.order_details.reduce(

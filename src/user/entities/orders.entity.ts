@@ -28,8 +28,7 @@ export class Orders extends Base {
   @Column({ default: Enum_PurchaseStatus.PENDING_PAYMENT_METHOD })
   purchase_status: Enum_PurchaseStatus;
 
-  @OneToOne(() => Payment, (payment) => payment.order)
-  @JoinColumn()
+  @ManyToOne(() => Payment, (payment) => payment.order)
   payment: Payment;
 
   @OneToMany(() => Order_details, (order_details) => order_details.orders)

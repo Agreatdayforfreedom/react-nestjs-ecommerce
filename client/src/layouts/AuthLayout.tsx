@@ -6,6 +6,7 @@ import { MenuNav } from '../components/MenuNav';
 import { PrivateHeader } from '../components/PrivateHeader';
 import { Search } from '../components/Search';
 import useAuth from '../context/hooks/useAuth';
+import { GiBookshelf } from 'react-icons/gi';
 
 const AuthLayout = () => {
   const { auth, loading } = useAuth();
@@ -29,11 +30,15 @@ const AuthLayout = () => {
                 <Link
                   to="/"
                   className="
-          
-          px-2 text-4xl font-bold
+            sm:absolute z-40 sm:pt-3 md:relative top-0
+          flex text-amber-900
+          px-2 text-6xl font-bold
           "
                 >
-                  Library
+                  Library{' '}
+                  <span className="">
+                    <GiBookshelf />
+                  </span>
                 </Link>
                 <div className="relative flex justify-center items-center">
                   {/* menu */}

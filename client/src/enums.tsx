@@ -25,3 +25,9 @@ export enum Enum_TotalPriceFilter {
   '101-100000',
   'all',
 }
+
+export enum Role_Enum {
+  SELLER = 'seller',
+  USER = 'user',
+  ADMIN = 'admin',
+}

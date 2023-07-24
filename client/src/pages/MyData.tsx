@@ -11,6 +11,8 @@ import useCart from '../context/hooks/useCart';
 import { useForm } from '../hooks/useForm';
 import { Alert, Customer } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
+import { fetchAndCache } from '../utils/fetchAndCache';
+import useAuth from '../context/hooks/useAuth';
 
 const MyData = () => {
   return (
@@ -29,7 +31,7 @@ export const FormCustomer = ({ isCart }: Props) => {
   const [customer, setCustomer] = useState<Customer>({} as Customer);
 
   const { handleChange, form } = useForm<Customer>();
-
+  const { auth } = useAuth();
   //to remove form cart if cancel is clicked
   const { setAlert } = useCart();
 
@@ -37,10 +39,9 @@ export const FormCustomer = ({ isCart }: Props) => {
 
   useEffect(() => {
     const fetch = async () => {
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/customers`,
-        config
-      );
+      const url = `${import.meta.env.VITE_URL_BACK}/customers`;
+      const cacheName = `customer${auth.id}`;
+      const data = await fetchAndCache(cacheName, url, config);
       setCustomer(data[0]);
     };
     fetch();
@@ -71,7 +72,7 @@ export const FormCustomer = ({ isCart }: Props) => {
         onSubmit={handleSubmit}
         className={`${
           isCart ? 'bg-lime-700' : 'bg-slate-100'
-        } mt-10 p-10 mx-3 rounded-md shadow-md mx-auto md:w-4/6 lg:w-1/2`}
+        } mt-10 p-10 mx-auto rounded-md shadow-md md:w-4/6 lg:w-1/2`}
       >
         <div className="flex flex-col my-3">
           <label htmlFor="firstName" className="mb-1 font-bold text-slate-600">

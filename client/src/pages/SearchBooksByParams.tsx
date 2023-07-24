@@ -16,7 +16,12 @@ export interface CatBooks {
 export const SearchBooksByParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { fetchBooksBy, booksFiltered, setBooksFiltered } = useBook();
+  const {
+    fetchBooksBy,
+    booksFiltered,
+    setBooksFiltered,
+    loading: searchLoading,
+  } = useBook();
   const page = parseInt(searchParams.get('page') || '1');
   const cat = searchParams.get('category');
   const queryFormatFn = useSearchQuery();
@@ -37,31 +42,14 @@ export const SearchBooksByParams = () => {
       };
       fetch();
     }
-    // console.log({ cat });
   }, []);
-  // useEffect(() => {
-  //   console.log(booksFiltered);
-  // }, [booksFiltered]);
-  useEffect(() => {
-    //   // setCategoriesBooks({} as CatBooks);
-    //   const cacheName = `booksByCategory${cat}`;
 
-    //   const minPrice = searchParams.get('minPrice');
-    //   const maxPrice = searchParams.get('maxPrice');
+  useEffect(() => {
     let pagination = `&skip=${(page - 1) * 50}&limit=50`;
-    //   let query = `?category=${cat}`;
-    //   // const limit = 50;
-    //   // const skip = ((page - 1) * limit).toString();
-    //   //persist the price filter if exists
-    //   if (minPrice && maxPrice) {
-    //     query += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
-    //   }
+
     const query = queryFormatFn();
     const cacheName = query;
-    //   if (loc.search !== '') {
-    //     query = loc.search.concat(pagination);
-    //   }
-    console.log(query);
+
     const url = `${
       import.meta.env.VITE_URL_BACK
     }/book/category${query}${pagination}`;
@@ -72,17 +60,8 @@ export const SearchBooksByParams = () => {
     };
     fetch();
   }, [page, cat]);
-  // if (loading || !booksFiltered) return <Spinner />;
-  // if (!booksFiltered.books) {
-  //   return (
-  //     <div className="grid sm:grid-cols-3 md:grid-cols-5 text-center w-fit m-auto mt-10">
-  //       {categories.map((c) => (
-  //         <CategoryText key={nanoid()} category={c} />
-  //       ))}
-  //     </div>
-  //   );
-  // } else
-  if (loading) return <p>loading</p>;
+
+  if (loading || searchLoading) return <Spinner />;
   return (
     <>
       <SpawnBooksSection

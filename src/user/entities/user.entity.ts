@@ -8,6 +8,7 @@ import { Cart } from './cart.entity';
 enum Role_Enum {
   SELLER = 'seller',
   USER = 'user',
+  ADMIN = 'admin',
 }
 
 @Entity()

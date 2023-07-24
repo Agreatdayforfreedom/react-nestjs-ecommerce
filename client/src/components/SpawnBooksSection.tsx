@@ -9,19 +9,23 @@ import { Book } from '../interfaces';
 import Pagination from './Pagination';
 import { nanoid } from 'nanoid';
 import { useSearchParams } from 'react-router-dom';
+import { Spinner } from './Spinner';
 export const SpawnBooksSection = ({ books, count, text }: any) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const page: number = parseInt(searchParams.get('page') || '1');
 
   useEffect(() => {
     handleCurrentPage(page);
-  }, [page]); //get current page from params
+    setLoading(false);
+  }, [searchParams]); //get current page from params
 
   const handleCurrentPage = (page: number) => {
     setCurrentPage(page);
   };
+  if (loading) return <Spinner />;
   return (
     <div>
       <div className="bg-orange-200 border-y my-2 border-yellow-900 text-center p-2">

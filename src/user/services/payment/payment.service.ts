@@ -21,8 +21,14 @@ export class PaymentService {
     payload: PaymentType,
     userReq: PayloadAuth,
   ) {
-    const payment = new Payment();
+    const [paymentExists] = await this.paymentRepo.find({
+      where: { paymentType: payload.paymentType },
+    });
+    if (paymentExists) {
+      this.orderService.updatePayment(orderId, paymentExists.id, userReq);
+    }
 
+    const payment = new Payment();
     if (!payload.paymentType) {
       throw new HttpException('You must choose a payment method', 400);
     }

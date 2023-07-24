@@ -42,18 +42,21 @@ export const Cart = () => {
             Buy
           </button>
         </div>
-        {message && message.charAt(0) === 'C' && (
+        {message && message.charAt(0) === 'C' ? (
           <p className="text-center text-lg font-bold text-red-700">
             Complete you data
           </p>
+        ) : (
+          ''
         )}
-        {message && (
+        {message && message.charAt(0) !== 'C' ? (
           <p className="text-center text-lg font-bold text-red-700">
             Add some products to your cart
           </p>
+        ) : (
+          ''
         )}
-
-        {message && message.charAt(0) === 'C' && <FormCustomer isCart={true} />}
+        {/* {message && message.charAt(0) === 'C' && <FormCustomer isCart={true} />} */}
       </div>
     </section>
   );
