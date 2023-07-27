@@ -22,14 +22,14 @@ export async function fetchAndCache<T = any>(
     const lm = cacheData.headers.get('Last-Modified');
     const cl = cacheData.headers.get('Content-Length');
     // if now is greater than cache set + max-age
-
-    if (
+    const expired: boolean =
       (lm &&
         cc &&
         Date.now() >
           Number(cc.split(',')[1].split('=')[1]) + new Date(lm).getTime()) ||
-      cl === '0'
-    ) {
+      cl === '0';
+    const server_error: boolean = cacheData.status >= 500;
+    if (expired || server_error) {
       //refetch cache;
       open.delete(url); //to avoid getting the response from local cache
       const res = await fetch(url, {
@@ -38,6 +38,7 @@ export async function fetchAndCache<T = any>(
       });
       open.put(url, res.clone());
       console.log('REFETCH');
+      console.log(res);
       return (data = await res.json());
     }
 

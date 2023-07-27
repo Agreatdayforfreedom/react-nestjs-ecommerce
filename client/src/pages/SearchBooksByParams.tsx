@@ -30,18 +30,17 @@ export const SearchBooksByParams = () => {
   useEffect(() => {
     const page = parseInt(searchParams.get('page') || '1');
     const cat = searchParams.get('category');
-    if (cat) {
-      const cacheName = `booksByCategory${cat}`;
-      const query = queryFormatFn();
-      console.log({ query });
-      const url = `${import.meta.env.VITE_URL_BACK}/book/category${query}`;
-      const fetch = async () => {
-        const data = await fetchBooksBy(cacheName, url);
-        setBooksFiltered(data);
-        setLoading(false);
-      };
-      fetch();
-    }
+    const query = queryFormatFn();
+    const url = `${import.meta.env.VITE_URL_BACK}/book/category${query}`;
+    let cacheName: string = url;
+    console.log({ query });
+    const fetch = async () => {
+      const data = await fetchBooksBy(cacheName, url);
+      setBooksFiltered(data);
+      setLoading(false);
+    };
+    fetch();
+    console.log('xD');
   }, []);
 
   useEffect(() => {
