@@ -15,7 +15,10 @@ export class AuthService {
     const { username, email }: { username: string; email: string } = body;
     const [user] = await this.userService.findOne(username, email);
     if (user) {
-      throw new HttpException('Username or email already has registered', 400);
+      throw new HttpException(
+        'The username or email has already been registered',
+        400,
+      );
     }
 
     const userCreated = await this.userService.create(body);
@@ -24,7 +27,7 @@ export class AuthService {
       username: userCreated.user.username,
       role: userCreated.user.role,
       cart: userCreated.cart,
-      LIBScredits: user.LIBScredits,
+      LIBScredits: userCreated.user.LIBScredits,
       access_token: this.jwtService.sign({
         id: userCreated.user.id,
         username: userCreated.user.username,

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Alert } from '../interfaces';
 import useAuth from '../context/hooks/useAuth';
@@ -47,13 +47,24 @@ export const Signup = () => {
       return;
     }
 
-    const { data } = await axios.post(
-      `${import.meta.env.VITE_URL_BACK}/auth/signup`,
-      { username, email, password }
-    );
-    localStorage.setItem('token', data.access_token);
-    navigate('/');
-    setAuth(data);
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_URL_BACK}/auth/signup`,
+        {
+          username: username.toLowerCase(),
+          email: username.toLowerCase(),
+          password,
+        }
+      );
+      localStorage.setItem('token', data.access_token);
+      navigate('/');
+      setAuth(data);
+    } catch (error) {
+      setAuth({} as Auth);
+      if (error instanceof AxiosError) {
+        setAlert({ message: error.response?.data.message, err: true });
+      }
+    }
   };
 
   const { message } = alert;
@@ -62,10 +73,10 @@ export const Signup = () => {
   return (
     <section className="mx-4">
       <form
-        className="bg-slate-100 mt-10 p-8 rounded-md shadow-md m-auto md:w-4/6 lg:w-1/2"
+        className="bg-slate-100 mt-10 mb-5 p-8 rounded-md shadow-md m-auto md:w-4/6 lg:w-1/2"
         onSubmit={handleSubmit}
       >
-        {message && <p>{alert.message}</p>}
+        {message && <p className="alert">{alert.message}</p>}
         <div className="flex flex-col my-3">
           <label htmlFor="username" className="mb-1 font-bold text-slate-600">
             Username
@@ -126,7 +137,6 @@ export const Signup = () => {
         </div>
 
         <div className="flex justify-end">
-          {/* TODO: convert to component */}
           <button
             type="submit"
             className="border px-4 py-3 bg-orange-400 

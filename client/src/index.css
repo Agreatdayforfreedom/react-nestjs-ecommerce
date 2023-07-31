@@ -171,3 +171,9 @@ html {
   display: flex;
   cursor: grab;
 }
+
+.alert {
+  border-left: 4px solid red;
+  background-color: #ff000020;
+  padding: 8px;
+}
