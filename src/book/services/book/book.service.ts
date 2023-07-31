@@ -79,12 +79,10 @@ export class BookService {
     }
     // qb.limit(50);
     if (query.limit) {
-      console.log(query.limit, typeof query.limit, 'limit');
       qb.limit(parseInt(query.limit));
     }
 
     if (query.skip) {
-      console.log('skipping:', query.skip, typeof query.skip);
       qb.offset(parseInt(query.skip));
     }
 
@@ -156,8 +154,6 @@ export class BookService {
     `;
       filterResult = await this.dataSource.query(filter);
     }
-    console.log({ filterResult });
-    console.log({ books });
     return {
       cat,
       books,
@@ -166,20 +162,17 @@ export class BookService {
   }
 
   async findBestSellers(query: { take: number }) {
-    console.log('here');
     const best_sellers = await this.bookRepo.find({
       order: {
         totalSold: 'DESC',
       },
       take: query.take || 100,
     });
-    console.log(best_sellers);
 
     return best_sellers;
   }
 
   async findOne(id: number): Promise<Book> {
-    console.log('here2');
     const [book] = await this.bookRepo.find({
       relations: {
         categories: true,

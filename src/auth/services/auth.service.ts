@@ -11,7 +11,6 @@ export class AuthService {
   ) {}
 
   async signup(body: any) {
-    console.log(body);
     const { username, email }: { username: string; email: string } = body;
     const [user] = await this.userService.findOne(username, email);
     if (user) {

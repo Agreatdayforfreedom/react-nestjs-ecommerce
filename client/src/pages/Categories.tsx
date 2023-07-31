@@ -12,7 +12,6 @@ export const Categories = () => {
   useEffect(() => {
     const cacheName: string = 'categoryList';
     const url = `${import.meta.env.VITE_URL_BACK}/categories`;
-    console.log('xD');
 
     const fetch = async () => {
       setLoading(true);

@@ -122,12 +122,11 @@ export const CartProvider = ({ children }: Props) => {
     paymentType: Enum_PaymentType
   ) => {
     try {
-      const { data } = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_URL_BACK}/payment/${orderId}`,
         { paymentType },
         config
       );
-
       navigate(`/order/${orderId}/fpayment`);
     } catch (error) {
       console.log(error);
@@ -150,7 +149,6 @@ export const CartProvider = ({ children }: Props) => {
   };
 
   const cancelOrder = async (orderId: number) => {
-    console.log(orderId);
     try {
       setLoading(true);
       const { data } = await axios.put(

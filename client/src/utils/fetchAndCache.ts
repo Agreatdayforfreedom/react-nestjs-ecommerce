@@ -37,21 +37,16 @@ export async function fetchAndCache<T = any>(
         headers: { 'Cache-Control': 'no-cache' },
       });
       open.put(url, res.clone());
-      console.log('REFETCH');
-      console.log(res);
       return (data = await res.json());
     }
 
-    console.log('FROM CACHE');
     data = await cacheData.json();
   } else {
     const res = await fetch(url, { ...options });
     open.put(url, res.clone());
-    console.log('FROM FETCH');
 
     data = await res.json();
   }
 
-  console.log({ data });
   return data;
 }

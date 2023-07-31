@@ -25,22 +25,18 @@ export const SearchBooksByParams = () => {
   const page = parseInt(searchParams.get('page') || '1');
   const cat = searchParams.get('category');
   const queryFormatFn = useSearchQuery();
-  const loc = useLocation();
+
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const page = parseInt(searchParams.get('page') || '1');
-    const cat = searchParams.get('category');
     const query = queryFormatFn();
     const url = `${import.meta.env.VITE_URL_BACK}/book/category${query}`;
     let cacheName: string = url;
-    console.log({ query });
     const fetch = async () => {
       const data = await fetchBooksBy(cacheName, url);
       setBooksFiltered(data);
       setLoading(false);
     };
     fetch();
-    console.log('xD');
   }, []);
 
   useEffect(() => {
@@ -54,7 +50,6 @@ export const SearchBooksByParams = () => {
     }/book/category${query}${pagination}`;
     const fetch = async () => {
       const data = await fetchBooksBy(cacheName, url);
-      console.log({ data });
       setBooksFiltered(data);
     };
     fetch();
@@ -66,7 +61,9 @@ export const SearchBooksByParams = () => {
       <SpawnBooksSection
         books={booksFiltered.books[0]}
         count={booksFiltered.books[1]}
-        text={booksFiltered.cat}
+        text={
+          booksFiltered.cat ? booksFiltered.cat : searchParams.get('search')
+        }
       />
     </>
   );

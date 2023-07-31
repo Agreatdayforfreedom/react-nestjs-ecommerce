@@ -56,7 +56,6 @@ export class OrderService {
         },
       },
     });
-    console.log(order);
     return order;
   }
 
@@ -145,7 +144,6 @@ export class OrderService {
     userReq: PayloadAuth,
   ) {
     const order = await this.findOne(orderId, userReq);
-    console.log(paymentId);
     const [payment] = await this.paymentRepo.find({
       where: {
         id: paymentId,
@@ -154,11 +152,9 @@ export class OrderService {
     if (order.purchase_status === Enum_PurchaseStatus.CANCELLED) {
       throw new HttpException('This order has been cancelled ', 401);
     }
-    console.log(payment);
     if (!payment) {
       throw new HttpException('Invalid payment method', 400);
     }
-    // console.log(payment);
     order.payment = payment;
     order.purchase_status = Enum_PurchaseStatus.PENDING_PAYMENT;
     await this.orderRepo.save(order);

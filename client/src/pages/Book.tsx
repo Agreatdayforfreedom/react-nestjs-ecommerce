@@ -48,7 +48,6 @@ export const Book = () => {
 
   const { message, err } = alert;
   if (loadingAuth || loadingBook || loading) return <Spinner />;
-  console.log({ auth });
   return (
     <>
       <div className="flex flex-col md:border-b md:mx-2 lg:p-20 transition-all">
@@ -131,10 +130,10 @@ export const Book = () => {
         </section>
       </div>
 
-      {/* <MetadataBook
+      <MetadataBook
         metadata={{ format: book.format, isbn: book.isbn, stars: book.stars }}
         bookId={book.id && book.id}
-      /> */}
+      />
       <Questions bookId={book.id && book.id} />
       {/* <Slider books={booksSlider} title="you migth be interested" /> */}
     </>
@@ -142,60 +141,15 @@ export const Book = () => {
 };
 
 const MetadataBook = ({ metadata, bookId }: PropsMetadata) => {
-  const [menuAdminMetadata, setMenuAdminMetadata] = useState(false);
   const { auth, loading: loadingAuth } = useAuth();
-  const { deleteMetadata, loading: loadingBook } = useBook();
+  const { loading: loadingBook } = useBook();
 
-  const openMenuMetadata = () => {
-    setMenuAdminMetadata(!menuAdminMetadata);
-  };
-
-  const handleDelete = () => {
-    if (metadata.id) {
-      deleteMetadata(metadata.id);
-    }
-  };
   if (loadingAuth || loadingBook) return <Spinner />;
   if (metadata) {
     return (
       <section className="mx-2">
         <div className="flex justify-between items-center mx-2">
           <h2 className="text-xl">Details</h2>
-          {auth.id && (
-            <div className="relative">
-              <button onClick={openMenuMetadata}>
-                <RiArrowLeftSLine
-                  size={25}
-                  className={
-                    menuAdminMetadata
-                      ? '-rotate-90 transition-all hover:cursor-pointer'
-                      : 'transition-all hover:cursor-pointer'
-                  }
-                />
-              </button>
-
-              <div
-                className={
-                  menuAdminMetadata
-                    ? 'absolute block bg-slate-700 border-black rounded py-1 px-2 -bottom-12 -left-20'
-                    : 'hidden'
-                }
-              >
-                <Link
-                  to={`/admin/update-metadata/${metadata.id}`}
-                  className="text-white hover:text-orange-500"
-                >
-                  Update
-                </Link>
-                <button
-                  onClick={handleDelete}
-                  className="text-white hover:text-red-700"
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          )}
         </div>
         <table className="flex border border-orange-400  bg-orange-200 ">
           <thead>

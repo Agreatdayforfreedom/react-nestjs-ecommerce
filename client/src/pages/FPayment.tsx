@@ -61,7 +61,7 @@ export const FPayment = () => {
         <div className="flex flex-col my-3 justify-between md:w-1/3 md:mx-auto">
           <div className="text-center w-full mb-4 border-b pb-2">
             <h3 className="text-orange-400 text-lg font-bold">
-              {order.payment.paymentType}
+              {order?.payment?.paymentType}
             </h3>
             <p className="text-slate-600 mb-2">
               Do you want to choose another payment method?

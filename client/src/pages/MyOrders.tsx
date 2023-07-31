@@ -43,7 +43,7 @@ const MyOrders = () => {
                 PENDING PAYMENT METHOD
               </p>
             ) : o.purchase_status === Enum_PurchaseStatus.PURCHASE ? (
-              <p className="font-bold text-green-600">{o.purchase_status}</p>
+              <p className="font-bold text-green-600">{o.purchase_status}D</p>
             ) : (
               <p className="font-bold text-red-600">{o.purchase_status}</p>
             )}

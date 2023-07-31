@@ -17,6 +17,7 @@ export const FilterCard = () => {
       params.delete('minPrice');
       params.delete('maxPrice');
       setParams(params);
+      search({ minPrice: '0', maxPrice: '0' });
     }
   };
   return (

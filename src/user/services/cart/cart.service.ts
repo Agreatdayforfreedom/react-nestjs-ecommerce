@@ -106,13 +106,13 @@ export class CartService {
   async deleteItemCart(id: number, userReq: PayloadAuth): Promise<void> {
     const [cart_item] = await this.cart_itemRepo.find({
       relations: {
-        book: {
+        cart: {
           user: true,
         },
       },
       where: { id: id },
     });
-    if (cart_item.book.user.id.toString() !== userReq.id.toString()) {
+    if (cart_item.cart.user.id.toString() !== userReq.id.toString()) {
       throw new HttpException('You are not the owner', 400);
     }
 

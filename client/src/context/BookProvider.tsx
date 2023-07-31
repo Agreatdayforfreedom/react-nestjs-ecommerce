@@ -57,8 +57,6 @@ export interface BookContextProps {
   priceFilter: any;
   getBook: (id: string) => void;
   deleteBook: (id: string) => void;
-  handleSubmitMetadata: (metadata: Metadata, id: string) => void;
-  deleteMetadata: (id: string) => void;
   getTop: (take: number) => void;
   bestSellers: Book[];
   booksFiltered: CatBooks;
@@ -191,42 +189,6 @@ export const BookProvider = ({ children }: Props) => {
     navigate('/admin');
   };
 
-  const handleSubmitMetadata = (metadata: Metadata, id: string) => {
-    if (metadata.id) {
-      //update
-      updateMetadata(metadata);
-    } else {
-      //create
-      addMetadata(metadata, id);
-    }
-  };
-
-  const addMetadata = async (metadata: Metadata, id: string) => {
-    const { data } = await axios.post(
-      `${import.meta.env.VITE_URL_BACK}/metadata`,
-      { ...metadata, book: id },
-      config
-    );
-    navigate(`/book/${data.book.id}`);
-  };
-
-  const updateMetadata = async (metadata: Metadata) => {
-    const { id, ...rest } = metadata;
-
-    await axios.put(
-      `${import.meta.env.VITE_URL_BACK}/metadata/${id}`,
-      rest,
-      config
-    );
-    navigate(`/book/${metadata.book.id}`);
-  };
-
-  const deleteMetadata = async (id: string) => {
-    await axios.delete(
-      `${import.meta.env.VITE_URL_BACK}/metadata/${id}`,
-      config
-    );
-  };
   const queryFormatFn = useSearchQuery();
 
   const search = async (query: {
@@ -264,23 +226,18 @@ export const BookProvider = ({ children }: Props) => {
       params.set('cat', query.cat);
       setParams(params);
     }
-    // console.log(query, '<- query');
     if (location.search) {
-      // console.log(params);
       const res = queryFormatFn(query);
-      console.log({ res }, '<- query formated');
       if (res) {
         const cacheName = res;
 
         const url = `${import.meta.env.VITE_URL_BACK}/book/category${res}`;
         const data = await fetchBooksBy(cacheName, url);
-        // console.log({ data, url });
 
         setBooksFiltered(data);
         setLoading(false);
       } else console.log('!! query format error');
     }
-    // console.log(location);
   };
   const fetchBooksBy = async (
     cacheName: string,
@@ -316,8 +273,7 @@ export const BookProvider = ({ children }: Props) => {
         getBook,
         fetchBooksBy,
         deleteBook,
-        handleSubmitMetadata,
-        deleteMetadata,
+
         bestSellers,
         getTop,
         booksFiltered,

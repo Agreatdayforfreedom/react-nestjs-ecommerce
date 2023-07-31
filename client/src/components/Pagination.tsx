@@ -33,13 +33,7 @@ const Pagination = ({
   const onPageChange = (p: number) => setCurrentPage(p);
 
   useEffect(() => {
-    // setCurrentPage(parseInt(searchParams.get('page') || '1'));
-    // console.log(paginationRange);
-    // console.log('fired', currentPage);
-    if (
-      currentPage === 0
-      // ||currentPage === Math.ceil(totalCount / limit - 1)
-    ) {
+    if (currentPage === 0) {
       return;
     }
     searchParams.set('page', currentPage.toString()); //todo repair pagination
