@@ -40,32 +40,36 @@ export const PrivateHeader = () => {
         </div>
         {/* cart */}
         <div className="order-1 md:order-2 w-full flex flex-col items-end">
-          <div className="border-l-2 z-50 border-b-2 border-orange-300 border-dotted w-fit">
-            <Link
-              to="/my-data"
-              className="px-2 
+          <div className="flex">
+            <span className="mx-2 text-xl">Hello, {auth.username}</span>
+
+            <div className="border-l-2 z-50 border-b-2 border-orange-300 border-dotted w-fit">
+              <Link
+                to="/my-data"
+                className="px-2 
               border-orange-300
               hover:border-x-2 hover:border-dotted 
               hover:text-orange-500
               transition-all"
-            >
-              My data
-            </Link>
-            <Link
-              to="/orders"
-              className="px-2 
+              >
+                My data
+              </Link>
+              <Link
+                to="/orders"
+                className="px-2 
               border-orange-300
               hover:border-x-2 hover:border-dotted
               hover:text-orange-500 transition-all"
-            >
-              My orders
-            </Link>
-            <button
-              onClick={logout}
-              className="px-2 pb-1 border-l-2 border-dotted border-orange-600 hover:font-bold hover:text-orange-400 transition-all"
-            >
-              Log Out
-            </button>
+              >
+                My orders
+              </Link>
+              <button
+                onClick={logout}
+                className="px-2 pb-1 border-l-2 border-dotted border-orange-600 hover:font-bold hover:text-orange-400 transition-all"
+              >
+                Log Out
+              </button>
+            </div>
           </div>
           <div className="flex justify-end md:mt-10">
             <div className="z-50 flex items-center mr-4 mt-4">

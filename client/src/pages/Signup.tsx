@@ -51,8 +51,8 @@ export const Signup = () => {
       const { data } = await axios.post(
         `${import.meta.env.VITE_URL_BACK}/auth/signup`,
         {
-          username: username.toLowerCase(),
-          email: username.toLowerCase(),
+          username,
+          email,
           password,
         }
       );
