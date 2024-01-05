@@ -6,11 +6,9 @@ import { useSearchParams } from 'react-router-dom';
 import { Enum_TotalPriceFilter } from '../enums';
 
 export const AsideFilter = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { search, priceFilter, loading } = useBook();
-  const minPrice: string | null = searchParams.get('minPrice');
-  const maxPrice: string | null = searchParams.get('maxPrice');
-  // if (loading) return <p>loading</p>;
+  const { search, priceFilter } = useBook();
+
+  if (priceFilter.length === 0) return <p>loading</p>;
   return (
     <div className="hidden md:block md:w-1/4 lg:w-1/5 lg mx-2">
       <FilterCard />
@@ -26,6 +24,7 @@ export const AsideFilter = () => {
             onClick={() => {
               search({ minPrice: '0', maxPrice: '0' });
             }}
+            data-testid="li-1"
           >
             <IoMdArrowDropright size="17" />
             <p>

@@ -61,11 +61,16 @@ const Pagination = ({
       )}
       {paginationRange?.map((pageNumber, i) => {
         if (pageNumber === DOTS) {
-          return <li className="font-bold text-gray-600 mx-1">&#8230;</li>;
+          return (
+            <li key={i} className="font-bold text-gray-600 mx-1">
+              &#8230;
+            </li>
+          );
         }
 
         return (
           <li
+            key={i}
             className={`px-3 py-1 mx-px text-gray-600 border w-8 h-8 flex items-center justify-center border-gray-400 ${
               pageNumber === currentPage &&
               'text-orange-400 bg-orange-100 font-semibold hover:!bg-orange-100 !border-orange-500'

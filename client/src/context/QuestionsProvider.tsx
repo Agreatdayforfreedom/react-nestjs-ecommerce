@@ -3,7 +3,6 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Alert, Loading, Message } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
-import { fetchAndCache } from '../utils/fetchAndCache';
 
 interface Props {
   children: ReactNode;
@@ -41,7 +40,6 @@ export const QuestionsProvider = ({ children }: Props) => {
   const config = configAxios();
 
   const [params, setParams] = useSearchParams();
-
 
   const showAlert = (alert: Alert, timeout: number = 3000) => {
     setAlert(alert);

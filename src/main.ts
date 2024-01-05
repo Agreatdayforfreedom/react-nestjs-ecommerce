@@ -10,6 +10,6 @@ async function bootstrap() {
     api_secret: process.env.CLOUDINARY_API_SECRET,
     secure: true,
   });
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.PORT || 4000);
 }
 bootstrap();

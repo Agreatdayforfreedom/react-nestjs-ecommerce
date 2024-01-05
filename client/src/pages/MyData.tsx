@@ -11,7 +11,6 @@ import useCart from '../context/hooks/useCart';
 import { useForm } from '../hooks/useForm';
 import { Alert, Customer } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
-import { fetchAndCache } from '../utils/fetchAndCache';
 import useAuth from '../context/hooks/useAuth';
 
 const MyData = () => {
@@ -40,8 +39,7 @@ export const FormCustomer = ({ isCart }: Props) => {
   useEffect(() => {
     const fetch = async () => {
       const url = `${import.meta.env.VITE_URL_BACK}/customers`;
-      const cacheName = `customer${auth.id}`;
-      const data = await fetchAndCache(cacheName, url, config);
+      const { data } = await axios(url, config);
       setCustomer(data[0]);
     };
     fetch();

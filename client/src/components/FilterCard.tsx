@@ -1,8 +1,10 @@
+import { useSearchParams } from 'react-router-dom';
 import useBook from '../context/hooks/useBook';
 import { TiDelete } from 'react-icons/ti';
 
 export const FilterCard = () => {
-  const { search, params, setParams, priceFilter } = useBook();
+  const { search, priceFilter } = useBook();
+  const [params, setParams] = useSearchParams();
 
   const minPrice: string | null = params.get('minPrice');
   const maxPrice: string | null = params.get('maxPrice');

@@ -68,7 +68,7 @@ export const Slider = ({ books, title }: Props) => {
     } else if (wRef.current.offsetWidth === 711) {
       //4 on screen
       setCurrentItem(4);
-      currentItem, 'item';
+      currentItem;
       setCount(1);
       dotRef.current.style.transform = `translateX(${0}px)`;
     } else {
@@ -133,7 +133,13 @@ const SliderCard = ({ b }: { b: Book }) => {
       className={`group h-48 w-36 min-w-[9rem] m-4 cursor-pointer hover:shadow-lg transition-shadow`}
     >
       <Link to={`/book/${b.id}`}>
-        <img src={b.image} alt={b.name} className="h-full w-full"></img>
+        <img
+          // src={b.image}
+          //TODO: IMAGES ARE NOT AVAILABLE
+          src="/public/blank.png"
+          alt={b.name}
+          className="h-full w-full"
+        ></img>
       </Link>
     </div>
   );

@@ -53,6 +53,7 @@ export const useSearchQuery = () => {
       }
       return query;
     }
+    console.log(query);
     return query;
   };
 };

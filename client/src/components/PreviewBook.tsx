@@ -16,6 +16,7 @@ export const PreviewBook = ({
   i,
   infoInvisible = false,
 }: Props) => {
+  // console.log(book);
   return (
     <>
       <div
@@ -51,7 +52,8 @@ export const PreviewBook = ({
           </div>
           <Link to={`/book/${book.id}`}>
             <img
-              src={book.image}
+              // src={book.image ? book.image : '/public/blank.png'}
+              src="/public/blank.png" //todo: IMAGES ARE NOT AVAILABLE
               alt={book.name}
               className={`${
                 infoInvisible && '!w-20 !h-32 sm:!w-28 sm:!h-40'

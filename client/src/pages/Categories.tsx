@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { fetchAndCache } from '../utils/fetchAndCache';
 import { Category as ICategory } from '../interfaces';
 import { Spinner } from '../components/Spinner';
+import axios from 'axios';
 
 export const Categories = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -10,12 +10,11 @@ export const Categories = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
 
   useEffect(() => {
-    const cacheName: string = 'categoryList';
     const url = `${import.meta.env.VITE_URL_BACK}/categories`;
 
     const fetch = async () => {
       setLoading(true);
-      const data = await fetchAndCache(cacheName, url);
+      const { data } = await axios(url);
       setCategories(data);
       setLoading(false);
     };
