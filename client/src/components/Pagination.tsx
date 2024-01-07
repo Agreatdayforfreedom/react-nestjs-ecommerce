@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { usePagination, DOTS } from '../hooks/usePagination';
 import { RiArrowLeftSFill, RiArrowRightSFill } from 'react-icons/ri';
 import { Navigate, useSearchParams } from 'react-router-dom';
+import useQueryParams from '../hooks/useQueryParams';
 // import { nanoid } from 'nanoid';
 
 interface Props {
@@ -18,9 +19,11 @@ const Pagination = ({
   setCurrentPage,
 }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
+
   // const [currentPage, setCurrentPage] = useState<number>(
   //   parseInt(searchParams.get('page') || '1')
   // );
+  const [_, setParams, __] = useQueryParams();
 
   let siblingCount = 1;
   const paginationRange = usePagination({
@@ -36,9 +39,14 @@ const Pagination = ({
     if (currentPage === 0) {
       return;
     }
-    searchParams.set('page', currentPage.toString()); //todo repair pagination
-    searchParams.set('limit', limit.toString() || '50');
-    setSearchParams(searchParams);
+    setParams({
+      page: currentPage.toString(),
+      skip: ((currentPage - 1) * 50).toString(),
+      limit: limit.toString(),
+    });
+    // searchParams.set('page', currentPage.toString()); //todo repair pagination
+    // searchParams.set('limit', limit.toString() || '50');
+    // setSearchParams(searchParams);
     window.scrollTo(0, 0);
   }, [currentPage]);
   const onNext = () => {

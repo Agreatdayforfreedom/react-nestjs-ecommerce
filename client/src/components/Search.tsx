@@ -3,10 +3,12 @@ import { BiSearchAlt } from 'react-icons/bi';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useBook from '../context/hooks/useBook';
 import { useForm } from '../hooks/useForm';
+import useQueryParams from '../hooks/useQueryParams';
 
 export const Search = () => {
   const { search } = useBook();
   const { form, handleChange } = useForm<{ search: string }>();
+  const [_, setParams, __] = useQueryParams();
 
   //TODO: TRIGGER ONCLICK WITH ENTER
   return (
@@ -27,8 +29,15 @@ export const Search = () => {
         className="px-2 py-2 bg-orange-500 font-bold text-white hover:bg-orange-600 transition-all"
         onClick={() => {
           if (form.search) {
-            console.log(form.search);
-            search(form);
+            setParams(
+              {
+                ...form,
+                skip: `${(1 - 1) * 50}`,
+                limit: '50',
+                page: '1',
+              },
+              { navigate: true }
+            );
           }
         }}
       >

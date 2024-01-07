@@ -4,9 +4,11 @@ import useBook from '../context/hooks/useBook';
 import { FilterCard } from './FilterCard';
 import { useSearchParams } from 'react-router-dom';
 import { Enum_TotalPriceFilter } from '../enums';
+import useQueryParams from '../hooks/useQueryParams';
 
 export const AsideFilter = () => {
-  const { search, priceFilter } = useBook();
+  const { priceFilter } = useBook();
+  const [_, setParams, __] = useQueryParams();
 
   if (priceFilter.length === 0) return <p>loading</p>;
   return (
@@ -22,7 +24,7 @@ export const AsideFilter = () => {
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ minPrice: '0', maxPrice: '0' });
+              setParams({ minPrice: '0', maxPrice: '0' });
             }}
             data-testid="li-1"
           >
@@ -43,7 +45,7 @@ export const AsideFilter = () => {
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ minPrice: '1', maxPrice: '10' });
+              setParams({ minPrice: '1', maxPrice: '10' });
             }}
           >
             <IoMdArrowDropright size="17" />
@@ -63,8 +65,9 @@ export const AsideFilter = () => {
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ minPrice: '11', maxPrice: '25' });
+              setParams({ minPrice: '11', maxPrice: '25' });
             }}
+            data-testid="li-3"
           >
             <IoMdArrowDropright size="17" />
             <p>
@@ -83,7 +86,7 @@ export const AsideFilter = () => {
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ minPrice: '26', maxPrice: '50' });
+              setParams({ minPrice: '26', maxPrice: '50' });
             }}
           >
             <IoMdArrowDropright size="17" />
@@ -103,7 +106,7 @@ export const AsideFilter = () => {
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
             onClick={() => {
-              search({ minPrice: '51', maxPrice: '100' });
+              setParams({ minPrice: '51', maxPrice: '100' });
             }}
           >
             <IoMdArrowDropright size="17" />
@@ -122,8 +125,9 @@ export const AsideFilter = () => {
           </li>
           <li
             className="flex items-center text-sm text-slate-500 hover:text-slate-900 hover:cursor-pointer"
+            data-testid="li-6"
             onClick={() => {
-              search({ minPrice: '101', maxPrice: '100000' });
+              setParams({ minPrice: '101', maxPrice: '100000' });
             }}
           >
             <IoMdArrowDropright size="17" />

@@ -5,7 +5,7 @@ import { Spinner } from '../components/Spinner';
 import useBook from '../context/hooks/useBook';
 import { SpawnBooksSection } from '../components/SpawnBooksSection';
 import { Category } from '../interfaces';
-import { useSearchQuery } from '../hooks/useSearchQuery';
+import useQueryParams from '../hooks/useQueryParams';
 import { constants } from '../constants';
 
 export interface CatBooks {
@@ -15,25 +15,22 @@ export interface CatBooks {
 
 export const SearchBooksByParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [loading, setLoading] = useState(true);
 
   const { fetchBooksBy } = useBook();
-  const page = parseInt(searchParams.get('page') || '1');
-  const cat = searchParams.get('category');
-  const queryFormatFn = useSearchQuery();
+  // const cat = searchParams.get('category');
+  const [qp, _, __] = useQueryParams();
 
-  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const query = queryFormatFn();
-    let pagination = `&skip=${(page - 1) * 50}&limit=50`;
-
-    const url = `/book/category${query}${pagination}`;
+    const url = `/book/category${qp}`;
     const fetch = async () => {
-      await fetchBooksBy(url);
-      setLoading(false);
+      if (qp !== '?') {
+        await fetchBooksBy(url);
+        setLoading(false);
+      }
     };
-    // TODO: TEST SEARCH BY PAGE , PAGINATION , AND FILTERS
     fetch();
-  }, [page, cat]);
+  }, [qp]);
 
   if (loading) return <Spinner />;
   return (

@@ -1,25 +1,22 @@
 import '@testing-library/jest-dom';
 // import { ENVIRONMENT } from '../src/constants';
-import { getByTestId, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import {
   BookContext,
   BookContextProps,
   BookProvider,
 } from '../src/context/BookProvider';
 import { AsideFilter } from '../src/components/AsideFilter';
-import { BrowserRouter, Route, Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import user from '@testing-library/user-event';
+import { RenderWithMemory } from './utils/RenderWithMemory';
+import * as TestRenderer from 'react-test-renderer';
+import React from 'react';
+
 jest.mock('../src/constants', () => ({
-  url: 'url',
-}));
-afterEach(() => {
-  jest.clearAllMocks();
-});
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useSearchParams: () => [
-    new URLSearchParams({ minPrice: '0', maxPrice: '0' }),
-  ],
+  constants: {
+    url: 'http://localhost:4000',
+  },
 }));
 
 const priceFilter = {
@@ -56,4 +53,37 @@ describe('<AsideFilter /> and BookContext', () => {
     const liElement = screen.getAllByRole('listitem');
     expect(liElement).toHaveLength(Object.keys(priceFilter).length);
   });
+
+  it('should render the <FilterCard /> component with the selected filter', async () => {
+    let renderer: TestRenderer.ReactTestRenderer;
+    TestRenderer.act(() => {
+      renderer = TestRenderer.create(
+        <RenderWithMemory initialEntries={['/']} provider={true}>
+          <BookContext.Provider value={{ priceFilter } as BookContextProps}>
+            <Routes>
+              <Route index element={<AsideFilter />} />
+            </Routes>
+          </BookContext.Provider>
+        </RenderWithMemory>
+      );
+    });
+
+    TestRenderer.act(() => {
+      renderer.root.findByProps({ 'data-testid': 'li-3' }).props.onClick();
+    });
+
+    expect(
+      renderer!.root.findByProps({ 'data-testid': 'fc-between' }).props
+        .children[0] //first node
+    ).toBe('Between');
+    TestRenderer.act(() => {
+      renderer.root.findByProps({ 'data-testid': 'li-6' }).props.onClick();
+    });
+
+    expect(
+      renderer!.root.findByProps({ 'data-testid': 'fc-more-than' }).props
+    ).toBeDefined();
+  });
+
+  //todo: test delete filter
 });

@@ -17,14 +17,14 @@ import {
 } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 import { CatBooks } from '../pages/SearchBooksByParams';
-import { useSearchQuery } from '../hooks/useSearchQuery';
+import useQueryParams from '../hooks/useQueryParams';
 import { constants } from '../constants';
 import apiAxios from '../utils/apiAxios';
 interface Props {
   children: ReactNode;
 }
 export interface BookContextProps {
-  search: (query: {
+  search: (query?: {
     search?: string;
     maxPrice?: string;
     minPrice?: string;
@@ -32,16 +32,16 @@ export interface BookContextProps {
     cat?: string;
   }) => void;
   loading: Loading;
-  params: URLSearchParams;
-  setParams: (
-    nextInit: URLSearchParamsInit,
-    navigateOptions?:
-      | {
-          replace?: boolean | undefined;
-          state?: any;
-        }
-      | undefined
-  ) => void;
+  // params: URLSearchParams;
+  // setParams: (
+  //   nextInit: URLSearchParamsInit,
+  //   navigateOptions?:
+  //     | {
+  //         replace?: boolean | undefined;
+  //         state?: any;
+  //       }
+  //     | undefined
+  // ) => void;
   booksLength: number;
   toggleActions: (val: keyof OpenOrCloseDropDownMenus) => void;
   hidden: OpenOrCloseDropDownMenus;
@@ -71,7 +71,6 @@ interface OpenOrCloseDropDownMenus {
 }
 
 export const BookProvider = ({ children }: Props) => {
-  const [params, setParams] = useSearchParams();
   const [hidden, setHidden] = useState<OpenOrCloseDropDownMenus>({
     filterby: false,
     orderby: false,
@@ -178,82 +177,36 @@ export const BookProvider = ({ children }: Props) => {
     navigate('/admin');
   };
 
-  const queryFormatFn = useSearchQuery();
+  const [qp, _, __] = useQueryParams();
 
-  const search = async (query: {
-    search?: string;
-    maxPrice?: string;
-    minPrice?: string;
-    order?: string;
-    cat?: string;
-  }) => {
-    params.set('page', '1'); //se page to 1
-    //setting name/author in the query
-    if (query.search) {
-      setParams({ search: query.search });
-    }
-    if (query.maxPrice && query.minPrice) {
-      if (query.maxPrice === '0' && query.minPrice === '0') {
-        params.delete('minPrice');
-        params.delete('maxPrice');
-      } else {
-        params.set('minPrice', query.minPrice);
-        params.set('maxPrice', query.maxPrice);
-      }
-      setParams(params);
-    }
-    if (query.order) {
-      if (params.get('order')) {
-        params.delete('order');
-      }
-      params.set('order', query.order);
-      setParams(params);
-    }
-    if (query.cat) {
-      params.set('cat', query.cat);
-      setParams(params);
-    }
-
-    if (location.search) {
-      const res = queryFormatFn(query);
-      if (res) {
-        // const url = `${constants.url}/book/category${res}`;
-        const url = `${constants.url}/book/category${res}`;
-
-        // console.log(constants);
-        await fetchBooksBy(url);
-      } else console.log('!! query format error');
-    }
+  const search = async () => {
+    if (qp !== undefined) {
+      const url = `${constants.url}/book/category${qp}`;
+      console.log(url, 'URL');
+      await fetchBooksBy(url);
+    } else console.log('!! query format error');
   };
   const fetchBooksBy = async (
     url: string
   ): Promise<{ cat: string; books: Book[] }> => {
-    // console.log(console.log(url, '<<<<<<<<<<<<<<'));
-    // console.log(apiAxios.getUri(), '<<<<<<<<, api');
     const { data } = await apiAxios.get(url);
-    // console.log(data);
-
+    console.log(url, 'UIRLL');
     setBooksLength(data.books[1]);
     setBooksFiltered(data.books[0]);
     if (data.filter.length > 0) {
-      // console.log(data);
       setPriceFilter(data.filter[0]);
     }
 
     return data;
   };
-  // // let co = constants.url;
-  // useEffect(() => {
-  //   console.log(constants.url);
-  // });
 
   return (
     <BookContext.Provider
       value={{
         search,
         loading,
-        params,
-        setParams,
+        // params,
+        // setParams,
         booksLength,
         toggleActions,
         hidden,

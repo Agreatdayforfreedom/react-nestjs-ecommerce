@@ -9,6 +9,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { SearchBooksByParams } from '../src/pages/SearchBooksByParams';
 import MockAdapter from 'axios-mock-adapter';
 import apiAxios from '../src/utils/apiAxios';
+import { act } from 'react-dom/test-utils';
 const mockResponse = {
   books: [[], 20],
   filter: [
@@ -28,11 +29,11 @@ global.scrollTo = jest.fn();
 const mock = new MockAdapter(apiAxios);
 
 mock
-  .onGet('/book/category?&skip=0&limit=50')
-  .replyOnce(200, {
-    ...mockResponse,
-  })
-  .onGet('/book/category?page=1&limit=50&search=nietzsche&')
+  // .onGet('/book/category?skip=0&limit=50')
+  // .replyOnce(200, {
+  //   ...mockResponse,
+  // })
+  .onGet('/book/category?search=nietzsche&skip=0&limit=50&page=1')
   .replyOnce(200, {
     ...mockResponse,
   });
