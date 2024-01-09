@@ -4,7 +4,7 @@ import { TiDelete } from 'react-icons/ti';
 import useQueryParams from '../hooks/useQueryParams';
 
 export const FilterCard = () => {
-  const { search, priceFilter } = useBook();
+  const { priceFilter } = useBook();
   const [params, _setParams] = useSearchParams();
   const minPrice: string | null = params.get('minPrice');
   const maxPrice: string | null = params.get('maxPrice');
@@ -12,7 +12,6 @@ export const FilterCard = () => {
   if (!minPrice || !maxPrice) {
     return <></>;
   }
-  // const [_, setParams, __] = useQueryParams({ minPrice, maxPrice });
   const filter = `${minPrice}-${maxPrice}`;
 
   const delFilter = () => {
@@ -20,8 +19,6 @@ export const FilterCard = () => {
       params.delete('minPrice');
       params.delete('maxPrice');
       _setParams(params);
-      // setParams({ minPrice: '0', maxPrice: '0' });
-      // search();
     }
   };
   return (
@@ -38,44 +35,25 @@ export const FilterCard = () => {
       </h2>
       {minPrice === '101' ? (
         <>
-          <p
-            className={`my-3 text-center text-orange-400 font-bold`}
-            data-testid="fc-more-than"
-          >
+          <p className={`my-3 text-center text-orange-400 font-bold`} data-testid="fc-more-than">
             More than <span className="font-normal text-slate-800">$100</span>{' '}
-            <span
-              className={
-                priceFilter[filter] === 0 ? 'text-red-500' : 'text-green-500'
-              }
-            >
+            <span className={priceFilter[filter] === 0 ? 'text-red-500' : 'text-green-500'}>
               ({priceFilter[filter]})
             </span>
           </p>
         </>
       ) : (
         <>
-          <p
-            data-testid="fc-between"
-            className={`my-3 text-center text-orange-400 font-bold`}
-          >
-            Between{' '}
-            <span className="font-normal text-slate-800">${minPrice}</span> and{' '}
+          <p data-testid="fc-between" className={`my-3 text-center text-orange-400 font-bold`}>
+            Between <span className="font-normal text-slate-800">${minPrice}</span> and{' '}
             <span className="font-normal text-slate-800">${maxPrice}</span>{' '}
-            <span
-              className={
-                priceFilter[filter] === 0 ? 'text-red-500' : 'text-green-500'
-              }
-            >
+            <span className={priceFilter[filter] === 0 ? 'text-red-500' : 'text-green-500'}>
               ({priceFilter[filter]})
             </span>
           </p>
         </>
       )}
-      <button
-        onClick={delFilter}
-        data-testid="fc-btn-remove"
-        className="px-2 md:p-0 text-red-700"
-      >
+      <button onClick={delFilter} data-testid="fc-btn-remove" className="px-2 md:p-0 text-red-700">
         <TiDelete size={20} />
       </button>
     </div>

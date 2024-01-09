@@ -1,9 +1,10 @@
 import useBook from '../context/hooks/useBook';
 import { Enum_TotalPriceFilter } from '../enums';
+import useQueryParams from '../hooks/useQueryParams';
 
 export const FilterMenu = () => {
   const { toggleActions, priceFilter, hidden } = useBook();
-  let search = {};
+  const [_, setParams, deleteParams] = useQueryParams();
   return (
     <div className="flex justify-end my-1 mx-3">
       <div className="mx-2 p-1 px-8 bg-slate-900 font-bold text-white">
@@ -21,7 +22,9 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ minPrice: '0', maxPrice: '0' });
+                setParams({ skip: '0', page: '1' });
+                deleteParams('minPrice');
+                deleteParams('maxPrice');
                 toggleActions('filterby');
               }}
             >
@@ -35,7 +38,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ minPrice: '1', maxPrice: '10' });
+                setParams({ skip: '0', page: '1', minPrice: '1', maxPrice: '10' });
                 toggleActions('filterby');
               }}
             >
@@ -49,7 +52,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ minPrice: '11', maxPrice: '25' });
+                setParams({ skip: '0', page: '1', minPrice: '11', maxPrice: '25' });
                 toggleActions('filterby');
               }}
             >
@@ -63,7 +66,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ minPrice: '26', maxPrice: '50' });
+                setParams({ skip: '0', page: '1', minPrice: '26', maxPrice: '50' });
                 toggleActions('filterby');
               }}
             >
@@ -77,7 +80,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ minPrice: '51', maxPrice: '100' });
+                setParams({ skip: '0', page: '1', minPrice: '51', maxPrice: '100' });
                 toggleActions('filterby');
               }}
             >
@@ -91,7 +94,7 @@ export const FilterMenu = () => {
             <li
               className="p-2 hover:bg-slate-900/80 border-b border-slate-400 hover:cursor-pointer"
               onClick={() => {
-                search({ minPrice: '101', maxPrice: '100000' });
+                setParams({ skip: '0', page: '1', minPrice: '101', maxPrice: '100000' });
                 toggleActions('filterby');
               }}
             >
