@@ -26,6 +26,7 @@ export const FilterCard = () => {
   };
   return (
     <div
+      data-testid="fc" // used to determine whether it is being renderer or not
       className={
         minPrice
           ? 'relative flex flex- border border-slate-400 px-2 justify-center w-5/6 sm:w-1/2 mx-auto my-3 md:mx-0 md:w-full text-sm'

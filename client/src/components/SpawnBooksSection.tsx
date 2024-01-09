@@ -10,6 +10,7 @@ import Pagination from './Pagination';
 import { nanoid } from 'nanoid';
 import { useSearchParams } from 'react-router-dom';
 import { Spinner } from './Spinner';
+import NResultsForXCard from './NResultsForXCard';
 export const SpawnBooksSection = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { booksLength, booksFiltered } = useBook();
@@ -19,19 +20,17 @@ export const SpawnBooksSection = () => {
 
   useEffect(() => {
     handleCurrentPage(page);
+    setLoading(false);
   }, [searchParams]); //get current page from params
 
   const handleCurrentPage = (page: number) => {
     setCurrentPage(page);
   };
+
+  if (loading) return <Spinner />;
   return (
     <div>
-      <div className="bg-orange-200 border-y my-2 border-yellow-900 text-center p-2">
-        <h2 className="text-black font-bold" data-testid="title">
-          <span className="text-orange-600">{booksLength}</span> Results for{' '}
-          <span className="text-orange-600">{searchParams.get('search')}</span>
-        </h2>
-      </div>
+      <NResultsForXCard booksLength={booksLength} />
       <div className="md:flex">
         <AsideFilter />
 
@@ -52,9 +51,7 @@ export const SpawnBooksSection = () => {
           <div className="border m-1 text-center">
             <div className="grid p-1 mx-2 mt-2 gap-1 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {booksFiltered &&
-                booksFiltered.map((book: Book) => (
-                  <PreviewBook book={book} key={nanoid()} />
-                ))}
+                booksFiltered.map((book: Book) => <PreviewBook book={book} key={nanoid()} />)}
             </div>
             <Pagination
               totalCount={booksLength}

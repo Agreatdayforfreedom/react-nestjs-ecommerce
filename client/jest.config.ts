@@ -9,4 +9,6 @@ export default {
   moduleNameMapper: {
     nanoid: require.resolve('nanoid'),
   },
+  prettierPath: require.resolve('prettier'),
+  // prettierPath: null,
 };

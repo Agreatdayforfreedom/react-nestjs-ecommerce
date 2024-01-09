@@ -86,4 +86,46 @@ describe('<AsideFilter /> and BookContext', () => {
   });
 
   //todo: test delete filter
+  it('should remove <FilterCard /> component', () => {
+    let cp = (
+      <RenderWithMemory initialEntries={['/']} provider={true}>
+        <BookContext.Provider value={{ priceFilter } as BookContextProps}>
+          <Routes>
+            <Route index element={<AsideFilter />} />
+          </Routes>
+        </BookContext.Provider>
+      </RenderWithMemory>
+    );
+    let renderer: TestRenderer.ReactTestRenderer =
+      {} as TestRenderer.ReactTestRenderer;
+    let tree;
+    TestRenderer.act(() => {
+      renderer = TestRenderer.create(cp);
+    });
+
+    TestRenderer.act(() => {
+      renderer.root.findByProps({ 'data-testid': 'li-3' }).props.onClick();
+    });
+
+    expect(
+      renderer.root.findByProps({ 'data-testid': 'fc-between' }).props
+        .children[0]
+    ).toBe('Between');
+
+    tree = renderer.toJSON() as TestRenderer.ReactTestRendererJSON;
+
+    expect(tree.children![0]).toMatchSnapshot();
+
+    TestRenderer.act(() => {
+      renderer.root
+        .findByProps({ 'data-testid': 'fc-btn-remove' })
+        .props.onClick();
+    });
+    TestRenderer.act(() => {
+      renderer.update(cp);
+    });
+
+    tree = renderer.toJSON() as TestRenderer.ReactTestRendererJSON;
+    expect(tree.children![0]).toMatchSnapshot();
+  });
 });

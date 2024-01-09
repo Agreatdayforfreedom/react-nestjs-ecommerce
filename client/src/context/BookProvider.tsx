@@ -1,20 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import {
-  URLSearchParamsInit,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { URLSearchParamsInit, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { FormGen } from '../components/FormBook';
-import {
-  Alert,
-  Book,
-  Category,
-  Loading,
-  Message,
-  Metadata,
-} from '../interfaces';
+import { Alert, Book, Category, Loading, Message, Metadata } from '../interfaces';
 import { configAxios } from '../utils/configAxios';
 import { CatBooks } from '../pages/SearchBooksByParams';
 import useQueryParams from '../hooks/useQueryParams';
@@ -24,24 +12,8 @@ interface Props {
   children: ReactNode;
 }
 export interface BookContextProps {
-  search: (query?: {
-    search?: string;
-    maxPrice?: string;
-    minPrice?: string;
-    order?: string;
-    cat?: string;
-  }) => void;
   loading: Loading;
-  // params: URLSearchParams;
-  // setParams: (
-  //   nextInit: URLSearchParamsInit,
-  //   navigateOptions?:
-  //     | {
-  //         replace?: boolean | undefined;
-  //         state?: any;
-  //       }
-  //     | undefined
-  // ) => void;
+
   booksLength: number;
   toggleActions: (val: keyof OpenOrCloseDropDownMenus) => void;
   hidden: OpenOrCloseDropDownMenus;
@@ -60,9 +32,7 @@ export interface BookContextProps {
   setBooksFiltered: (state: Book[]) => void;
 }
 
-export const BookContext = createContext<BookContextProps>(
-  {} as BookContextProps
-);
+export const BookContext = createContext<BookContextProps>({} as BookContextProps);
 
 interface OpenOrCloseDropDownMenus {
   filterby: boolean;
@@ -86,7 +56,6 @@ export const BookProvider = ({ children }: Props) => {
   const [book, setBook] = useState<Book>({} as Book);
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const config = configAxios();
 
@@ -150,11 +119,7 @@ export const BookProvider = ({ children }: Props) => {
       const formData = new FormData();
       formData.append('file', file, file.name);
 
-      await axios.post(
-        `${constants.url}/book/upload/${data.id}`,
-        formData,
-        config
-      );
+      await axios.post(`${constants.url}/book/upload/${data.id}`, formData, config);
     }
     navigate(`/admin/add-metadata/${data.id}`);
     setLoading(false);
@@ -179,18 +144,8 @@ export const BookProvider = ({ children }: Props) => {
 
   const [qp, _, __] = useQueryParams();
 
-  const search = async () => {
-    if (qp !== undefined) {
-      const url = `${constants.url}/book/category${qp}`;
-      console.log(url, 'URL');
-      await fetchBooksBy(url);
-    } else console.log('!! query format error');
-  };
-  const fetchBooksBy = async (
-    url: string
-  ): Promise<{ cat: string; books: Book[] }> => {
+  const fetchBooksBy = async (url: string): Promise<{ cat: string; books: Book[] }> => {
     const { data } = await apiAxios.get(url);
-    console.log(url, 'UIRLL');
     setBooksLength(data.books[1]);
     setBooksFiltered(data.books[0]);
     if (data.filter.length > 0) {
@@ -203,7 +158,6 @@ export const BookProvider = ({ children }: Props) => {
   return (
     <BookContext.Provider
       value={{
-        search,
         loading,
         // params,
         // setParams,

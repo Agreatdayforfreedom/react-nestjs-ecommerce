@@ -2,8 +2,8 @@ import useBook from '../context/hooks/useBook';
 import { Enum_TotalPriceFilter } from '../enums';
 
 export const FilterMenu = () => {
-  const { search, toggleActions, priceFilter, hidden } = useBook();
-
+  const { toggleActions, priceFilter, hidden } = useBook();
+  let search = {};
   return (
     <div className="flex justify-end my-1 mx-3">
       <div className="mx-2 p-1 px-8 bg-slate-900 font-bold text-white">
@@ -28,13 +28,7 @@ export const FilterMenu = () => {
               <p>
                 All{' '}
                 <span className="text-slate-400">
-                  (
-                  {
-                    priceFilter[
-                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['all']]
-                    ]
-                  }
-                  )
+                  ({priceFilter[Enum_TotalPriceFilter[Enum_TotalPriceFilter['all']]]})
                 </span>
               </p>
             </li>
@@ -48,13 +42,7 @@ export const FilterMenu = () => {
               <p>
                 $1 ~ $10{' '}
                 <span className="text-slate-400">
-                  (
-                  {
-                    priceFilter[
-                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['1-10']]
-                    ]
-                  }
-                  )
+                  ({priceFilter[Enum_TotalPriceFilter[Enum_TotalPriceFilter['1-10']]]})
                 </span>
               </p>
             </li>
@@ -68,13 +56,7 @@ export const FilterMenu = () => {
               <p>
                 $11 ~ $25{' '}
                 <span className="text-slate-400">
-                  (
-                  {
-                    priceFilter[
-                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['11-25']]
-                    ]
-                  }
-                  )
+                  ({priceFilter[Enum_TotalPriceFilter[Enum_TotalPriceFilter['11-25']]]})
                 </span>
               </p>
             </li>
@@ -88,13 +70,7 @@ export const FilterMenu = () => {
               <p>
                 $26 ~ $50{' '}
                 <span className="text-slate-400">
-                  (
-                  {
-                    priceFilter[
-                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['26-50']]
-                    ]
-                  }
-                  )
+                  ({priceFilter[Enum_TotalPriceFilter[Enum_TotalPriceFilter['26-50']]]})
                 </span>
               </p>
             </li>
@@ -108,13 +84,7 @@ export const FilterMenu = () => {
               <p>
                 $51 ~ $100{' '}
                 <span className="text-slate-400">
-                  (
-                  {
-                    priceFilter[
-                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['51-100']]
-                    ]
-                  }
-                  )
+                  ({priceFilter[Enum_TotalPriceFilter[Enum_TotalPriceFilter['51-100']]]})
                 </span>
               </p>
             </li>
@@ -128,13 +98,7 @@ export const FilterMenu = () => {
               <p>
                 more than $100{' '}
                 <span className="text-slate-400">
-                  (
-                  {
-                    priceFilter[
-                      Enum_TotalPriceFilter[Enum_TotalPriceFilter['101-100000']]
-                    ]
-                  }
-                  )
+                  ({priceFilter[Enum_TotalPriceFilter[Enum_TotalPriceFilter['101-100000']]]})
                 </span>
               </p>
             </li>
