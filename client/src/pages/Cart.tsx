@@ -3,13 +3,17 @@ import { CartItem } from '../components/CartItem';
 import useCart from '../context/hooks/useCart';
 import { Alert } from '../interfaces';
 import { FormCustomer } from './MyData';
+import { Spinner } from '../components/Spinner';
 
 export const Cart = () => {
   const [total, setTotal] = useState<number>(0);
-  const { cartItems, newOrder, alert, setAlert } = useCart();
+  const [loading, setLoading] = useState(true);
+  const { getCartItem, cartItems, newOrder, alert, setAlert } = useCart();
 
   useEffect(() => {
     setAlert({} as Alert);
+    getCartItem();
+    setLoading(false);
   }, []);
   const sum = cartItems.reduce((p, c) => p + c.book.price * c.quantity, 0);
   const qty = cartItems.reduce((p, c) => p + c.quantity, 0);
@@ -19,6 +23,7 @@ export const Cart = () => {
   }, [cartItems]);
 
   const { message } = alert;
+  if (loading) return <Spinner />;
   return (
     <section>
       {cartItems.length === 0 && (
@@ -43,9 +48,7 @@ export const Cart = () => {
           </button>
         </div>
         {message && message.charAt(0) === 'C' ? (
-          <p className="text-center text-lg font-bold text-red-700">
-            Complete you data
-          </p>
+          <p className="text-center text-lg font-bold text-red-700">Complete you data</p>
         ) : (
           ''
         )}

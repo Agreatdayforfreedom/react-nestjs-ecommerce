@@ -26,11 +26,10 @@ interface CartContextProps {
   order: Order;
   selectShipperOrder: (orderId: number, shipperValue: number) => void;
   cancelOrder: (orderId: number) => void;
+  getCartItem: () => void;
 }
 
-export const CartContext = createContext<CartContextProps>(
-  {} as CartContextProps
-);
+export const CartContext = createContext<CartContextProps>({} as CartContextProps);
 
 export const CartProvider = ({ children }: Props) => {
   const [cartItems, setCartItems] = useState<cItem[]>([]);
@@ -44,17 +43,11 @@ export const CartProvider = ({ children }: Props) => {
 
   const config = configAxios();
 
-  useEffect(() => {
-    const getCartItem = async () => {
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/cart/gz`,
-        config
-      );
-      setCartItems(data);
-      setLoading(false);
-    };
-    getCartItem();
-  }, []);
+  const getCartItem = async () => {
+    const { data } = await axios(`${import.meta.env.VITE_URL_BACK}/cart/gz`, config);
+    console.log(data);
+    setCartItems(data);
+  };
 
   const addToCart = async (bookId: number) => {
     try {
@@ -79,7 +72,6 @@ export const CartProvider = ({ children }: Props) => {
     setTimeout(() => {
       setAlert({} as Alert);
     }, 2000);
-    setLoading(false);
   };
 
   const removeFromCart = async (id: number) => {
@@ -89,11 +81,7 @@ export const CartProvider = ({ children }: Props) => {
 
   const newOrder = async () => {
     try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_URL_BACK}/order`,
-        {},
-        config
-      );
+      const { data } = await axios.post(`${import.meta.env.VITE_URL_BACK}/order`, {}, config);
       navigate(`/order/${data.id}`);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
@@ -107,20 +95,14 @@ export const CartProvider = ({ children }: Props) => {
 
   const getOrder = async (id: number) => {
     try {
-      const { data } = await axios(
-        `${import.meta.env.VITE_URL_BACK}/order/${id}`,
-        config
-      );
+      const { data } = await axios(`${import.meta.env.VITE_URL_BACK}/order/${id}`, config);
       setOrder(data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const implPayment = async (
-    orderId: number,
-    paymentType: Enum_PaymentType
-  ) => {
+  const implPayment = async (orderId: number, paymentType: Enum_PaymentType) => {
     try {
       await axios.post(
         `${import.meta.env.VITE_URL_BACK}/payment/${orderId}`,
@@ -197,6 +179,7 @@ export const CartProvider = ({ children }: Props) => {
         order,
         selectShipperOrder,
         cancelOrder,
+        getCartItem,
       }}
     >
       {children}
