@@ -9,12 +9,8 @@ import { MenuNav } from './MenuNav';
 
 export const PrivateHeader = () => {
   const { auth, logout } = useAuth();
-  const { cartItems } = useCart();
-  const [lengthCart, setLengthCart] = useState<number>(0);
+  const { cartItems, cartLength } = useCart();
 
-  useEffect(() => {
-    setLengthCart(cartItems.length);
-  }, [cartItems]);
   return (
     <header className="relative">
       <div className="flex flex-col md:flex-row md:items-start justify-between items-center">
@@ -74,9 +70,7 @@ export const PrivateHeader = () => {
           <div className="flex justify-end md:mt-10">
             <div className="z-50 flex items-center mr-4 mt-4">
               {auth.LIBScredits && (
-                <p className="font-bold px-2 text-slate-600 text-xl">
-                  ${auth.LIBScredits}
-                </p>
+                <p className="font-bold px-2 text-slate-600 text-xl">${auth.LIBScredits}</p>
               )}
               <Link to="/cart" className="flex items-center">
                 <RiShoppingCartFill
@@ -84,9 +78,7 @@ export const PrivateHeader = () => {
                   className=" text-orange-800 hover:cursor-pointer hover:text-orange-900 transition-all"
                 />
               </Link>
-              <p className="px-1 text-2xl font-bold text-gray-700 transition-all">
-                {lengthCart}
-              </p>
+              <p className="px-1 text-2xl font-bold text-gray-700 transition-all">{cartLength}</p>
             </div>
           </div>
         </div>
@@ -122,10 +114,7 @@ export const PrivateHeader = () => {
             </Link>
           </div>
           {auth.role === 'admin' && (
-            <Link
-              to="/admin"
-              className="w-fit border-b border-b-slate-600 px-2 shadow-md"
-            >
+            <Link to="/admin" className="w-fit border-b border-b-slate-600 px-2 shadow-md">
               admin
             </Link>
           )}

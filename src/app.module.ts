@@ -17,7 +17,6 @@ import { Populate } from './populate';
 import { HeadersMiddleware } from './implHeaders.middleware';
 @Module({
   imports: [
-    
     ConfigModule.forRoot({
       envFilePath: '.env',
       load: [config],
@@ -33,8 +32,8 @@ import { HeadersMiddleware } from './implHeaders.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(HeadersMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.GET });
+    // consumer
+    //   .apply(HeadersMiddleware)
+    //   .forRoutes({ path: '*', method: RequestMethod.GET });
   }
 }

@@ -27,12 +27,14 @@ interface CartContextProps {
   selectShipperOrder: (orderId: number, shipperValue: number) => void;
   cancelOrder: (orderId: number) => void;
   getCartItem: () => void;
+  cartLength: number;
 }
 
 export const CartContext = createContext<CartContextProps>({} as CartContextProps);
 
 export const CartProvider = ({ children }: Props) => {
   const [cartItems, setCartItems] = useState<cItem[]>([]);
+  const [cartLength, setCartLength] = useState(0);
   const [loading, setLoading] = useState<Loading>(true);
   const [alert, setAlert] = useState<Alert>({} as Alert);
   const [order, setOrder] = useState<Order>({} as Order);
@@ -43,10 +45,14 @@ export const CartProvider = ({ children }: Props) => {
 
   const config = configAxios();
 
+  useEffect(() => {
+    getCartItem();
+  }, []);
+
   const getCartItem = async () => {
     const { data } = await axios(`${import.meta.env.VITE_URL_BACK}/cart/gz`, config);
-    console.log(data);
     setCartItems(data);
+    setCartLength(data.length); // this can be pulled with the profile request
   };
 
   const addToCart = async (bookId: number) => {
@@ -57,6 +63,7 @@ export const CartProvider = ({ children }: Props) => {
         config
       );
       setCartItems([...cartItems.filter((c) => c.id !== data.id), data]);
+      setCartLength((prev) => prev + data.quantity);
       setAlert({
         message: 'successfully added!',
         err: false,
@@ -77,6 +84,8 @@ export const CartProvider = ({ children }: Props) => {
   const removeFromCart = async (id: number) => {
     await axios.delete(`${import.meta.env.VITE_URL_BACK}/cart/${id}`, config);
     setCartItems([...cartItems.filter((c) => c.id !== id)]);
+    let toSubtract = cartItems.find((x) => x.id === id);
+    setCartLength((prev) => prev - (toSubtract?.quantity ?? 0));
   };
 
   const newOrder = async () => {
@@ -180,6 +189,7 @@ export const CartProvider = ({ children }: Props) => {
         selectShipperOrder,
         cancelOrder,
         getCartItem,
+        cartLength,
       }}
     >
       {children}
